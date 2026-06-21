@@ -1,7 +1,16 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import Navbar from './components/layout/Navbar.vue'
+import Footer from './components/layout/Footer.vue'
 </script>
 
 <template>
-  <HelloWorld />
+  <div class="min-h-screen flex flex-col">
+    <Navbar />
+
+    <main class="flex-1">
+      <RouterView />
+    </main>
+
+    <Footer />
+  </div>
 </template>
