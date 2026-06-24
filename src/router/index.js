@@ -164,7 +164,17 @@ const routes = [
 
 
 
+      // Maintainance
 
+
+
+      // Technician
+
+
+      // Water Quality Monitoring
+
+
+      // Customer
 
 
 
