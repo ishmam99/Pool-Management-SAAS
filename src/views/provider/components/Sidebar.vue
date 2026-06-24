@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-slate-300 w-96 py-4 px-2 min-h-screen border-r border-gray-200">
+  <div class="bg-slate-300 w-100 py-4 px-2 min-h-screen border-r border-gray-200">
     <div class="bg-[#a4cef125] p-2 h-full flex flex-col font-semibold">
       <!-- Header with Company Info -->
       <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4 mb-4 shadow-sm">
@@ -30,10 +30,10 @@
       </div>
 
       <!-- Main Menu Items -->
-      <div class="space-y-2">
+      <div class="space-y-2 flex-1 overflow-y-auto">
         <div v-for="menu in menus" :key="menu.id" class="accordion-group bg-transparent rounded-xl">
           <!-- Menu Header -->
-          <div class="flex items-center justify-between w-full p-3 rounded-xl transition-all duration-300"
+          <div class="flex items-center justify-between w-full p-3 rounded-xl transition-all duration-300 cursor-pointer"
             :class="dropdownHeaderClass" @click="toggleAccordion(menu.id)"
             :style="{
               backgroundColor: openSection === menu.id ? getMenuColor(menu.title) : 'white',
@@ -59,6 +59,54 @@
           <!-- Dropdown Content -->
           <div v-show="openSection === menu.id" class="ml-4 mt-1 space-y-1 border-l-2 pl-3"
             :style="{ borderColor: getMenuColor(menu.title) }">
+            
+            <!-- Render Groups -->
+            <template v-for="group in menu.groups" :key="group.key">
+              <!-- Group Header (with toggle for sub-items) -->
+              <div class="flex items-center justify-between w-full p-2 text-sm rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200"
+                :style="{
+                  color: getMenuColor(menu.title)
+                }"
+                @click="toggleGroup(group.key)">
+                <div class="flex items-center gap-2">
+                  <i class="py-1 px-2 rounded-md text-white text-xs" 
+                    :class="`${group.icon}`"
+                    :style="{
+                      backgroundColor: getMenuColor(menu.title)
+                    }"></i>
+                  <span>{{ group.title }}</span>
+                </div>
+                <i class="ri-arrow-down-s-line transition-transform duration-300 text-xs"
+                  :class="{ 'rotate-180': openGroup === group.key }"
+                  :style="{
+                    color: getMenuColor(menu.title)
+                  }"></i>
+              </div>
+
+              <!-- Group Sub-items -->
+              <div v-show="openGroup === group.key" class="ml-6 mt-1 space-y-1 border-l-2 pl-3"
+                :style="{ borderColor: getMenuColor(menu.title) }">
+                <router-link v-for="link in group.links" :key="link.to" :to="link.to"
+                  class="flex items-center gap-2 p-2 text-sm rounded-lg transition-all duration-300"
+                  :class="dropdownItemClass" active-class="router-link-active"
+                  :style="{
+                    color: getMenuColor(menu.title),
+                    borderLeft: `3px solid transparent`
+                  }"
+                  @click="setActiveLink(menu.title, link.text)">
+                  <i class="py-1 px-2 rounded-md text-white text-xs" 
+                    :class="`${link.icon}`"
+                    :style="{
+                      backgroundColor: getMenuColor(menu.title)
+                    }"></i>
+                  <span class="block max-w-[120px] truncate whitespace-nowrap" :title="link.text">
+                    {{ link.text }}
+                  </span>
+                </router-link>
+              </div>
+            </template>
+
+            <!-- Regular links (non-grouped) -->
             <router-link v-for="link in menu.links" :key="link.to" :to="link.to"
               class="flex items-center gap-2 p-2 text-sm rounded-lg transition-all duration-300"
               :class="dropdownItemClass" active-class="router-link-active"
@@ -66,14 +114,13 @@
                 color: getMenuColor(menu.title),
                 borderLeft: `3px solid transparent`
               }"
-              active-class-style="router-link-active-provider"
               @click="setActiveLink(menu.title, link.text)">
               <i class="py-1 px-2 rounded-md text-white" 
                 :class="`${link.icon}`"
                 :style="{
                   backgroundColor: getMenuColor(menu.title)
                 }"></i>
-              <span class="block max-w-[160px] truncate whitespace-nowrap" :title="link.text">
+              <span class="block max-w-[200px] truncate whitespace-nowrap" :title="link.text">
                 {{ link.text }}
               </span>
             </router-link>
@@ -83,7 +130,7 @@
 
       <!-- LOGOUT -->
       <button type="button"
-        class="py-3 px-6 mt-6 w-full bg-gradient-to-r from-red-600 to-pink-600 rounded-xl text-white font-semibold transition-all duration-300 hover:from-red-700 hover:to-pink-700 hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
+        class="py-3 px-6 mt-4 w-full bg-gradient-to-r from-red-600 to-pink-600 rounded-xl text-white font-semibold transition-all duration-300 hover:from-red-700 hover:to-pink-700 hover:shadow-lg hover:scale-[1.02] flex items-center justify-center gap-2"
         @click="authStore.logout(), router.push('/login/adminLogin')">
         <i class="ri-logout-box-r-line"></i>
         Log Out
@@ -105,6 +152,7 @@ const dropdownItemClass = 'bg-white text-blue-800 hover:bg-blue-50'
 const authStore = useAuthStore()
 const router = useRouter()
 const openSection = ref('')
+const openGroup = ref('')
 const isSidebarLoading = ref(false)
 
 // Get company info from auth store
@@ -124,29 +172,28 @@ const companyInitials = computed(() => {
 
 // Menu Colors Configuration
 const menuColors = {
-  'My Pools': '#0ea5e9', // sky-500
-  'Customers': '#10b981', // emerald-500
-  'Service Management': '#f97316', // orange-500
-  'Maintenance Schedule': '#3b82f6', // blue-500
-  'Service Requests': '#8b5cf6', // violet-500
-  'Technician Management': '#06b6d4', // cyan-500
-  'Water Quality Monitoring': '#14b8a6', // teal-500
-  'Invoice & Payments': '#10b981', // emerald-500
-  'Reports & Analytics': '#6366f1', // indigo-500
-  'Messages / Communication': '#f43f5e', // rose-500
-  'Provider Profile': '#6b7280', // gray-500
+  'Customers': '#10b981',
+  'Pools': '#0ea5e9',
+  'Service Management': '#f97316',
+  'Maintenance Management': '#3b82f6',
+  'Technicians': '#8b5cf6',
+  'Water Quality Monitoring': '#14b8a6',
+  'Inventory': '#f59e0b',
+  'Billing': '#06b6d4',
+  'Communication': '#ec4899',
+  'Customer Portal': '#6366f1',
+  'Reports': '#ef4444',
+  'Team': '#6b7280',
+  'Company': '#4f46e5',
+  'Settings': '#6b7280',
 }
 
 // Function to get menu color with fallback
 const getMenuColor = (menuTitle) => {
-  // Try exact match first
   if (menuColors[menuTitle]) return menuColors[menuTitle];
-  
-  // Fallback: check if any key is a prefix of the title
   const matchedKey = Object.keys(menuColors).find(key => menuTitle.startsWith(key));
   if (matchedKey) return menuColors[matchedKey];
-  
-  return '#6B7280'; // default gray
+  return '#6B7280';
 }
 
 // Track active menu item for styling
@@ -159,121 +206,193 @@ const setActiveLink = (menuTitle, linkText) => {
 function toggleAccordion(name) {
   if (openSection.value === name) {
     openSection.value = ''
+    openGroup.value = '' // Close any open group when closing section
   } else {
     openSection.value = name
   }
 }
 
-// Sidebar Menu Configuration
+function toggleGroup(key) {
+  if (openGroup.value === key) {
+    openGroup.value = ''
+  } else {
+    openGroup.value = key
+  }
+}
+
+// Sidebar Menu Configuration - Complete Structure with Groups
 const menus = [
-  {
-    id: 'my-pools',
-    title: 'My Pools',
-    icon: 'ri-water-flash-line',
-    links: [
-      { to: '/provider/pools', icon: 'ri-list-unordered', text: 'All Pools' },
-      { to: '/provider/pools/create', icon: 'ri-add-circle-line', text: 'Add New Pool' },
-      { to: '/provider/pools/active', icon: 'ri-checkbox-circle-line', text: 'Active Pools' },
-      { to: '/provider/pools/maintenance', icon: 'ri-tools-line', text: 'Maintenance Required' }
-    ]
-  },
   {
     id: 'customers',
     title: 'Customers',
     icon: 'ri-user-community-line',
+    groups: [],
     links: [
       { to: '/provider/customers', icon: 'ri-list-unordered', text: 'All Customers' },
-      { to: '/provider/customers/create', icon: 'ri-user-add-line', text: 'Add Customer' },
-      { to: '/provider/customers/requests', icon: 'ri-mail-send-line', text: 'Customer Requests' }
+      { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add Customer' },
+      { to: '/provider/customers-agreements', icon: 'ri-file-text-line', text: 'Active / Expiring / Cancelled' },
+      { to: '/provider/agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' }
+    ]
+  },
+  {
+    id: 'pools',
+    title: 'Pools',
+    icon: 'ri-water-flash-line',
+    groups: [],
+    links: [
+      { to: '/provider/pools', icon: 'ri-list-unordered', text: 'All Pools' },
+      { to: '/provider/pools-types', icon: 'ri-grid-line', text: 'By Type' },
+      { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Equipment Register' },
+      { to: '/provider/pools-map', icon: 'ri-map-2-line', text: 'Pool Map View' }
     ]
   },
   {
     id: 'service-management',
     title: 'Service Management',
-    icon: 'ri-tools-line',
-    links: [
-      { to: '/provider/services', icon: 'ri-list-unordered', text: 'Service List' },
-      { to: '/provider/services/create', icon: 'ri-add-circle-line', text: 'Create Service' },
-      { to: '/provider/services/categories', icon: 'ri-grid-line', text: 'Service Categories' }
-    ]
-  },
-  {
-    id: 'maintenance-schedule',
-    title: 'Maintenance Schedule',
     icon: 'ri-calendar-check-line',
+    groups: [],
     links: [
-      { to: '/provider/maintenance/calendar', icon: 'ri-calendar-2-line', text: 'Calendar View' },
-      { to: '/provider/maintenance/upcoming', icon: 'ri-time-line', text: 'Upcoming Maintenance' },
-      { to: '/provider/maintenance/completed', icon: 'ri-check-double-line', text: 'Completed Maintenance' }
+      { to: '/provider/services-calendar', icon: 'ri-calendar-2-line', text: 'Calendar View' },
+      // { to: '/provider/services-route-board', icon: 'ri-road-map-line', text: 'Route Board (Today)' },
+      // { to: '/provider/services-route-builder', icon: 'ri-route-line', text: 'Route Builder' },
+      { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'Unassigned Visits' },
+      // { to: '/provider/services-season-manager', icon: 'ri-calendar-event-line', text: 'Season Manager' }
     ]
   },
   {
-    id: 'service-requests',
-    title: 'Service Requests',
-    icon: 'ri-mail-send-line',
+    id: 'maintenance-management',
+    title: 'Maintenance Management',
+    icon: 'ri-tools-line',
+  
     links: [
-      { to: '/provider/service-request/new', icon: 'ri-mail-line', text: 'New Requests' },
-      { to: '/provider/service-request/assigned', icon: 'ri-user-shared-line', text: 'Assigned Requests' },
-      { to: '/provider/service-request/completed', icon: 'ri-checkbox-circle-line', text: 'Completed Requests' }
+      { to: '/provider/schedule-maintenance', icon: 'ri-check-double-line', text: 'Schedule Maintenance' },
+      { to: '/provider/issues-repairs', icon: 'ri-alert-line', text: 'Issues & Repairs' },
+      { to: '/provider/maintenance/create', icon: 'ri-add-circle-line', text: 'Create Maintenance' },
+      { to: '/provider/maintenance/required', icon: 'ri-error-warning-line', text: 'Required maintenance' },
+      { to: '/provider/maintenance/requested', icon: 'ri-mail-send-line', text: 'Requested maintenance' },
+      { to: '/provider/maintenance/recommended', icon: 'ri-lightbulb-line', text: 'Recommended maintenance' },
+      { to: '/provider/maintenance/emergency', icon: 'ri-alarm-warning-line', text: 'Emergency maintenance' }
     ]
   },
   {
-    id: 'technician-management',
-    title: 'Technician Management',
+    id: 'technicians',
+    title: 'Technicians',
     icon: 'ri-team-line',
+    groups: [],
     links: [
-      { to: '/provider/technicians', icon: 'ri-list-unordered', text: 'All Technicians' },
-      { to: '/provider/technicians/create', icon: 'ri-user-add-line', text: 'Add Technician' },
-      { to: '/provider/technicians/schedule', icon: 'ri-calendar-line', text: 'Technician Schedule' }
+      { to: '/provider/technicians', icon: 'ri-list-unordered', text: 'Technician List' },
+      { to: '/provider/technicians/map', icon: 'ri-map-pin-line', text: 'Live Map' },
+      { to: '/provider/technicians/performance', icon: 'ri-bar-chart-line', text: 'Performance' },
+      { to: '/provider/technicians/certifications', icon: 'ri-award-line', text: 'Certifications' }
     ]
   },
   {
     id: 'water-quality',
     title: 'Water Quality Monitoring',
     icon: 'ri-drop-line',
+    groups: [],
     links: [
-      { to: '/provider/water-quality', icon: 'ri-file-chart-line', text: 'Water Quality Reports' },
-      { to: '/provider/chemicals', icon: 'ri-flask-line', text: 'Chemical Tracking' },
-      { to: '/provider/equipment', icon: 'ri-hard-drive-line', text: 'Equipment Status' }
+      { to: '/provider/water-quality/readings', icon: 'ri-file-chart-line', text: 'Readings Log' },
+      { to: '/provider/water-quality/chemicals', icon: 'ri-flask-line', text: 'Chemical Usage' },
+      { to: '/provider/water-quality/alerts', icon: 'ri-notification-3-line', text: 'Alerts' },
+      { to: '/provider/water-quality/dosing', icon: 'ri-calculator-line', text: 'Dosing Calculator' }
     ]
   },
   {
-    id: 'invoices-payments',
-    title: 'Invoice & Payments',
-    icon: 'ri-file-list-3-line',
+    id: 'inventory',
+    title: 'Inventory',
+    icon: 'ri-store-3-fill',
+    groups: [],
     links: [
-      { to: '/provider/invoices', icon: 'ri-file-list-line', text: 'Invoices' },
-      { to: '/provider/invoices/create', icon: 'ri-file-add-line', text: 'Create Invoice' },
-      { to: '/provider/payments', icon: 'ri-bank-card-line', text: 'Payment History' }
+      { to: '/provider/inventory/warehouse', icon: 'ri-building-4-line', text: 'Warehouse' },
+      { to: '/provider/inventory/truck-stock', icon: 'ri-truck-line', text: 'Truck Stock' },
+      { to: '/provider/inventory/purchase-orders', icon: 'ri-file-list-3-line', text: 'Purchase Orders' },
+      { to: '/provider/inventory/suppliers', icon: 'ri-store-3-line', text: 'Suppliers' },
+      { to: '/provider/inventory/low-stock', icon: 'ri-alert-line', text: 'Low Stock Alerts' }
     ]
   },
   {
-    id: 'reports-analytics',
-    title: 'Reports & Analytics',
-    icon: 'ri-bar-chart-line',
+    id: 'billing',
+    title: 'Billing',
+    icon: 'ri-bank-card-line',
+    groups: [],
     links: [
-      { to: '/provider/reports/services', icon: 'ri-bar-chart-2-line', text: 'Service Reports' },
-      { to: '/provider/reports/revenue', icon: 'ri-money-dollar-circle-line', text: 'Revenue Reports' },
-      { to: '/provider/reports/customers', icon: 'ri-user-line', text: 'Customer Reports' }
+      { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Invoices' },
+      { to: '/provider/billing/payments', icon: 'ri-money-dollar-circle-line', text: 'Payments' },
+      { to: '/provider/billing/credit-memos', icon: 'ri-file-reduce-line', text: 'Credit Memos' },
+      { to: '/provider/billing/settings', icon: 'ri-settings-3-line', text: 'Billing Settings' }
     ]
   },
   {
-    id: 'messages',
-    title: 'Messages / Communication',
+    id: 'communication',
+    title: 'Communication',
     icon: 'ri-chat-3-line',
+    groups: [],
     links: [
-      { to: '/provider/messages', icon: 'ri-mail-line', text: 'Customer Messages' },
-      { to: '/provider/notifications', icon: 'ri-notification-3-line', text: 'Notifications' }
+      { to: '/provider/communication/inbox', icon: 'ri-mail-line', text: 'Inbox' },
+      { to: '/provider/communication/notifications', icon: 'ri-notification-3-line', text: 'Notifications' },
+      { to: '/provider/communication/templates', icon: 'ri-file-copy-line', text: 'Templates' },
+      { to: '/provider/communication/bulk', icon: 'ri-send-plane-line', text: 'Bulk Send' }
     ]
   },
   {
-    id: 'provider-profile',
-    title: 'Provider Profile',
-    icon: 'ri-settings-3-line',
+    id: 'customer-portal',
+    title: 'Customer Portal',
+    icon: 'ri-global-line',
+    groups: [],
     links: [
-      { to: '/provider/profile', icon: 'ri-store-line', text: 'Business Profile' },
-      { to: '/provider/profile/service-area', icon: 'ri-map-pin-2-line', text: 'Service Area' },
-      { to: '/provider/settings', icon: 'ri-settings-line', text: 'Settings' }
+      { to: '/provider/portal/branding', icon: 'ri-palette-line', text: 'Branding' },
+      { to: '/provider/portal/content', icon: 'ri-edit-2-line', text: 'Content' },
+      { to: '/provider/portal/preview', icon: 'ri-eye-line', text: 'Preview' }
+    ]
+  },
+  {
+    id: 'reports',
+    title: 'Reports',
+    icon: 'ri-bar-chart-2-line',
+    groups: [],
+    links: [
+      { to: '/provider/reports/revenue', icon: 'ri-money-dollar-box-line', text: 'Revenue' },
+      { to: '/provider/reports/ar-aging', icon: 'ri-time-line', text: 'AR Aging' },
+      { to: '/provider/reports/technician-performance', icon: 'ri-user-star-line', text: 'Technician Performance' },
+      { to: '/provider/reports/route-efficiency', icon: 'ri-road-map-line', text: 'Route Efficiency' },
+      { to: '/provider/reports/tax', icon: 'ri-taxi-line', text: 'Tax Reports' }
+    ]
+  },
+  {
+    id: 'team',
+    title: 'Team',
+    icon: 'ri-group-line',
+    groups: [],
+    links: [
+      { to: '/provider/team/users', icon: 'ri-user-3-line', text: 'Users' },
+      { to: '/provider/team/roles', icon: 'ri-shield-keyhole-line', text: 'Roles & Permissions' },
+      { to: '/provider/team/activity', icon: 'ri-history-line', text: 'Activity Logs' }
+    ]
+  },
+  {
+    id: 'company',
+    title: 'Company',
+    icon: 'ri-building-line',
+    groups: [],
+    links: [
+      { to: '/provider/company/profile', icon: 'ri-store-line', text: 'Profile' },
+      { to: '/provider/company/pricing', icon: 'ri-price-tag-3-line', text: 'Pricing' },
+      { to: '/provider/company/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
+      { to: '/provider/company/subscription', icon: 'ri-subscription-line', text: 'Subscription' }
+    ]
+  },
+  {
+    id: 'settings',
+    title: 'Settings',
+    icon: 'ri-settings-3-line',
+    groups: [],
+    links: [
+      { to: '/provider/settings/general', icon: 'ri-settings-2-line', text: 'General' },
+      { to: '/provider/settings/email-sms', icon: 'ri-mail-send-line', text: 'Email / SMS' },
+      { to: '/provider/settings/tax', icon: 'ri-taxi-line', text: 'Tax' },
+      { to: '/provider/settings/payment-gateway', icon: 'ri-bank-card-line', text: 'Payment Gateway' },
+      { to: '/provider/settings/import-export', icon: 'ri-upload-download-line', text: 'Import / Export' }
     ]
   }
 ]
@@ -333,5 +452,47 @@ onMounted(() => {
 
 .ml-4::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Ensure sidebar content doesn't overflow */
+.overflow-y-auto {
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Nested items styling */
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
+.ml-6 .router-link {
+  font-size: 0.8rem;
+  padding-left: 0.5rem;
+}
+
+/* Adjust spacing for nested items */
+.ml-6 .router-link i {
+  font-size: 0.75rem;
+}
+
+/* Group header styling */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Make sidebar narrower for better fit */
+.w-80 {
+  width: 20rem;
+}
+
+@media (max-width: 768px) {
+  .w-80 {
+    width: 100%;
+    max-width: 280px;
+  }
 }
 </style>

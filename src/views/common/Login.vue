@@ -162,7 +162,7 @@ const handleLogin = async () => {
     if (roleConfig.value.title === "Pool Service Provider") {
       dashboard = "/provider/dashboard";
     } else if (roleConfig.value.title === "Customer Login") {
-      dashboard = "/customer/login";
+      dashboard = "/customer/dashboard";
     } else {
       dashboard = "/dashboard";
     }

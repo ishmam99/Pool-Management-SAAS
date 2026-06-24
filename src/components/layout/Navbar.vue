@@ -38,7 +38,7 @@
           </router-link>
 
           <router-link 
-            to="/blog" 
+            to="/blogs" 
             class="relative px-4 py-2 font-medium text-gray-600 transition-all duration-300 rounded-lg hover:text-red-600 hover:bg-red-50/50 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-red-600 before:to-red-700 before:transition-all before:duration-300 hover:before:w-[60%]"
             active-class="text-red-600 font-semibold before:w-[60%]"
           >
@@ -46,7 +46,7 @@
           </router-link>
 
           <router-link 
-            to="/blog" 
+            to="/features" 
             class="relative px-4 py-2 font-medium text-gray-600 transition-all duration-300 rounded-lg hover:text-red-600 hover:bg-red-50/50 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-red-600 before:to-red-700 before:transition-all before:duration-300 hover:before:w-[60%]"
             active-class="text-red-600 font-semibold before:w-[60%]"
           >
@@ -54,7 +54,7 @@
           </router-link>
 
           <router-link 
-            to="/blog" 
+            to="/join-us" 
             class="relative px-4 py-2 font-medium text-gray-600 transition-all duration-300 rounded-lg hover:text-red-600 hover:bg-red-50/50 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-red-600 before:to-red-700 before:transition-all before:duration-300 hover:before:w-[60%]"
             active-class="text-red-600 font-semibold before:w-[60%]"
           >
