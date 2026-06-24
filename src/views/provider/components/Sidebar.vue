@@ -12,7 +12,7 @@
           </div>
           <div class="text-center">
             <p class="text-sm font-semibold text-gray-800">{{ companyName }}</p>
-            <p class="text-xs text-gray-500">Provider Dashboard</p>
+            <p class="text-xs text-gray-500">Tenant Dashboard</p>
           </div>
         </div>
       </div>
