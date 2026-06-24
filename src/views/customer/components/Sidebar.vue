@@ -211,8 +211,7 @@ const menus = [
         icon: 'ri-drop-line',
     
         links: [
-                    { to: '/customer/water-quality', icon: 'ri-drop-fill', text: 'My Pool' }
-
+            { to: '/customer/pools', icon: 'ri-drop-fill', text: 'My Pools' },
         ]
     },
     {
@@ -272,6 +271,16 @@ const menus = [
 
         links: [
             { to: '/customer/profile', icon: 'ri-user-3-fill', text: 'Profile' }
+
+        ]
+    },
+    {
+        id: 'payment',
+        title: 'Payment Methods',
+        icon: 'ri-bank-card-line',
+
+        links: [
+            { to: '/customer/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' }
 
         ]
     },

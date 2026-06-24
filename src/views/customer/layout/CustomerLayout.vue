@@ -46,11 +46,13 @@
 </template>
 <script setup>
 // import HrSidebar from '/src/views/Hr/HrSidebar.vue'
-import { onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
 import { useCustomerStore } from '../store/customerStore.js'
+import { useAuthStore } from '../../../store/AuthStore.js'
 const store = useCustomerStore()
+const authStore = useAuthStore()
 const tabs = [
     'Dashboard',
     'Pools',
