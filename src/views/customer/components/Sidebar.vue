@@ -145,7 +145,7 @@ const customerInitials = computed(() => {
 const menuColors = {
     'Dashboard': '#0ea5e9',
     'My Schedule': '#f97316',
-    'Water Quality': '#14b8a6',
+    'My Pool': '#14b8a6',
     'Service Photos': '#8b5cf6',
     'Billing': '#06b6d4',
     'Agreements': '#10b981',
@@ -206,12 +206,12 @@ const menus = [
         ]
     },
     {
-        id: 'water-quality',
-        title: 'Water Quality',
+        id: 'pool',
+        title: 'My Pool',
         icon: 'ri-drop-line',
     
         links: [
-                    { to: '/customer/water-quality', icon: 'ri-drop-fill', text: 'Water Quality' }
+                    { to: '/customer/water-quality', icon: 'ri-drop-fill', text: 'My Pool' }
 
         ]
     },
@@ -245,16 +245,16 @@ const menus = [
 
         ]
     },
-    {
-        id: 'equipment',
-        title: 'Equipment',
-        icon: 'ri-tools-line',
+    // {
+    //     id: 'equipment',
+    //     title: 'Equipment',
+    //     icon: 'ri-tools-line',
 
-        links: [
-            { to: '/customer/equipment', icon: 'ri-tools-fill', text: 'Equipment' }
+    //     links: [
+    //         { to: '/customer/equipment', icon: 'ri-tools-fill', text: 'Equipment' }
 
-        ]
-    },
+    //     ]
+    // },
     {
         id: 'messages',
         title: 'Messages',
