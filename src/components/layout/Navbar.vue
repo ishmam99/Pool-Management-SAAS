@@ -61,14 +61,34 @@
             Join Us
           </router-link>
 
+          <!-- Conditional Auth Links -->
+          <template v-if="authStore.isAuthenticated">
+            <!-- Dashboard Link -->
+            <router-link 
+              :to="authStore.currentDashboard || '/'"
+              class="relative px-4 py-2 font-medium text-gray-600 transition-all duration-300 rounded-lg hover:text-red-600 hover:bg-red-50/50 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-red-600 before:to-red-700 before:transition-all before:duration-300 hover:before:w-[60%]"
+              active-class="text-red-600 font-semibold before:w-[60%]"
+            >
+              Dashboard
+            </router-link>
+
+            <!-- Logout Button -->
+            <button 
+              @click="handleLogout"
+              class="px-4 py-2 font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_12px_rgba(220,38,38,0.4)]"
+            >
+              Logout
+            </button>
+          </template>
+
+          <!-- Login Link (when not authenticated) -->
           <router-link 
+            v-else
             to="/login" 
-            class="relative px-4 py-2 font-medium text-gray-600 transition-all duration-300 rounded-lg hover:text-red-600 hover:bg-red-50/50 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-red-600 before:to-red-700 before:transition-all before:duration-300 hover:before:w-[60%]"
-            active-class="text-red-600 font-semibold before:w-[60%]"
+            class="px-4 py-2 font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_12px_rgba(220,38,38,0.4)]"
           >
             Login
           </router-link>
-
         </div>
 
         <!-- Mobile Menu Button -->
@@ -161,6 +181,31 @@
             </div>
           </div>
         </div>
+
+        <!-- Mobile Auth Links -->
+        <template v-if="authStore.isAuthenticated">
+          <router-link 
+            :to="authStore.currentDashboard || '/'"
+            class="px-4 py-3 rounded-lg font-medium text-gray-700 transition-all duration-200 hover:bg-red-50/50 hover:text-red-600" 
+            @click="closeMobileMenu"
+          >
+            Dashboard
+          </router-link>
+          <button 
+            @click="handleLogout"
+            class="px-4 py-3 rounded-lg font-medium text-white bg-gradient-to-r from-red-600 to-red-700 transition-all duration-200 hover:scale-105"
+          >
+            Logout
+          </button>
+        </template>
+        <router-link 
+          v-else
+          to="/login" 
+          class="px-4 py-3 rounded-lg font-medium text-white bg-gradient-to-r from-red-600 to-red-700 transition-all duration-200 hover:scale-105"
+          @click="closeMobileMenu"
+        >
+          Login
+        </router-link>
       </div>
     </div>
   </nav>
@@ -168,6 +213,11 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../store/authStore';
+
+const router = useRouter();
+const authStore = useAuthStore();
 
 const isMobileOpen = ref(false);
 const isMobileDropdownOpen = ref(false);
@@ -186,5 +236,23 @@ const toggleMobileDropdown = () => {
 const closeMobileMenu = () => {
   isMobileOpen.value = false;
   isMobileDropdownOpen.value = false;
+};
+
+const handleLogout = async () => {
+  try {
+    // Call logout action from auth store
+    authStore.logout();
+    
+    // Close mobile menu if open
+    closeMobileMenu();
+    
+    // Redirect to home page
+    await router.push('/');
+    
+    // Optional: Show a toast notification
+    console.log('Logged out successfully');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 };
 </script>

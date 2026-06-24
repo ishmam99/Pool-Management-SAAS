@@ -1,13 +1,12 @@
 <script setup>
 import { ref, computed, watch } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 import Swal from "sweetalert2";
-// import api from '../../services/api.js'
-// import { useAuthStore } from "../../store/AuthStore.js"; 
+import api from "../../services/api.js";
+import { useAuthStore } from "../../store/AuthStore.js";
 
-const route = useRoute();
 const router = useRouter();
-// const authStore = useAuthStore();
+const authStore = useAuthStore();
 
 const email = ref("");
 const password = ref("");
@@ -15,73 +14,51 @@ const loading = ref(false);
 const showPassword = ref(false);
 const isFocused = ref(false);
 
-// Active tab state
-const activeTab = ref("admin");
+// Active tab state - default to tenant (Service Provider)
+const activeTab = ref("tenant");
 
-// Role from query (used for UI & fallback)
-const role = computed(() => route.query.role || activeTab.value);
-
-// Watch for query param changes
-watch(() => route.query.role, (newRole) => {
-  if (newRole && ["admin", "pool_service_provider", "customer"].includes(newRole)) {
-    activeTab.value = newRole;
-  }
-});
-
-// Set active tab when route query changes
+// Set active tab
 const setActiveTab = (tab) => {
   activeTab.value = tab;
-  router.push({ query: { role: tab } });
 };
 
 const roleConfig = computed(() => {
   const configs = {
-    // admin: {
-    //   title: "Admin Login",
-    //   color: "from-indigo-500 to-purple-600",
-    //   lightColor: "from-indigo-400/20 to-purple-500/20",
-    //   gradient: "from-indigo-500/30 to-purple-600/30",
-    //   icon: "ri-shield-user-fill",
-    //   description: "System Administrator Access",
-    //   registerRoute: "/adminRegister",
-    //   tabColor: "indigo",
-    //   emoji: "👑"
-    // },
-    pool_service_provider: {
-      title: "Pool Service Provider",
+    tenant: {
+      title: "Service Provider",
       color: "from-blue-500 to-cyan-500",
       lightColor: "from-blue-400/20 to-cyan-500/20",
       gradient: "from-blue-500/30 to-cyan-500/30",
       icon: "ri-water-flash-fill",
       description: "Manage your pool service business",
-      registerRoute: "/poolServiceProviderRegister",
-      tabColor: "blue",
-      emoji: "🏊"
+      subDescription: "Scheduling, Customers, Routes & Billing",
+      emoji: "🏊",
+      loginEndpoint: "/user-management/login",
+      logoutEndpoint: "/user-management/logout",
+      dashboard: "/provider/dashboard",
+      userType: "provider"
     },
     customer: {
-      title: "Customer Login",
+      title: "Customer",
       color: "from-emerald-500 to-teal-500",
       lightColor: "from-emerald-400/20 to-teal-500/20",
       gradient: "from-emerald-500/30 to-teal-500/30",
       icon: "ri-user-3-fill",
-      description: "Book and manage pool services",
-      registerRoute: "/customerRegister",
-      tabColor: "emerald",
-      emoji: "👤"
-    },
+      description: "Manage your pool services",
+      subDescription: "Visits, Invoices & Service History",
+      emoji: "👤",
+      loginEndpoint: "/customer-portal/login",
+      logoutEndpoint: "/customer-portal/logout",
+      dashboard: "/customer/dashboard",
+      userType: "customer"
+    }
   };
-  return configs[activeTab.value] || configs.customer;
+  return configs[activeTab.value] || configs.tenant;
 });
 
 const tabs = [
-//   { 
-//     id: "admin", 
-//     label: "Admin", 
-//     icon: "ri-shield-user-fill",
-//     color: "indigo"
-//   },
   { 
-    id: "pool_service_provider", 
+    id: "tenant", 
     label: "Service Provider", 
     icon: "ri-water-flash-fill",
     color: "blue"
@@ -95,6 +72,7 @@ const tabs = [
 ];
 
 const handleLogin = async () => {
+  // Validation
   if (!email.value || !password.value) {
     Swal.fire({
       icon: "warning",
@@ -111,74 +89,87 @@ const handleLogin = async () => {
   loading.value = true;
 
   try {
-    // API call commented out as requested
-    /*
-    const response = await api().post("/auth/login", {
+    const config = roleConfig.value;
+    const response = await api().post(config.loginEndpoint, {
       email: email.value,
       password: password.value,
     });
 
-    const { token, user } = response.data.data;
+    const data = response.data;
 
-    const userType = user.user_type || activeTab.value;
-    let dashboard = "/dashboard"; 
-    if (userType === "admin") {
-      dashboard = "/admin/dashboard";
-    } else if (userType === "pool_service_provider") {
-      dashboard = "/provider/dashboard";
-    } else if (userType === "customer") {
-      dashboard = "/customer/dashboard";
-    } else {
-      dashboard = "/dashboard";
+    // Handle Service Provider Login
+    if (activeTab.value === "tenant") {
+      const userData = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        phone: data.user.phone || '',
+        avatar: '',
+        roles: [data.user.role],
+        user_type: 'provider'
+      };
+
+      authStore.login(
+        userData,
+        data.token,
+        data.user.role,
+        "provider"
+      );
+
+      // Store tenant information
+      authStore.companyId = data.tenant.id;
+      authStore.companyName = data.tenant.company_name;
+
+      await Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        text: `Welcome ${data.user.name}!`,
+        confirmButtonColor: "#16a34a",
+        background: "#1e1b4b",
+        color: "#e2e8f0",
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      router.push("/provider/dashboard");
     }
-    
-    authStore.login(
-      {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar || null,
-      },
-      token,
-      userType, 
-      dashboard
-    );
 
-    await Swal.fire({
-      icon: "success",
-      title: "Login Successful",
-      text: `Welcome ${user.name}!`,
-      confirmButtonColor: "#16a34a",
-      background: "#1e1b4b",
-      color: "#e2e8f0",
-    });
+    // Handle Customer Login
+    else if (activeTab.value === "customer") {
+      const userData = {
+        id: data.customer.id,
+        name: data.customer.name,
+        email: data.customer.email,
+        phone: data.customer.phone || '',
+        avatar: '',
+        roles: [],
+        user_type: 'customer'
+      };
 
-    router.push(dashboard);
-    */
+      authStore.login(
+        userData,
+        data.token,
+        "customer",
+        "customer"
+      );
 
-    // Demo login - remove this when API is uncommented
+      // Store tenant information
+      authStore.companyId = data.tenant.id;
+      authStore.companyName = data.tenant.company_name;
 
-    let dashboard = "/dashboard"; 
-    if (roleConfig.value.title === "Pool Service Provider") {
-      dashboard = "/provider/dashboard";
-    } else if (roleConfig.value.title === "Customer Login") {
-      dashboard = "/customer/dashboard";
-    } else {
-      dashboard = "/dashboard";
+      await Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        text: `Welcome ${data.customer.name}!`,
+        confirmButtonColor: "#16a34a",
+        background: "#1e1b4b",
+        color: "#e2e8f0",
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      router.push("/customer/dashboard");
     }
-    await Swal.fire({
-      icon: "info",
-      title: "🎯 Demo Mode",
-      text: `Logging in as ${roleConfig.value.title}`,
-      confirmButtonColor: "#6366f1",
-      background: "#1e1b4b",
-      color: "#e2e8f0",
-      iconColor: "#60a5fa",
-      timer: 2000,
-      timerProgressBar: true,
-    });
-
-     router.push(dashboard);
 
   } catch (error) {
     let message = "Invalid credentials. Please try again.";
@@ -187,6 +178,7 @@ const handleLogin = async () => {
     } else if (error.message) {
       message = error.message;
     }
+    
     Swal.fire({
       icon: "error",
       title: "Login Failed",
@@ -199,16 +191,30 @@ const handleLogin = async () => {
     loading.value = false;
   }
 };
+
+// Handle logout function (can be used elsewhere)
+const handleLogout = async () => {
+  try {
+    const config = roleConfig.value;
+    await api.post(config.logoutEndpoint);
+    authStore.logout();
+    router.push("/login");
+  } catch (error) {
+    console.error("Logout error:", error);
+    authStore.logout();
+    router.push("/login");
+  }
+};
 </script>
 
 <template>
-  <div class="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900">
+  <div class="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900">
     
     <!-- Animated Background Elements -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-full blur-3xl animate-spin-slow"></div>
+      <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
+      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-emerald-500/10 rounded-full blur-3xl animate-spin-slow"></div>
       
       <!-- Floating Particles -->
       <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-white/20 rounded-full animate-float"></div>
@@ -240,6 +246,9 @@ const handleLogin = async () => {
             <p class="mt-1 text-white/70 text-sm font-light tracking-wide">
               {{ roleConfig.description }}
             </p>
+            <p class="mt-1 text-white/50 text-xs font-light">
+              {{ roleConfig.subDescription }}
+            </p>
           </div>
         </div>
 
@@ -252,7 +261,7 @@ const handleLogin = async () => {
               @click="setActiveTab(tab.id)"
               class="relative py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 group"
               :class="activeTab === tab.id 
-                ? `bg-gradient-to-r ${activeTab === 'admin' ? 'from-indigo-500 to-purple-500' : activeTab === 'pool_service_provider' ? 'from-blue-500 to-cyan-500' : 'from-emerald-500 to-teal-500'} text-white shadow-lg scale-105`
+                ? `bg-gradient-to-r ${activeTab === 'tenant' ? 'from-blue-500 to-cyan-500' : 'from-emerald-500 to-teal-500'} text-white shadow-lg scale-105`
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
               "
             >
@@ -277,18 +286,18 @@ const handleLogin = async () => {
                 <i class="ri-mail-line mr-2"></i>Email Address
               </label>
               <div class="relative">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-400 transition-colors">
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
                   <i class="ri-mail-line"></i>
                 </div>
                 <input
                   v-model="email"
                   type="email"
-                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all duration-300"
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300"
                   placeholder="Enter your email"
                   @focus="isFocused = true"
                   @blur="isFocused = false"
                 />
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/0 via-indigo-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
 
@@ -298,13 +307,13 @@ const handleLogin = async () => {
                 <i class="ri-lock-line mr-2"></i>Password
               </label>
               <div class="relative">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-400 transition-colors">
+                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
                   <i class="ri-lock-line"></i>
                 </div>
                 <input
                   v-model="password"
                   :type="showPassword ? 'text' : 'password'"
-                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all duration-300 pr-12"
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300 pr-12"
                   placeholder="Enter your password"
                 />
                 <button
@@ -314,13 +323,13 @@ const handleLogin = async () => {
                 >
                   <i :class="showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="text-lg"></i>
                 </button>
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-indigo-500/0 via-indigo-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
               </div>
             </div>
 
             <!-- Forgot Password -->
             <div class="text-right">
-              <a href="#" class="text-xs text-gray-400 hover:text-indigo-400 transition-colors">
+              <a href="#" class="text-xs text-gray-400 hover:text-blue-400 transition-colors">
                 Forgot password?
               </a>
             </div>
@@ -347,17 +356,17 @@ const handleLogin = async () => {
             </button>
           </form>
 
-          <!-- Register Link -->
+          <!-- Register Links -->
           <div class="mt-5 text-center border-t border-white/5 pt-4">
             <p class="text-gray-400 text-sm">
               Don't have an account? 
               <router-link 
-                :to="roleConfig.registerRoute" 
-                class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors group"
+                :to="activeTab === 'tenant' ? '/poolServiceProviderRegister' : '/customerRegister'" 
+                class="text-blue-400 hover:text-blue-300 font-medium transition-colors group"
               >
                 Register as 
                 <span class="underline underline-offset-2 group-hover:underline-offset-4 transition-all">
-                  {{ activeTab === 'admin' ? 'Admin' : activeTab === 'pool_service_provider' ? 'Service Provider' : 'Customer' }}
+                  {{ activeTab === 'tenant' ? 'Service Provider' : 'Customer' }}
                 </span>
                 <i class="ri-arrow-right-line inline-block group-hover:translate-x-1 transition-transform"></i>
               </router-link>
@@ -369,7 +378,7 @@ const handleLogin = async () => {
       <!-- Footer -->
       <div class="mt-6 text-center">
         <p class="text-gray-500/50 text-xs tracking-wider">
-          <i class="ri-shield-check-line mr-1"></i>Secure Login • Powered by Eagle Martials Arts
+          <i class="ri-shield-check-line mr-1"></i>Secure Login • Powered by Pool Management System
         </p>
       </div>
     </div>
@@ -434,11 +443,11 @@ const handleLogin = async () => {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(59, 130, 246, 0.3);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.5);
+  background: rgba(59, 130, 246, 0.5);
 }
 </style>

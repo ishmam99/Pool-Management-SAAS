@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 
 export default () => {
   const authStore = useAuthStore()
-const projectURL = import.meta.env.VITE_BASE_URL+'/api/v1'
+const projectURL = import.meta.env.VITE_BASE_URL+'/api'
   const instance = axios.create({
     baseURL: projectURL,
     headers: {

@@ -1,101 +1,111 @@
+// src/stores/authStore.js
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('authStore', {
   state: () => ({
     isAuthenticated: false,
     token: null,
-    hrm_token: null,
+    authType: null,
+    role: null,
+    currentDashboard: null,
+    companyId: null,
+    companyName: null,
+    sidebarOpen: true,
     user: {
       id: '',
       name: '',
       email: '',
-      avatar: '',
       phone: '',
-      user_type: '',
-      roles: [],
-      permissions: []
-    },
-    role: null,
-    currentDashboard: null,
-    sidebarOpen: true,
-    currentTab: 'crm',
-    attendance_info_id: null,
-    login_id: null,
-    attendance_login_time: null,
-    team_id: null,
-    customerSuccessTeamSidebarIdentifier: null,
-    companyName: null,
-    companyId: null,
-    variableModuleId: null,
+      avatar: '',
+      roles: []
+    }
   }),
 
+  getters: {
+    // User getters
+    getUserName: (state) => state.user.name,
+    getUserEmail: (state) => state.user.email,
+    getUserRole: (state) => state.role,
+    getCompanyName: (state) => state.companyName,
+    getAuthType: (state) => state.authType,
+
+    // Auth type checks
+    isAdmin: (state) => state.authType === 'admin',
+    isProvider: (state) => state.authType === 'provider',
+    isCustomer: (state) => state.authType === 'customer',
+
+    // Role permission helper
+    hasRole: (state) => (role) => {
+      return state.user.roles.includes(role)
+    },
+
+    // Route protection helpers
+    canAccessAdmin: (state) => {
+      return state.isAuthenticated && state.authType === 'admin'
+    },
+
+    canAccessProvider: (state) => {
+      return state.isAuthenticated && state.authType === 'provider'
+    },
+
+    canAccessCustomer: (state) => {
+      return state.isAuthenticated && state.authType === 'customer'
+    }
+  },
+
   actions: {
-    login(user, token, role, dashboard = 'crm') {
+    login(user, token, role, authType) {
+      // Set authentication state
       this.isAuthenticated = true
       this.user = user
       this.token = token
       this.role = role
-      this.currentDashboard = dashboard
-      // Set currentTab based on dashboard (or role)
-      this.currentTab = role === 'instructor' ? 'instructor' : 'student'
+      this.authType = authType
+
+      // Auto-determine dashboard based on auth type
+      if (authType === 'admin') {
+        this.currentDashboard = '/admin/dashboard'
+      } else if (authType === 'provider') {
+        this.currentDashboard = '/provider/dashboard'
+      } else if (authType === 'customer') {
+        this.currentDashboard = '/customer/dashboard'
+      }
     },
 
     logout() {
+      // Reset everything
       this.isAuthenticated = false
       this.token = null
-      this.hrm_token = null
+      this.authType = null
       this.role = null
       this.currentDashboard = null
-      this.team_id = null
-      this.customerSuccessTeamSidebarIdentifier = null
-      this.companyName = null
       this.companyId = null
-      this.variableModuleId = null
+      this.companyName = null
+      this.sidebarOpen = true
       this.user = {
         id: '',
         name: '',
         email: '',
-        avatar: '',
         phone: '',
-        user_type: '',
-        roles: [],
-        permissions: []
+        avatar: '',
+        roles: '',
       }
-      this.sidebarOpen = true
-      this.currentTab = 'crm'
-    },
-
-    // ... other actions (setTeamId, etc.)
+    }
   },
 
-  getters: {
-    getUserName: (state) => state.user.name,
-    getUserEmail: (state) => state.user.email,
-    getUserAvatar: (state) => state.user.avatar,
-    isCRM: (state) => state.currentTab === 'crm',
-    isUserManagement: (state) => state.currentTab === 'user'
-  },
-
-  // 🔥 Proper persist configuration
   persist: {
-    key: 'authStore', // key for localStorage
-    storage: localStorage, // use localStorage (or sessionStorage)
+    key: 'authStore',
+    storage: localStorage,
     paths: [
       'isAuthenticated',
       'token',
-      'user',
+      'authType',
       'role',
       'currentDashboard',
-      'currentTab',
-      'sidebarOpen',
-      'attendance_info_id',
-      'login_id',
-      'attendance_login_time',
-      'team_id',
-      'customerSuccessTeamSidebarIdentifier',
-      'companyName',
       'companyId',
-      'variableModuleId'
-    ] // only persist these paths (optional)
+      'companyName',
+      'sidebarOpen',
+      'user'
+    ]
   }
 })
