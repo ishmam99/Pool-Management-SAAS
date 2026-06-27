@@ -49,7 +49,7 @@
                 required
                 class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
-                <option value="" selected disabled>Select a customer</option>
+                <option value="" disabled selected>Select a customer</option>
                 <option v-for="customer in customers" :key="customer.id" :value="customer.id">
                   {{ customer.contact_name || `Customer #${customer.id}` }}
                 </option>
@@ -76,20 +76,19 @@
             <!-- Type -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
-                Maintenance Type <span class="text-red-500">*</span>
+                Type <span class="text-red-500">*</span>
               </label>
               <select
                 v-model="form.type"
                 required
                 class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
-                <option value="" selected disabled >Select type</option>
-                <option value="routine">Routine – Regular maintenance</option>
-                <option value="one_time">One‑time – One‑time service</option>
-                <option value="repair">Repair – Equipment repair</option>
-                <option value="inspection">Inspection – Safety/equipment inspection</option>
-                <option value="installation">Installation – New equipment installation</option>
-                <option value="emergency">Emergency – Urgent/emergency service</option>
+                <option value="" selected disabled>Select type</option>
+                <option value="routine">Routine</option>
+                <option value="repair">Repair</option>
+                <option value="installation">Installation</option>
+                <option value="emergency">Emergency</option>
+                <option value="inspection">Inspection</option>
               </select>
             </div>
 
@@ -104,7 +103,6 @@
                 class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="" selected disabled>Select status</option>
-                <option value="created">Created</option>
                 <option value="scheduled">Scheduled</option>
                 <option value="in_progress">In Progress</option>
                 <option value="completed">Completed</option>
@@ -211,7 +209,8 @@
 import { ref, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
-import api from '../../../../services/api.js';
+import api from '../../../../services/api';
+// import api from '../../services/api.js';
 
 const router = useRouter();
 
@@ -310,6 +309,7 @@ const handleSubmit = async () => {
       confirmButtonColor: '#4f46e5',
     });
 
+    // Redirect to work orders list
     // router.push('/work-order-management/work-orders');
   } catch (error) {
     console.error('Create work order error:', error);
@@ -337,7 +337,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* Optional custom scrollbar for checklist */
+/* Optional: custom scrollbar for checklist */
 ::-webkit-scrollbar {
   width: 6px;
 }
