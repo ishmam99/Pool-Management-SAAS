@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <div class="max-w-7xl mx-auto">
+    <div class=" mx-auto">
       <!-- Header -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
@@ -178,37 +178,45 @@ const statusParam = computed(() => route.params.status || 'required');
 
 // Configuration for each status
 const statusConfigs = {
-  required: {
-    title: 'Required Maintenance',
+    repair: {
+    title: 'Repair Maintenance',
     icon: 'ri-error-warning-line',
     endpoint: '/work-order-management/work-orders',
-    params: { status: 'scheduled' },
+    params: { type: 'repair' },
+    type: 'workorder',
+    statusKey: 'status',
+  },
+  required: {
+    title: 'Installation Maintenance',
+    icon: 'ri-error-warning-line',
+    endpoint: '/work-order-management/work-orders',
+    params: { type: 'installation' },
     type: 'workorder',
     statusKey: 'status',
   },
   requested: {
     title: 'Requested Maintenance',
     icon: 'ri-mail-send-line',
-    endpoint: '/customer-portal/messages',
-    params: { type: 'service_request' },
-    type: 'message',
-    statusKey: 'status', // might not exist, we'll map
+    endpoint: '/work-order-management/work-orders',
+    params: { type: 'inspection' },
+    type: 'workorder',
+    statusKey: 'status',
   },
   recommended: {
     title: 'Recommended Maintenance',
     icon: 'ri-lightbulb-line',
-    endpoint: '/pool-management/pools',
-    params: { needs_maintenance: true },
-    type: 'pool',
-    statusKey: 'needs_maintenance', // boolean
+    endpoint: '/work-order-management/work-orders',
+    params: {type: 'one_time' },
+    type: 'workorder',
+    statusKey: 'status',
   },
   emergency: {
     title: 'Emergency Maintenance',
     icon: 'ri-alarm-warning-line',
-    endpoint: '/customer-portal/messages',
+    endpoint: '/work-order-management/work-orders',
     params: { type: 'emergency' },
-    type: 'message',
-    statusKey: 'priority',
+    type: 'workorder',
+    statusKey: 'status',
   },
 };
 
@@ -279,22 +287,6 @@ const columns = computed(() => {
       { key: 'type', label: 'Type' },
       { key: 'status', label: 'Status' },
       { key: 'scheduled_date', label: 'Scheduled' },
-    ];
-  } else if (type === 'message') {
-    return [
-      { key: 'id', label: 'ID' },
-      { key: 'title', label: 'Title' },
-      { key: 'body', label: 'Message' },
-      { key: 'status', label: 'Status' },
-      { key: 'created_at', label: 'Received' },
-    ];
-  } else if (type === 'pool') {
-    return [
-      { key: 'id', label: 'ID' },
-      { key: 'label', label: 'Pool Name' },
-      { key: 'customer', label: 'Customer' },
-      { key: 'needs_maintenance', label: 'Status' },
-      { key: 'last_maintenance', label: 'Last Maintenance' },
     ];
   }
   return [];

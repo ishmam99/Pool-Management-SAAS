@@ -121,16 +121,16 @@
               <td class="px-4 py-3 text-sm">{{ formatTime(v.time_window_start) }} – {{ formatTime(v.time_window_end) }}
               </td>
               <td class="px-4 py-3"><span :class="priorityBadgeClass(v.priority)">{{ formatPriority(v.priority)
-                  }}</span></td>
+              }}</span></td>
               <td class="px-4 py-3"><span :class="statusBadgeClass(v.status)">{{ formatStatus(v.status) }}</span></td>
               <td class="px-4 py-3 text-right relative">
                 <div class="inline-block text-left">
                   <button @click="toggleMenu(v.id)"
-                    class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition">
-                    <i class="fas fa-ellipsis-v"></i>
+                    class="text-gray-500 hover:text-gray-700 p-1 bg-amber-300 rounded-full hover:bg-gray-100 transition">
+                    <i class="ri-menu-line"></i>
                   </button>
                   <div v-if="activeMenu === v.id"
-                    class="absolute right-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 z-10 py-1 text-sm">
+                    class="absolute right-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 z-50 py-1 text-sm">
                     <button @click="openDetail(v)" class="block w-full px-4 py-2 text-left hover:bg-gray-50">
                       <i class="fas fa-eye mr-2 text-gray-400"></i> View Details
                     </button>
@@ -184,7 +184,7 @@
             </dd>
             <dt class="text-gray-500">Priority</dt>
             <dd><span :class="priorityBadgeClass(selectedVisit?.priority)">{{ formatPriority(selectedVisit?.priority)
-                }}</span></dd>
+            }}</span></dd>
             <dt class="text-gray-500">Pool Name</dt>
             <dd>{{ selectedVisit?.pool?.label || '—' }}</dd>
             <dt class="text-gray-500">Service Address</dt>
@@ -216,11 +216,19 @@
         <div v-else-if="modalMode === 'edit' || modalMode === 'status'">
           <h3 class="text-lg font-bold mb-4">{{ modalMode === 'edit' ? 'Edit Visit' : 'Change Status' }}</h3>
           <form @submit.prevent="saveVisit" class="space-y-4">
-            <!-- technician -->
+            <!-- Check if date is before today -->
+            <div v-if="isDateBeforeToday(editForm.scheduled_date)" class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-800">
+              <i class="fas fa-info-circle mr-2"></i>
+              This visit is in the past. You can only change the status.
+            </div>
+
+            <!-- technician - disabled if date is before today -->
             <div>
               <label class="block text-sm font-medium text-gray-700">Technician</label>
               <select v-model="editForm.technician_id"
-                class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-indigo-400">
+                :disabled="isDateBeforeToday(editForm.scheduled_date)"
+                :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-indigo-400', 
+                  isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
                 <option v-for="t in technicians" :key="t.id" :value="t.id">{{ t.name }}</option>
               </select>
             </div>
@@ -228,12 +236,16 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Date</label>
                 <input v-model="editForm.scheduled_date" type="date"
-                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
+                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                    isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">Priority</label>
                 <select v-model="editForm.priority"
-                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
+                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                    isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
                   <option value="first_visit">First Visit</option>
                   <option value="normal">Normal</option>
                   <option value="urgent">Urgent</option>
@@ -244,12 +256,16 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Start Time</label>
                 <input v-model="editForm.time_window_start" type="time"
-                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
+                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                    isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">End Time</label>
                 <input v-model="editForm.time_window_end" type="time"
-                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
+                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                    isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
               </div>
             </div>
             <div>
@@ -415,9 +431,31 @@ const formatDate = (d) => {
     year: 'numeric',
   });
 };
-const formatTime = (t) => t ? t.slice(0, 5) : '—';
+
+// FIX 2: Time format in h:i (24-hour format with leading zeros)
+const formatTime = (t) => {
+  if (!t) return '—';
+  // If time is in HH:MM:SS format, extract HH:MM
+  if (t.includes(':')) {
+    const parts = t.split(':');
+    return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
+  }
+  return t;
+};
+
 const formatStatus = (s) => s ? s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—';
 const formatPriority = (p) => p ? p.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—';
+
+// FIX 1: Check if date is before today
+const isDateBeforeToday = (date) => {
+  if (!date) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const visitDate = new Date(date);
+  visitDate.setHours(0, 0, 0, 0);
+  return visitDate < today;
+};
+
 const statusBadgeClass = (s) => {
   const map = {
     scheduled: 'bg-blue-100 text-blue-700',
@@ -504,6 +542,35 @@ const openChangeStatus = (v) => {
 const saveVisit = async () => {
   if (!selectedVisit.value) return;
 
+  // FIX 1: If date is before today, only allow status change
+  if (isDateBeforeToday(editForm.value.scheduled_date)) {
+    // Only send status update
+    const payload = {
+      status: editForm.value.status
+    };
+    
+    // If status is rescheduled, we need to allow the reschedule fields
+    if (payload.status === 'rescheduled') {
+      if (!editForm.value.rescheduled_date || !editForm.value.rescheduled_start || !editForm.value.rescheduled_end) {
+        await Swal.fire({
+          icon: 'warning',
+          title: 'Missing Fields',
+          text: 'Please fill in all rescheduled date and time fields.',
+        });
+        return;
+      }
+      // For rescheduled, we need to update the date and time as well
+      // Even though it's before today, rescheduling means it's a new date
+      payload.scheduled_date = editForm.value.rescheduled_date;
+      payload.time_window_start = editForm.value.rescheduled_start;
+      payload.time_window_end = editForm.value.rescheduled_end;
+    }
+    
+    await updateVisit(selectedVisit.value.id, payload);
+    return;
+  }
+
+  // Normal flow for dates today or in the future
   const payload = {
     technician_id: editForm.value.technician_id,
     scheduled_date: editForm.value.scheduled_date,

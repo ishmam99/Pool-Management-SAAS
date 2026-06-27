@@ -230,7 +230,7 @@ const menus = [
     links: [
       { to: '/provider/customers', icon: 'ri-list-unordered', text: 'All Customers' },
       { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add Customer' },
-      { to: '/provider/customers-agreements', icon: 'ri-file-text-line', text: 'Active / Expiring / Cancelled' },
+      { to: '/provider/customers-agreements', icon: 'ri-file-text-line', text: 'Service Agreements' },
       { to: '/provider/agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' }
     ]
   },
@@ -263,13 +263,14 @@ const menus = [
     icon: 'ri-tools-line',
   
     links: [
-      { to: '/provider/schedule-maintenance', icon: 'ri-check-double-line', text: 'Schedule Maintenance' },
-      { to: '/provider/issues-repairs', icon: 'ri-alert-line', text: 'Issues & Repairs' },
-      { to: '/provider/maintenance/create', icon: 'ri-add-circle-line', text: 'Create Maintenance' },
-      { to: '/provider/maintenance/required', icon: 'ri-error-warning-line', text: 'Required maintenance' },
-      { to: '/provider/maintenance/requested', icon: 'ri-mail-send-line', text: 'Requested maintenance' },
-      { to: '/provider/maintenance/recommended', icon: 'ri-lightbulb-line', text: 'Recommended maintenance' },
-      { to: '/provider/maintenance/emergency', icon: 'ri-alarm-warning-line', text: 'Emergency maintenance' }
+      { to: '/provider/schedule-maintenance', icon: 'ri-check-double-line', text: 'Create Schedule Maintenance' },
+      // { to: '/provider/issues-repairs', icon: 'ri-alert-line', text: 'Issues & Repairs' },
+      // { to: '/provider/maintenance/create', icon: 'ri-add-circle-line', text: 'Create Maintenance' },
+      { to: '/provider/maintenance/repair', icon: 'ri-error-warning-line', text: 'Repair Maintenance' },
+      { to: '/provider/maintenance/installation', icon: 'ri-error-warning-line', text: 'Installation Maintenance' },
+      { to: '/provider/maintenance/requested', icon: 'ri-mail-send-line', text: 'Requested Maintenance' }, // inspection
+      { to: '/provider/maintenance/recommended', icon: 'ri-lightbulb-line', text: 'Recommended Maintenance' }, // one time
+      { to: '/provider/maintenance/emergency', icon: 'ri-alarm-warning-line', text: 'Emergency Maintenance' } // emergency
     ]
   },
   {
@@ -296,19 +297,19 @@ const menus = [
       { to: '/provider/water-quality/dosing', icon: 'ri-calculator-line', text: 'Dosing Calculator' }
     ]
   },
-  {
-    id: 'inventory',
-    title: 'Inventory',
-    icon: 'ri-store-3-fill',
-    groups: [],
-    links: [
-      { to: '/provider/inventory/warehouse', icon: 'ri-building-4-line', text: 'Warehouse' },
-      { to: '/provider/inventory/truck-stock', icon: 'ri-truck-line', text: 'Truck Stock' },
-      { to: '/provider/inventory/purchase-orders', icon: 'ri-file-list-3-line', text: 'Purchase Orders' },
-      { to: '/provider/inventory/suppliers', icon: 'ri-store-3-line', text: 'Suppliers' },
-      { to: '/provider/inventory/low-stock', icon: 'ri-alert-line', text: 'Low Stock Alerts' }
-    ]
-  },
+  // {
+  //   id: 'inventory',
+  //   title: 'Inventory',
+  //   icon: 'ri-store-3-fill',
+  //   groups: [],
+  //   links: [
+  //     { to: '/provider/inventory/warehouse', icon: 'ri-building-4-line', text: 'Warehouse' },
+  //     { to: '/provider/inventory/truck-stock', icon: 'ri-truck-line', text: 'Truck Stock' },
+  //     { to: '/provider/inventory/purchase-orders', icon: 'ri-file-list-3-line', text: 'Purchase Orders' },
+  //     { to: '/provider/inventory/suppliers', icon: 'ri-store-3-line', text: 'Suppliers' },
+  //     { to: '/provider/inventory/low-stock', icon: 'ri-alert-line', text: 'Low Stock Alerts' }
+  //   ]
+  // },
   {
     id: 'billing',
     title: 'Billing',
@@ -329,21 +330,21 @@ const menus = [
     links: [
       { to: '/provider/communication/inbox', icon: 'ri-mail-line', text: 'Inbox' },
       { to: '/provider/communication/notifications', icon: 'ri-notification-3-line', text: 'Notifications' },
-      { to: '/provider/communication/templates', icon: 'ri-file-copy-line', text: 'Templates' },
-      { to: '/provider/communication/bulk', icon: 'ri-send-plane-line', text: 'Bulk Send' }
+      // { to: '/provider/communication/templates', icon: 'ri-file-copy-line', text: 'Templates' },
+      // { to: '/provider/communication/bulk', icon: 'ri-send-plane-line', text: 'Bulk Send' }
     ]
   },
-  {
-    id: 'customer-portal',
-    title: 'Customer Portal',
-    icon: 'ri-global-line',
-    groups: [],
-    links: [
-      { to: '/provider/portal/branding', icon: 'ri-palette-line', text: 'Branding' },
-      { to: '/provider/portal/content', icon: 'ri-edit-2-line', text: 'Content' },
-      { to: '/provider/portal/preview', icon: 'ri-eye-line', text: 'Preview' }
-    ]
-  },
+  // {
+  //   id: 'customer-portal',
+  //   title: 'Customer Portal',
+  //   icon: 'ri-global-line',
+  //   groups: [],
+  //   links: [
+  //     { to: '/provider/portal/branding', icon: 'ri-palette-line', text: 'Branding' },
+  //     { to: '/provider/portal/content', icon: 'ri-edit-2-line', text: 'Content' },
+  //     { to: '/provider/portal/preview', icon: 'ri-eye-line', text: 'Preview' }
+  //   ]
+  // },
   {
     id: 'reports',
     title: 'Reports',
@@ -351,10 +352,10 @@ const menus = [
     groups: [],
     links: [
       { to: '/provider/reports/revenue', icon: 'ri-money-dollar-box-line', text: 'Revenue' },
-      { to: '/provider/reports/ar-aging', icon: 'ri-time-line', text: 'AR Aging' },
+      // { to: '/provider/reports/ar-aging', icon: 'ri-time-line', text: 'AR Aging' },
       { to: '/provider/reports/technician-performance', icon: 'ri-user-star-line', text: 'Technician Performance' },
-      { to: '/provider/reports/route-efficiency', icon: 'ri-road-map-line', text: 'Route Efficiency' },
-      { to: '/provider/reports/tax', icon: 'ri-taxi-line', text: 'Tax Reports' }
+      // { to: '/provider/reports/route-efficiency', icon: 'ri-road-map-line', text: 'Route Efficiency' },
+      // { to: '/provider/reports/tax', icon: 'ri-taxi-line', text: 'Tax Reports' }
     ]
   },
   {
@@ -375,24 +376,24 @@ const menus = [
     groups: [],
     links: [
       { to: '/provider/company/profile', icon: 'ri-store-line', text: 'Profile' },
-      { to: '/provider/company/pricing', icon: 'ri-price-tag-3-line', text: 'Pricing' },
-      { to: '/provider/company/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
-      { to: '/provider/company/subscription', icon: 'ri-subscription-line', text: 'Subscription' }
+      // { to: '/provider/company/pricing', icon: 'ri-price-tag-3-line', text: 'Pricing' },
+      // { to: '/provider/company/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
+      // { to: '/provider/company/subscription', icon: 'ri-subscription-line', text: 'Subscription' }
     ]
   },
-  {
-    id: 'settings',
-    title: 'Settings',
-    icon: 'ri-settings-3-line',
-    groups: [],
-    links: [
-      { to: '/provider/settings/general', icon: 'ri-settings-2-line', text: 'General' },
-      { to: '/provider/settings/email-sms', icon: 'ri-mail-send-line', text: 'Email / SMS' },
-      { to: '/provider/settings/tax', icon: 'ri-taxi-line', text: 'Tax' },
-      { to: '/provider/settings/payment-gateway', icon: 'ri-bank-card-line', text: 'Payment Gateway' },
-      { to: '/provider/settings/import-export', icon: 'ri-upload-download-line', text: 'Import / Export' }
-    ]
-  }
+  // {
+  //   id: 'settings',
+  //   title: 'Settings',
+  //   icon: 'ri-settings-3-line',
+  //   groups: [],
+  //   links: [
+  //     { to: '/provider/settings/general', icon: 'ri-settings-2-line', text: 'General' },
+  //     { to: '/provider/settings/email-sms', icon: 'ri-mail-send-line', text: 'Email / SMS' },
+  //     { to: '/provider/settings/tax', icon: 'ri-taxi-line', text: 'Tax' },
+  //     { to: '/provider/settings/payment-gateway', icon: 'ri-bank-card-line', text: 'Payment Gateway' },
+  //     { to: '/provider/settings/import-export', icon: 'ri-upload-download-line', text: 'Import / Export' }
+  //   ]
+  // }
 ]
 
 onMounted(() => {

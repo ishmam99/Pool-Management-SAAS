@@ -361,7 +361,7 @@ import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from '@headlessui/vue'
 import { ChevronUpDownIcon, ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
-import api from '@/services/api'
+import api from '../../../../services/api'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
