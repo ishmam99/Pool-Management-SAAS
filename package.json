@@ -9,9 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@tailwindcss/vite": "^4.3.1",
     "axios": "^1.18.1",
+    "file-saver": "^2.0.5",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "pinia": "^3.0.4",
@@ -20,7 +24,8 @@
     "sweetalert2": "^11.26.25",
     "tailwindcss": "^4.3.1",
     "vue": "^3.5.34",
-    "vue-router": "^5.1.0"
+    "vue-router": "^5.1.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.6",

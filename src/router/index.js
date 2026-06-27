@@ -81,6 +81,11 @@ const routes = [
 
       // Pool
       {
+        path: '/provider/pools-create',
+        name: 'provider-pools-create',
+        component: () => import('../views/provider/pages/pool/PoolCeate.vue')
+      },
+      {
         path: '/provider/pools',
         name: 'provider-pools',
         component: () => import('../views/provider/pages/pool/AllPools.vue')
@@ -126,16 +131,21 @@ const routes = [
       },
 
        // Maintenance
-      // {
-      //   path: '/provider/',
-      //   name: 'provider-',
-      //   component: () => import('../views/provider/pages/maintenance/')
-      // },
-      //   {
-      //   path: '/provider/',
-      //   name: 'provider-',
-      //   component: () => import('../views/provider/pages/maintenance/')
-      // },
+      {
+        path: '/provider/schedule-maintenance',
+        name: 'provider-schedule-maintenance',
+        component: () => import('../views/provider/pages/maintenance/ScheduleMaintenance.vue')
+      },
+        {
+        path: '/provider/maintenance/create',
+        name: 'provider-create-maintenance',
+        component: () => import('../views/provider/pages/maintenance/CreateMaintenance.vue')
+      },
+        {
+        path: '/provider/maintenance/:status',
+        name: 'provider-view-maintenance',
+        component: () => import('../views/provider/pages/maintenance/[status].vue')
+      },
       //   {
       //   path: '/provider/',
       //   name: 'provider-',
