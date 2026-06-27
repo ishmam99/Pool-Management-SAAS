@@ -43,6 +43,8 @@ export const statusBadgeClass = (status) => {
     cancelled: 'bg-gray-100 text-gray-600',
     draft: 'bg-slate-100 text-slate-600',
     scheduled: 'bg-sky-100 text-sky-700',
+    missed: 'bg-amber-100 text-amber-700',
+    rescheduled: 'bg-orange-100 text-orange-700',
     in_progress: 'bg-blue-100 text-blue-700',
   }
   return map[key] || 'bg-gray-100 text-gray-700'

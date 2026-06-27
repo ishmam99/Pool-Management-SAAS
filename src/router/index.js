@@ -170,7 +170,51 @@ const routes = [
 
 
       // Water Quality Monitoring
-
+      {
+        path: '/provider/water-quality/readings',
+        name: 'provider-water-quality-readings',
+        component: () => import('../views/provider/pages/water-quality/Readings.vue')
+      },
+      {
+        path: '/provider/water-quality/chemicals',
+        name: 'provider-water-quality-chemicals',
+        component: () => import('../views/provider/pages/water-quality/Chemicals.vue')
+      },
+      {
+        path: '/provider/water-quality/alerts',
+        name: 'provider-water-quality-alerts',
+        component: () => import('../views/provider/pages/water-quality/Alerts.vue')
+      },
+      {
+        path: '/provider/water-quality/dosing',
+        name: 'provider-water-quality-dosing',
+        component: () => import('../views/provider/pages/water-quality/Dosing.vue')
+      },
+      {
+        path: '/provider/inventory/warehouse',
+        name: 'provider-inventory-warehouse',
+        component: () => import('../views/provider/pages/inventory/Warehouse.vue')
+      },
+      {
+        path: '/provider/inventory/truck-stock',
+        name: 'provider-inventory-truck-stock',
+        component: () => import('../views/provider/pages/inventory/TruckStock.vue')
+      },
+      {
+        path: '/provider/inventory/purchase-orders',
+        name: 'provider-inventory-purchase-orders',
+        component: () => import('../views/provider/pages/inventory/PurchaseOrders.vue')
+      },
+      {
+        path: '/provider/inventory/suppliers',
+        name: 'provider-inventory-suppliers',
+        component: () => import('../views/provider/pages/inventory/Suppliers.vue')
+      },
+      {
+        path: '/provider/inventory/low-stock',
+        name: 'provider-inventory-low-stock',
+        component: () => import('../views/provider/pages/inventory/LowStock.vue')
+      },
 
       // Customer
 
