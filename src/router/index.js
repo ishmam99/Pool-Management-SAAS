@@ -81,6 +81,11 @@ const routes = [
 
       // Pool
       {
+        path: '/provider/pools-create',
+        name: 'provider-pools-create',
+        component: () => import('../views/provider/pages/pool/PoolCeate.vue')
+      },
+      {
         path: '/provider/pools',
         name: 'provider-pools',
         component: () => import('../views/provider/pages/pool/AllPools.vue')

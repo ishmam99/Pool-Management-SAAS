@@ -240,6 +240,7 @@ const menus = [
     icon: 'ri-water-flash-line',
     groups: [],
     links: [
+      { to: '/provider/pools-create', icon: 'ri-list-unordered', text: 'Add Pools' },
       { to: '/provider/pools', icon: 'ri-list-unordered', text: 'All Pools' },
       { to: '/provider/pools-types', icon: 'ri-grid-line', text: 'By Type' },
       { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Equipment Register' },

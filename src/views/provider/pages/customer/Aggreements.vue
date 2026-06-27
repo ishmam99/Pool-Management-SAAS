@@ -1,4 +1,3 @@
-```vue
 <template>
   <div class="min-h-screen bg-gray-50 p-4 md:p-8">
     <!-- Page Header -->
@@ -10,13 +9,16 @@
         </p>
       </div>
       <div class="flex gap-3">
-        <button class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        <button @click="handleExport"
+          class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
           <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
           </svg>
           Export Agreements
         </button>
-        <button class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+        <button @click="handleCreateAgreement"
+          class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
           <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
           </svg>
@@ -55,12 +57,14 @@
     <div v-else-if="filteredAgreements.length === 0" class="rounded-2xl bg-white p-12 text-center shadow-sm">
       <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
       </div>
-      <h3 class="text-lg font-medium text-gray-900">No {{ currentTab.label.toLowerCase() }} agreements found</h3>
+      <h3 class="text-lg font-medium text-gray-900">{{ getEmptyStateMessage() }}</h3>
       <p class="mt-1 text-sm text-gray-500">All customer agreements are currently active.</p>
-      <button class="mt-4 inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700">
+      <button @click="handleCreateAgreement"
+        class="mt-4 inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700">
         <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
@@ -71,16 +75,17 @@
     <!-- Main Content -->
     <div v-else>
       <!-- KPI Cards -->
-      <div class="mb-6 grid gap-4 md:grid-cols-3">
+      <div class="mb-6 grid gap-4 md:grid-cols-5">
         <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-500">Active Agreements</p>
-              <p class="text-3xl font-bold text-gray-900">174</p>
+              <p class="text-3xl font-bold text-gray-900">{{ summary.active || 0 }}</p>
             </div>
             <div class="rounded-full bg-green-100 p-3">
               <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
@@ -91,11 +96,12 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-500">Expiring Soon</p>
-              <p class="text-3xl font-bold text-gray-900">12</p>
+              <p class="text-3xl font-bold text-gray-900">{{ summary.expiring || 0 }}</p>
             </div>
             <div class="rounded-full bg-orange-100 p-3">
               <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
@@ -106,7 +112,7 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-500">Cancelled Agreements</p>
-              <p class="text-3xl font-bold text-gray-900">8</p>
+              <p class="text-3xl font-bold text-gray-900">{{ summary.cancelled || 0 }}</p>
             </div>
             <div class="rounded-full bg-red-100 p-3">
               <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,23 +122,52 @@
           </div>
           <div class="mt-2 text-sm text-red-600">Cancelled</div>
         </div>
+
+
+        <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Average Revenue</p>
+              <p class="text-3xl font-bold text-gray-900">$ {{ summary.averageAgreementPrice || 0 }}</p>
+            </div>
+            <div class="rounded-full bg-blue-100 p-3">
+              <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-2 text-sm text-blue-600">Average Revenue per Agreement</div>
+        </div>
+
+        <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Total Monthly Revenue</p>
+              <p class="text-3xl font-bold text-gray-900">$ {{ summary.totalMonthlyRevenue || 0 }}</p>
+            </div>
+            <div class="rounded-full bg-green-100 p-3">
+              <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-2 text-sm text-green-600">Total Monthly Recurring Revenue</div>
+        </div>
       </div>
 
-      <!-- Tabs -->
+      <!-- Tabs (Frontend Filters Only) -->
       <div class="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1">
-        <button
-          v-for="tab in tabs"
-          :key="tab.label"
-          @click="currentTab = tab"
-          class="flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200"
-          :class="[
-            currentTab.label === tab.label
+        <button v-for="tab in dynamicTabs" :key="tab.label" @click="switchTab(tab)"
+          class="flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200" :class="[
+            currentTab === tab.value
               ? 'bg-white text-gray-900 shadow-sm'
               : 'text-gray-500 hover:text-gray-700'
-          ]"
-        >
+          ]">
           {{ tab.label }}
-          <span class="ml-2 rounded-full bg-gray-200 px-2 py-0.5 text-xs" :class="currentTab.label === tab.label ? 'bg-gray-100' : ''">
+          <span class="ml-2 rounded-full bg-gray-200 px-2 py-0.5 text-xs"
+            :class="currentTab === tab.value ? 'bg-gray-100' : ''">
             {{ tab.count }}
           </span>
         </button>
@@ -143,32 +178,27 @@
         <!-- Search -->
         <div class="flex-1 min-w-[200px]">
           <div class="relative">
-            <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="Search by customer, ID, email..."
+            <input v-model="searchQuery" type="text" placeholder="Search by customer, ID, email..."
               class="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            />
+              @input="resetPagination" />
           </div>
         </div>
 
         <!-- Filters -->
-        <select v-model="filters.plan" class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-          <option v-for="plan in planOptions" :key="plan" :value="plan">{{ plan }}</option>
-        </select>
-
-        <select v-model="filters.frequency" class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-          <option v-for="freq in frequencyOptions" :key="freq" :value="freq">{{ freq }}</option>
-        </select>
-
-        <select v-model="filters.technician" class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+        <select v-model="filters.technician"
+          class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          @change="resetPagination">
           <option v-for="tech in technicianOptions" :key="tech" :value="tech">{{ tech }}</option>
         </select>
 
-        <select v-model="sortOption" class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+        <select v-model="sortOption"
+          class="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          @change="resetPagination">
           <option v-for="sort in sortOptions" :key="sort" :value="sort">{{ sort }}</option>
         </select>
       </div>
@@ -179,84 +209,92 @@
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Agreement ID</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Customer</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Service Plan</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Frequency</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Technician</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Start Date</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">End Date</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Monthly Value</th>
-                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
-                <th class="sticky top-0 px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Actions</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Agreement ID</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Customer</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Pools</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Frequency</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Billing</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Technician</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Start Date</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  End Date</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Price</th>
+                <th class="sticky top-0 px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Status</th>
+                <th
+                  class="sticky top-0 px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                  Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-              <tr v-for="agreement in paginatedAgreements" :key="agreement.id" class="transition-colors hover:bg-gray-50">
+              <tr v-for="agreement in paginatedAgreements" :key="agreement.id"
+                class="transition-colors hover:bg-gray-50">
                 <td class="px-4 py-4">
                   <span class="inline-block rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-                    {{ agreement.id }}
+                    #{{ agreement.id }}
                   </span>
                 </td>
                 <td class="px-4 py-4">
                   <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-sm font-medium text-gray-600">
-                      {{ agreement.customer.split(' ').map(n => n[0]).join('') }}
+                    <div
+                      class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200 text-sm font-medium text-gray-600">
+                      {{ getInitials(agreement.customer?.contact_name || 'Unknown') }}
                     </div>
                     <div>
-                      <div class="text-sm font-medium text-gray-900">{{ agreement.customer }}</div>
-                      <div class="text-xs text-gray-500">{{ agreement.email }}</div>
+                      <div class="text-sm font-medium text-gray-900">{{ agreement.customer?.contact_name || 'Unknown' }}
+                      </div>
+                      <div class="text-xs text-gray-500">{{ agreement.customer?.email || 'No email' }}</div>
                     </div>
                   </div>
                 </td>
-                <td class="px-4 py-4 text-sm text-gray-900">{{ agreement.plan }}</td>
-                <td class="px-4 py-4 text-sm text-gray-900">{{ agreement.frequency }}</td>
-                <td class="px-4 py-4 text-sm text-gray-900">{{ agreement.technician }}</td>
+                <td class="px-4 py-4">
+                  <div class="flex flex-wrap gap-1">
+                    <span v-for="pool in agreement.pools" :key="pool.id"
+                      class="rounded-full bg-cyan-100 text-cyan-700 px-2 py-1 text-xs">
+                      {{ pool.label }}
+                    </span>
+                  </div>
+                </td>
+                <td class="px-4 py-4 text-sm text-gray-900">{{ formatFrequency(agreement.frequency) }}</td>
+                <td class="px-4 py-4 text-sm text-gray-900">{{ agreement.billing_cycle || 'N/A' }}</td>
+                <td class="px-4 py-4 text-sm text-gray-900">{{ agreement.assigned_technician?.name || 'Unassigned' }}
+                </td>
                 <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(agreement.start_date) }}</td>
                 <td class="px-4 py-4 text-sm text-gray-900">{{ formatDate(agreement.end_date) }}</td>
                 <td class="px-4 py-4">
-                  <span class="text-sm font-medium text-green-600">${{ agreement.monthly_value }}/mo</span>
+                  <span class="text-sm font-medium text-green-600">${{ agreement.price }}/mo</span>
                 </td>
                 <td class="px-4 py-4">
-                  <div class="flex flex-col gap-1">
-                    <span
-                      class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                      :class="{
-                        'bg-green-100 text-green-800': agreement.status === 'Active',
-                        'bg-orange-100 text-orange-800': agreement.status === 'Expiring',
-                        'bg-red-100 text-red-800': agreement.status === 'Cancelled'
-                      }"
-                    >
-                      {{ agreement.status }}
-                    </span>
-                    <span v-if="agreement.status === 'Expiring'" class="flex items-center gap-1 text-xs text-orange-600">
-                      <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Expires in 22 days
-                    </span>
-                  </div>
+                  <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                    :class="getStatusBadgeClass(agreement.status)">
+                    {{ formatStatus(agreement.status) }}
+                  </span>
                 </td>
                 <td class="px-4 py-4 text-right">
                   <div class="relative inline-block text-left">
-                    <button
-                      @click="toggleDropdown(agreement.id)"
-                      class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
-                    >
+                    <button @click="toggleDropdown(agreement.id)"
+                      class="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
                       <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                       </svg>
                     </button>
-                    <div v-if="openDropdown === agreement.id" class="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10">
+                    <div v-if="openDropdown === agreement.id"
+                      class="absolute right-0 mt-2 w-48 rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10">
                       <div class="py-1">
-                        <button
-                          v-for="action in getActions(agreement.status)"
-                          :key="action"
+                        <button v-for="action in getActions(agreement.status)" :key="action.label"
                           @click="handleAction(action, agreement)"
                           class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-                          :class="{ 'text-red-600': action === 'Delete Permanently' || action === 'Cancel Agreement' }"
-                        >
-                          {{ action }}
+                          :class="{ 'text-red-600': action.label === 'Cancel Agreement' || action.label === 'Delete Draft' }">
+                          {{ action.label }}
                         </button>
                       </div>
                     </div>
@@ -270,21 +308,16 @@
         <!-- Pagination -->
         <div class="flex items-center justify-between border-t border-gray-200 px-4 py-3">
           <div class="text-sm text-gray-700">
-            Showing {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize, filteredAgreements.length) }} of {{ filteredAgreements.length }} agreements
+            Showing {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize,
+              filteredAgreements.length) }} of {{ filteredAgreements.length }} agreements
           </div>
           <div class="flex gap-2">
-            <button
-              @click="currentPage--"
-              :disabled="currentPage === 1"
-              class="rounded-lg border border-gray-300 px-3 py-1 text-sm transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <button @click="currentPage--" :disabled="currentPage === 1"
+              class="rounded-lg border border-gray-300 px-3 py-1 text-sm transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Previous
             </button>
-            <button
-              @click="currentPage++"
-              :disabled="currentPage === totalPages"
-              class="rounded-lg border border-gray-300 px-3 py-1 text-sm transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <button @click="currentPage++" :disabled="currentPage === totalPages"
+              class="rounded-lg border border-gray-300 px-3 py-1 text-sm transition-colors hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
               Next
             </button>
           </div>
@@ -293,7 +326,7 @@
     </div>
 
     <!-- Agreement Details Modal -->
-    <div v-if="showDetailsModal" class="fixed inset-0 z-50 overflow-y-auto">
+    <div v-if="showDetailsModal && selectedAgreement" class="fixed inset-0 z-50 overflow-y-auto">
       <div class="flex min-h-screen items-center justify-center p-4">
         <div class="fixed inset-0 bg-black bg-opacity-25" @click="showDetailsModal = false"></div>
         <div class="relative w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl">
@@ -303,15 +336,15 @@
             </svg>
           </button>
           <h2 class="mb-4 text-xl font-bold text-gray-900">Agreement Details</h2>
-          
+
           <div class="space-y-6">
             <div>
               <h3 class="mb-2 text-sm font-medium text-gray-500">Customer Information</h3>
               <div class="rounded-lg bg-gray-50 p-4">
-                <p class="font-medium text-gray-900">John Smith</p>
-                <p class="text-sm text-gray-600">john.smith@gmail.com</p>
-                <p class="text-sm text-gray-600">+1 (555) 123-4567</p>
-                <p class="text-sm text-gray-600">123 Main St, Anytown, USA</p>
+                <p class="font-medium text-gray-900">{{ selectedAgreement.customer?.contact_name || 'Unknown' }}</p>
+                <p class="text-sm text-gray-600">{{ selectedAgreement.customer?.email || 'No email' }}</p>
+                <p class="text-sm text-gray-600">{{ selectedAgreement.customer?.phone || 'No phone' }}</p>
+                <p class="text-sm text-gray-600">{{ selectedAgreement.customer?.address || 'No address' }}</p>
               </div>
             </div>
 
@@ -319,127 +352,62 @@
               <h3 class="mb-2 text-sm font-medium text-gray-500">Agreement Information</h3>
               <div class="grid grid-cols-2 gap-4 rounded-lg bg-gray-50 p-4">
                 <div>
-                  <p class="text-xs text-gray-500">Plan</p>
-                  <p class="text-sm font-medium text-gray-900">Weekly Pool Care</p>
+                  <p class="text-xs text-gray-500">Frequency</p>
+                  <p class="text-sm font-medium text-gray-900">{{ formatFrequency(selectedAgreement.frequency) }}</p>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-500">Frequency</p>
-                  <p class="text-sm font-medium text-gray-900">Weekly</p>
+                  <p class="text-xs text-gray-500">Billing Cycle</p>
+                  <p class="text-sm font-medium text-gray-900">{{ selectedAgreement.billing_cycle || 'N/A' }}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Price</p>
+                  <p class="text-sm font-medium text-green-600">${{ selectedAgreement.price }}/mo</p>
                 </div>
                 <div>
                   <p class="text-xs text-gray-500">Start Date</p>
-                  <p class="text-sm font-medium text-gray-900">Jan 01, 2026</p>
+                  <p class="text-sm font-medium text-gray-900">{{ formatDate(selectedAgreement.start_date) }}</p>
                 </div>
                 <div>
                   <p class="text-xs text-gray-500">End Date</p>
-                  <p class="text-sm font-medium text-gray-900">Dec 31, 2026</p>
+                  <p class="text-sm font-medium text-gray-900">{{ formatDate(selectedAgreement.end_date) }}</p>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-500">Monthly Price</p>
-                  <p class="text-sm font-medium text-green-600">$180/mo</p>
+                  <p class="text-xs text-gray-500">Technician</p>
+                  <p class="text-sm font-medium text-gray-900">{{ selectedAgreement.assigned_technician?.name ||
+                    'Unassigned' }}</p>
                 </div>
                 <div>
-                  <p class="text-xs text-gray-500">Assigned Technician</p>
-                  <p class="text-sm font-medium text-gray-900">Mike Carter</p>
+                  <p class="text-xs text-gray-500">Status</p>
+                  <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                    :class="getStatusBadgeClass(selectedAgreement.status)">
+                    {{ formatStatus(selectedAgreement.status) }}
+                  </span>
                 </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="mb-2 text-sm font-medium text-gray-500">Service History Preview</h3>
-              <div class="rounded-lg bg-gray-50 p-4">
-                <div class="flex justify-between">
-                  <div>
-                    <p class="text-xs text-gray-500">Last Service</p>
-                    <p class="text-sm font-medium text-gray-900">June 20, 2026</p>
-                  </div>
-                  <div>
-                    <p class="text-xs text-gray-500">Next Service</p>
-                    <p class="text-sm font-medium text-gray-900">June 27, 2026</p>
+                <div>
+                  <p class="text-xs text-gray-500">Auto Renew</p>
+                  <p class="text-sm font-medium text-gray-900">{{ selectedAgreement.auto_renew ? 'Yes' : 'No' }}</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-xs text-gray-500">Pools</p>
+                  <div class="flex flex-wrap gap-1 mt-1">
+                    <span v-for="pool in selectedAgreement.pools" :key="pool.id"
+                      class="rounded-full bg-cyan-100 text-cyan-700 px-2 py-1 text-xs">
+                      {{ pool.label }}
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-6 flex justify-end">
-            <button @click="showDetailsModal = false" class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300">
+          <div class="mt-6 flex justify-end gap-3">
+            <button @click="downloadAgreementPdf(selectedAgreement)"
+              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
+              Download PDF
+            </button>
+            <button @click="showDetailsModal = false"
+              class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300">
               Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Renew Modal -->
-    <div v-if="showRenewModal" class="fixed inset-0 z-50 overflow-y-auto">
-      <div class="flex min-h-screen items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black bg-opacity-25" @click="showRenewModal = false"></div>
-        <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-          <h2 class="mb-4 text-xl font-bold text-gray-900">Renew Agreement</h2>
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">New End Date</label>
-              <input type="date" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">New Monthly Price</label>
-              <input type="number" placeholder="$180" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">New Service Plan</label>
-              <select class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                <option>Weekly Pool Care</option>
-                <option>Premium Pool Care</option>
-                <option>Biweekly Service</option>
-                <option>Monthly Inspection</option>
-              </select>
-            </div>
-          </div>
-          <div class="mt-6 flex gap-3">
-            <button @click="showRenewModal = false" class="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              Cancel
-            </button>
-            <button class="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-              Confirm Renewal
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Cancel Modal -->
-    <div v-if="showCancelModal" class="fixed inset-0 z-50 overflow-y-auto">
-      <div class="flex min-h-screen items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black bg-opacity-25" @click="showCancelModal = false"></div>
-        <div class="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-          <h2 class="mb-4 text-xl font-bold text-gray-900">Cancel Agreement</h2>
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Cancellation Reason</label>
-              <select class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-                <option>Customer Request</option>
-                <option>Payment Issue</option>
-                <option>Moved Away</option>
-                <option>Service Not Needed</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Effective Date</label>
-              <input type="date" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Additional Notes</label>
-              <textarea rows="3" class="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Add any additional notes..."></textarea>
-            </div>
-          </div>
-          <div class="mt-6 flex gap-3">
-            <button @click="showCancelModal = false" class="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              Cancel
-            </button>
-            <button class="flex-1 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
-              Confirm Cancellation
             </button>
           </div>
         </div>
@@ -450,155 +418,99 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import api from '../../../../services/api'
+import Swal from 'sweetalert2'
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
-// Mock Data
-const agreements = ref([
-  {
-    id: "AGR-1001",
-    customer: "John Smith",
-    email: "john.smith@gmail.com",
-    plan: "Weekly Pool Care",
-    frequency: "Weekly",
-    technician: "Mike Carter",
-    start_date: "2026-01-01",
-    end_date: "2026-12-31",
-    monthly_value: 180,
-    status: "Active"
-  },
-  {
-    id: "AGR-1002",
-    customer: "Sarah Johnson",
-    email: "sarah.j@gmail.com",
-    plan: "Premium Pool Care",
-    frequency: "Weekly",
-    technician: "Alex Green",
-    start_date: "2025-08-01",
-    end_date: "2026-07-15",
-    monthly_value: 320,
-    status: "Expiring"
-  },
-  {
-    id: "AGR-1003",
-    customer: "Michael Brown",
-    email: "m.brown@gmail.com",
-    plan: "Monthly Inspection",
-    frequency: "Monthly",
-    technician: "David Ross",
-    start_date: "2025-04-01",
-    end_date: "2026-04-01",
-    monthly_value: 95,
-    status: "Cancelled"
-  },
-  {
-    id: "AGR-1004",
-    customer: "Emily Davis",
-    email: "emily.d@gmail.com",
-    plan: "Biweekly Service",
-    frequency: "Biweekly",
-    technician: "Mike Carter",
-    start_date: "2026-02-15",
-    end_date: "2026-08-15",
-    monthly_value: 150,
-    status: "Active"
-  },
-  {
-    id: "AGR-1005",
-    customer: "Robert Wilson",
-    email: "r.wilson@gmail.com",
-    plan: "Weekly Pool Care",
-    frequency: "Weekly",
-    technician: "Alex Green",
-    start_date: "2025-11-01",
-    end_date: "2026-05-01",
-    monthly_value: 200,
-    status: "Expiring"
-  },
-  {
-    id: "AGR-1006",
-    customer: "Jennifer Lee",
-    email: "j.lee@gmail.com",
-    plan: "Premium Pool Care",
-    frequency: "Weekly",
-    technician: "David Ross",
-    start_date: "2025-03-01",
-    end_date: "2026-03-01",
-    monthly_value: 350,
-    status: "Cancelled"
-  }
-])
+const router = useRouter()
 
 // State
 const loading = ref(false)
+const agreements = ref([])
+const technicians = ref([])
+const summary = ref({
+  active: 0,
+  expiring: 0,
+  cancelled: 0
+})
 const searchQuery = ref('')
-const currentTab = ref({ label: 'Active', count: 174 })
+const currentTab = ref('active')
 const sortOption = ref('Newest')
 const openDropdown = ref(null)
 const currentPage = ref(1)
 const pageSize = ref(10)
+const selectedAgreement = ref(null)
 
 // Modal states
 const showDetailsModal = ref(false)
-const showRenewModal = ref(false)
-const showCancelModal = ref(false)
 
-// Tabs
-const tabs = [
-  { label: 'Active', count: 174 },
-  { label: 'Expiring', count: 12 },
-  { label: 'Cancelled', count: 8 }
-]
+// Filter options
+const technicianOptions = computed(() => {
+  return ['All', ...technicians.value.map(t => t.name)]
+})
+
+const sortOptions = ['Newest', 'Oldest', 'Highest Value', 'Lowest Value', 'Ending Soon']
 
 // Filters
 const filters = ref({
-  plan: 'All',
-  frequency: 'All',
   technician: 'All'
 })
 
-// Filter options
-const planOptions = ['All', 'Weekly Pool Care', 'Premium Pool Care', 'Biweekly Service', 'Monthly Inspection']
-const frequencyOptions = ['All', 'Weekly', 'Biweekly', 'Monthly']
-const technicianOptions = ['All', 'Mike Carter', 'Alex Green', 'David Ross']
-const sortOptions = ['Newest', 'Oldest', 'Highest Value', 'Lowest Value', 'Ending Soon']
+// Dynamic tabs with counts
+const dynamicTabs = computed(() => [
+  { label: 'Active', value: 'active', count: summary.value.active || 0 },
+  { label: 'Expiring', value: 'expiring', count: summary.value.expiring || 0 },
+  { label: 'Cancelled', value: 'cancelled', count: summary.value.cancelled || 0 }
+])
 
 // Computed
 const filteredAgreements = computed(() => {
-  let result = agreements.value.filter(a => a.status === currentTab.value.label)
+  let result = [...agreements.value]
 
   // Search
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
-    result = result.filter(a => 
-      a.customer.toLowerCase().includes(query) ||
-      a.id.toLowerCase().includes(query) ||
-      a.email.toLowerCase().includes(query)
+    result = result.filter(a =>
+      a.id?.toString().includes(query) ||
+      a.customer?.contact_name?.toLowerCase().includes(query) ||
+      a.customer?.email?.toLowerCase().includes(query)
     )
   }
 
-  // Filters
-  if (filters.value.plan !== 'All') {
-    result = result.filter(a => a.plan === filters.value.plan)
+  // Tab-based filtering (frontend only)
+  if (currentTab.value === 'active') {
+    result = result.filter(a => a.status === 'active')
+  } else if (currentTab.value === 'expiring') {
+    result = result.filter(a => {
+      const days = daysUntil(a.end_date)
+      return a.status === 'active' && days <= 30 && days >= 0
+    })
+  } else if (currentTab.value === 'cancelled') {
+    result = result.filter(a => a.status === 'cancelled')
   }
-  if (filters.value.frequency !== 'All') {
-    result = result.filter(a => a.frequency === filters.value.frequency)
-  }
+
+  // Technician filter
   if (filters.value.technician !== 'All') {
-    result = result.filter(a => a.technician === filters.value.technician)
+    result = result.filter(a => a.assigned_technician?.name === filters.value.technician)
   }
 
   // Sort
-  switch(sortOption.value) {
+  switch (sortOption.value) {
     case 'Newest':
-      result.sort((a, b) => new Date(b.start_date) - new Date(a.start_date))
+      result.sort((a, b) => new Date(b.created_at || b.start_date) - new Date(a.created_at || a.start_date))
       break
     case 'Oldest':
-      result.sort((a, b) => new Date(a.start_date) - new Date(b.start_date))
+      result.sort((a, b) => new Date(a.created_at || a.start_date) - new Date(b.created_at || b.start_date))
       break
     case 'Highest Value':
-      result.sort((a, b) => b.monthly_value - a.monthly_value)
+      result.sort((a, b) => (b.price || 0) - (a.price || 0))
       break
     case 'Lowest Value':
-      result.sort((a, b) => a.monthly_value - b.monthly_value)
+      result.sort((a, b) => (a.price || 0) - (b.price || 0))
       break
     case 'Ending Soon':
       result.sort((a, b) => new Date(a.end_date) - new Date(b.end_date))
@@ -616,62 +528,380 @@ const paginatedAgreements = computed(() => {
   return filteredAgreements.value.slice(start, end)
 })
 
-// Methods
+// Helper functions
+const daysUntil = (dateString) => {
+  if (!dateString) return Infinity
+  const endDate = new Date(dateString)
+  const today = new Date()
+  const diffTime = endDate - today
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+}
+
 const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
   const date = new Date(dateString)
   return date.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+}
+
+const formatFrequency = (frequency) => {
+  if (!frequency) return 'N/A'
+  const map = {
+    'weekly': 'Weekly',
+    'biweekly': 'Biweekly',
+    'monthly': 'Monthly'
+  }
+  return map[frequency.toLowerCase()] || frequency
+}
+
+const formatStatus = (status) => {
+  if (!status) return 'N/A'
+  return status.charAt(0).toUpperCase() + status.slice(1)
+}
+
+const getStatusBadgeClass = (status) => {
+  const classes = {
+    'active': 'bg-green-100 text-green-800',
+    'draft': 'bg-yellow-100 text-yellow-800',
+    'paused': 'bg-orange-100 text-orange-800',
+    'cancelled': 'bg-red-100 text-red-800'
+  }
+  return classes[status?.toLowerCase()] || 'bg-gray-100 text-gray-800'
+}
+
+const getInitials = (name) => {
+  if (!name) return '?'
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+}
+
+const getEmptyStateMessage = () => {
+  const messages = {
+    'active': 'No active agreements found',
+    'expiring': 'No agreements expiring within the next 30 days',
+    'cancelled': 'No cancelled agreements found'
+  }
+  return messages[currentTab.value] || 'No agreements found'
+}
+
+const getActions = (status) => {
+  const actions = {
+    'active': [
+      { label: 'View Agreement', action: 'view' },
+      { label: 'Edit Agreement', action: 'edit' },
+      { label: 'Pause Agreement', action: 'pause' },
+      { label: 'Cancel Agreement', action: 'cancel' },
+      { label: 'Download PDF', action: 'pdf' }
+    ],
+    'draft': [
+      { label: 'View Agreement', action: 'view' },
+      { label: 'Edit Agreement', action: 'edit' },
+      { label: 'Activate Agreement', action: 'activate' },
+      { label: 'Delete Draft', action: 'delete' }
+    ],
+    'paused': [
+      { label: 'View Agreement', action: 'view' },
+      { label: 'Resume Agreement', action: 'resume' },
+      { label: 'Edit Agreement', action: 'edit' },
+      { label: 'Cancel Agreement', action: 'cancel' },
+      { label: 'Download PDF', action: 'pdf' }
+    ],
+    'cancelled': [
+      { label: 'View Agreement', action: 'view' },
+      { label: 'Download PDF', action: 'pdf' }
+    ]
+  }
+  return actions[status?.toLowerCase()] || []
+}
+
+// API Functions
+const fetchSummary = async () => {
+  try {
+    const response = await api().get('/service-agreement-management/agreement/summary')
+    summary.value = {
+      active: response.data?.active_agreements || 0,
+      expiring: response.data?.expiring_this_month || 0,
+      cancelled: response.data?.cancelled_this_month || 0,
+      totalMonthlyRevenue: response.data?.total_monthly_revenue || 0,
+      averageAgreementPrice: response.data?.average_agreement_price || 0,
+
+    }
+  } catch (error) {
+    console.error('Error fetching summary:', error)
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to Load Dashboard',
+      text: error.response?.data?.message || 'Something went wrong'
+    })
+  }
+}
+
+const fetchAgreements = async () => {
+  loading.value = true
+  try {
+    const response = await api().get('/service-agreement-management/agreements', {
+      params: {
+        with: 'customer,assignedTechnician,pools'
+      }
+    })
+
+    agreements.value = response.data.data || response.data || []
+
+    // Reset pagination
+    resetPagination()
+  } catch (error) {
+    console.error('Error fetching agreements:', error)
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to Load Agreements',
+      text: error.response?.data?.message || 'Something went wrong'
+    })
+    agreements.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+const fetchTechnicians = async () => {
+  try {
+    const response = await api().get('/user-management/technicians')
+    technicians.value = response.data.data || response.data || []
+  } catch (error) {
+    console.error('Error fetching technicians:', error)
+    technicians.value = []
+  }
+}
+
+// Export Functions
+const exportAgreementsExcel = () => {
+  const rows = agreements.value.map(a => ({
+    Agreement_ID: a.id,
+    Customer: a.customer?.contact_name || 'Unknown',
+    Email: a.customer?.email || 'No email',
+    Frequency: formatFrequency(a.frequency),
+    Billing_Cycle: a.billing_cycle || 'N/A',
+    Price: a.price || 0,
+    Technician: a.assigned_technician?.name || 'Unassigned',
+    Start_Date: a.start_date || 'N/A',
+    End_Date: a.end_date || 'N/A',
+    Status: formatStatus(a.status),
+    Pools: a.pools?.map(p => p.label).join(', ') || 'No pools'
+  }))
+
+  const ws = XLSX.utils.json_to_sheet(rows)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Agreements')
+  const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+  saveAs(new Blob([buffer]), `agreements-${Date.now()}.xlsx`)
+}
+
+const downloadAgreementPdf = (agreement) => {
+  const doc = new jsPDF()
+  doc.setFontSize(18)
+  doc.text(`Service Agreement #${agreement.id}`, 14, 20)
+
+  autoTable(doc, {
+    startY: 30,
+    body: [
+      ['Customer', agreement.customer?.contact_name || 'Unknown'],
+      ['Email', agreement.customer?.email || 'No email'],
+      ['Phone', agreement.customer?.phone || 'No phone'],
+      ['Frequency', formatFrequency(agreement.frequency)],
+      ['Billing Cycle', agreement.billing_cycle || 'N/A'],
+      ['Price', `$${agreement.price || 0}`],
+      ['Technician', agreement.assigned_technician?.name || 'Unassigned'],
+      ['Start Date', agreement.start_date || 'N/A'],
+      ['End Date', agreement.end_date || 'N/A'],
+      ['Status', formatStatus(agreement.status)],
+      ['Auto Renew', agreement.auto_renew ? 'Yes' : 'No'],
+      ['Pools', agreement.pools?.map(p => p.label).join(', ') || 'No pools']
+    ]
+  })
+
+  doc.save(`agreement-${agreement.id}.pdf`)
+}
+
+// Actions
+const switchTab = (tab) => {
+  if (currentTab.value === tab.value) return
+  currentTab.value = tab.value
+  currentPage.value = 1
+  // No API call - just frontend filtering
+}
+
+const resetPagination = () => {
+  currentPage.value = 1
 }
 
 const toggleDropdown = (id) => {
   openDropdown.value = openDropdown.value === id ? null : id
 }
 
-const getActions = (status) => {
-  switch(status) {
-    case 'Active':
-      return ['View Agreement', 'Edit Agreement', 'Renew Agreement', 'Pause Agreement', 'Cancel Agreement']
-    case 'Expiring':
-      return ['View Agreement', 'Renew Agreement', 'Edit Agreement', 'Cancel Agreement']
-    case 'Cancelled':
-      return ['View Agreement', 'Restore Agreement', 'Delete Permanently']
-    default:
-      return []
-  }
-}
-
 const handleAction = (action, agreement) => {
   openDropdown.value = null
-  switch(action) {
-    case 'View Agreement':
+
+  switch (action.action) {
+    case 'view':
+      selectedAgreement.value = agreement
       showDetailsModal.value = true
       break
-    case 'Renew Agreement':
-      showRenewModal.value = true
+    case 'edit':
+      router.push(`/provider/customers-agreements/${agreement.id}/edit`)
       break
-    case 'Cancel Agreement':
-      showCancelModal.value = true
+    case 'pdf':
+      downloadAgreementPdf(agreement)
+      break
+    case 'pause':
+      handlePauseAgreement(agreement)
+      break
+    case 'resume':
+      handleResumeAgreement(agreement)
+      break
+    case 'cancel':
+      handleCancelAgreement(agreement)
+      break
+    case 'activate':
+      handleActivateAgreement(agreement)
+      break
+    case 'delete':
+      handleDeleteDraft(agreement)
       break
     default:
-      console.log(`${action} clicked for ${agreement.id}`)
+      console.log(`Unknown action: ${action.action}`)
   }
 }
 
-// API Integration (commented)
-// import axios from '@/services/api'
-// const fetchAgreements = async (status) => {
-//   loading.value = true
-//   try {
-//     const response = await axios.get(`/service-agreements?status=${status}`)
-//     agreements.value = response.data.data
-//   } catch (error) {
-//     console.error(error)
-//   } finally {
-//     loading.value = false
-//   }
-// }
+const updateAgreementStatus = async (id, status, additionalData = {}) => {
+  try {
+    await api().put(`/service-agreement-management/agreements/${id}`, {
+      status,
+      ...additionalData
+    })
 
-onMounted(() => {
-  // fetchAgreements('active')
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: `Agreement ${status} successfully`
+    })
+
+    await Promise.all([fetchAgreements(), fetchSummary()])
+  } catch (error) {
+    console.error('Error updating agreement:', error)
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to Update Agreement',
+      text: error.response?.data?.message || 'Something went wrong'
+    })
+  }
+}
+
+const handlePauseAgreement = async (agreement) => {
+  const result = await Swal.fire({
+    title: 'Pause Agreement?',
+    text: `Are you sure you want to pause agreement #${agreement.id}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Pause',
+    cancelButtonText: 'Cancel'
+  })
+
+  if (result.isConfirmed) {
+    await updateAgreementStatus(agreement.id, 'paused')
+  }
+}
+
+const handleResumeAgreement = async (agreement) => {
+  const result = await Swal.fire({
+    title: 'Resume Agreement?',
+    text: `Are you sure you want to resume agreement #${agreement.id}?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Resume',
+    cancelButtonText: 'Cancel'
+  })
+
+  if (result.isConfirmed) {
+    await updateAgreementStatus(agreement.id, 'active')
+  }
+}
+
+const handleCancelAgreement = async (agreement) => {
+  const result = await Swal.fire({
+    title: 'Cancel Agreement?',
+    text: `Are you sure you want to cancel agreement #${agreement.id}?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Cancel',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#dc2626'
+  })
+
+  if (result.isConfirmed) {
+    await updateAgreementStatus(agreement.id, 'cancelled')
+  }
+}
+
+const handleActivateAgreement = async (agreement) => {
+  const result = await Swal.fire({
+    title: 'Activate Agreement?',
+    text: `Are you sure you want to activate agreement #${agreement.id}?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Activate',
+    cancelButtonText: 'Cancel'
+  })
+
+  if (result.isConfirmed) {
+    await updateAgreementStatus(agreement.id, 'active')
+  }
+}
+
+const handleDeleteDraft = async (agreement) => {
+  const result = await Swal.fire({
+    title: 'Delete Draft?',
+    text: `Are you sure you want to delete draft agreement #${agreement.id}? This action cannot be undone.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Delete',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#dc2626'
+  })
+
+  if (result.isConfirmed) {
+    try {
+      await api().delete(`/service-agreement-management/agreements/${agreement.id}`)
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Deleted',
+        text: 'Draft agreement deleted successfully'
+      })
+
+      await Promise.all([fetchAgreements(), fetchSummary()])
+    } catch (error) {
+      console.error('Error deleting agreement:', error)
+      Swal.fire({
+        icon: 'error',
+        title: 'Failed to Delete Agreement',
+        text: error.response?.data?.message || 'Something went wrong'
+      })
+    }
+  }
+}
+
+const handleCreateAgreement = () => {
+  router.push('/provider/customers-agreements/create')
+}
+
+const handleExport = () => {
+  exportAgreementsExcel()
+}
+
+// Lifecycle
+onMounted(async () => {
+  await Promise.all([
+    fetchSummary(),
+    fetchAgreements(),
+    fetchTechnicians()
+  ])
 })
 </script>
 
@@ -697,6 +927,7 @@ tbody tr {
     opacity: 0;
     transform: scale(0.95) translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -715,4 +946,3 @@ tbody tr {
   }
 }
 </style>
-```
