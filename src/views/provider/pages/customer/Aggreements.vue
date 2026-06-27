@@ -30,8 +30,8 @@
     <!-- Loading State -->
     <div v-if="loading" class="space-y-6">
       <!-- KPI Skeleton -->
-      <div class="grid gap-4 md:grid-cols-3">
-        <div v-for="i in 3" :key="i" class="rounded-2xl bg-white p-6 shadow-sm">
+      <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div v-for="i in 6" :key="i" class="rounded-2xl bg-white p-6 shadow-sm">
           <div class="animate-pulse space-y-3">
             <div class="h-4 w-24 rounded bg-gray-200"></div>
             <div class="h-8 w-16 rounded bg-gray-200"></div>
@@ -41,7 +41,7 @@
       </div>
       <!-- Tabs Skeleton -->
       <div class="flex gap-2">
-        <div v-for="i in 3" :key="i" class="h-10 w-24 animate-pulse rounded-lg bg-gray-200"></div>
+        <div v-for="i in 5" :key="i" class="h-10 w-24 animate-pulse rounded-lg bg-gray-200"></div>
       </div>
       <!-- Table Skeleton -->
       <div class="rounded-2xl bg-white p-6 shadow-sm">
@@ -55,6 +55,20 @@
 
     <!-- Empty State -->
     <div v-else-if="filteredAgreements.length === 0" class="rounded-2xl bg-white p-12 text-center shadow-sm">
+        <div class="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1 overflow-x-auto">
+        <button v-for="tab in dynamicTabs" :key="tab.value" @click="switchTab(tab.value)"
+          class="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200" :class="[
+            currentTab === tab.value
+              ? 'bg-white text-gray-900 shadow-sm'
+              : 'text-gray-500 hover:text-gray-700'
+          ]">
+          {{ tab.label }}
+          <span class="ml-2 rounded-full bg-gray-200 px-2 py-0.5 text-xs"
+            :class="currentTab === tab.value ? 'bg-gray-100' : ''">
+            {{ tab.count }}
+          </span>
+        </button>
+      </div>
       <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -62,7 +76,7 @@
         </svg>
       </div>
       <h3 class="text-lg font-medium text-gray-900">{{ getEmptyStateMessage() }}</h3>
-      <p class="mt-1 text-sm text-gray-500">All customer agreements are currently active.</p>
+      <p class="mt-1 text-sm text-gray-500">Create a new agreement to get started.</p>
       <button @click="handleCreateAgreement"
         class="mt-4 inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-blue-700">
         <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +89,7 @@
     <!-- Main Content -->
     <div v-else>
       <!-- KPI Cards -->
-      <div class="mb-6 grid gap-4 md:grid-cols-5">
+      <div class="mb-6 grid gap-4 md:grid-cols-3 lg:grid-cols-6">
         <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
           <div class="flex items-center justify-between">
             <div>
@@ -95,17 +109,33 @@
         <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
           <div class="flex items-center justify-between">
             <div>
-              <p class="text-sm font-medium text-gray-500">Expiring Soon</p>
-              <p class="text-3xl font-bold text-gray-900">{{ summary.expiring || 0 }}</p>
+              <p class="text-sm font-medium text-gray-500">Draft Agreements</p>
+              <p class="text-3xl font-bold text-gray-900">{{ summary.draft || 0 }}</p>
+            </div>
+            <div class="rounded-full bg-yellow-100 p-3">
+              <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-2 text-sm text-yellow-600">● Draft</div>
+        </div>
+
+        <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">Paused Agreements</p>
+              <p class="text-3xl font-bold text-gray-900">{{ summary.paused || 0 }}</p>
             </div>
             <div class="rounded-full bg-orange-100 p-3">
               <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
-          <div class="mt-2 text-sm text-orange-600">Expiring within 30 days</div>
+          <div class="mt-2 text-sm text-orange-600">● Paused</div>
         </div>
 
         <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
@@ -120,15 +150,14 @@
               </svg>
             </div>
           </div>
-          <div class="mt-2 text-sm text-red-600">Cancelled</div>
+          <div class="mt-2 text-sm text-red-600">● Cancelled</div>
         </div>
-
 
         <div class="rounded-2xl bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-500">Average Revenue</p>
-              <p class="text-3xl font-bold text-gray-900">$ {{ summary.averageAgreementPrice || 0 }}</p>
+              <p class="text-3xl font-bold text-gray-900">${{ summary.averageAgreementPrice || 0 }}</p>
             </div>
             <div class="rounded-full bg-blue-100 p-3">
               <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -144,23 +173,23 @@
           <div class="flex items-center justify-between">
             <div>
               <p class="text-sm font-medium text-gray-500">Total Monthly Revenue</p>
-              <p class="text-3xl font-bold text-gray-900">$ {{ summary.totalMonthlyRevenue || 0 }}</p>
+              <p class="text-3xl font-bold text-gray-900">${{ summary.totalMonthlyRevenue || 0 }}</p>
             </div>
-            <div class="rounded-full bg-green-100 p-3">
-              <svg class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="rounded-full bg-purple-100 p-3">
+              <svg class="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
           </div>
-          <div class="mt-2 text-sm text-green-600">Total Monthly Recurring Revenue</div>
+          <div class="mt-2 text-sm text-purple-600">Total Monthly Recurring Revenue</div>
         </div>
       </div>
 
       <!-- Tabs (Frontend Filters Only) -->
-      <div class="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1">
-        <button v-for="tab in dynamicTabs" :key="tab.label" @click="switchTab(tab)"
-          class="flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200" :class="[
+      <div class="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1 overflow-x-auto">
+        <button v-for="tab in dynamicTabs" :key="tab.value" @click="switchTab(tab.value)"
+          class="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200" :class="[
             currentTab === tab.value
               ? 'bg-white text-gray-900 shadow-sm'
               : 'text-gray-500 hover:text-gray-700'
@@ -306,7 +335,7 @@
         </div>
 
         <!-- Pagination -->
-        <div class="flex items-center justify-between border-t border-gray-200 px-4 py-3">
+        <div class="flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 px-4 py-3 gap-3">
           <div class="text-sm text-gray-700">
             Showing {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage * pageSize,
               filteredAgreements.length) }} of {{ filteredAgreements.length }} agreements
@@ -417,7 +446,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../../../../services/api'
 import Swal from 'sweetalert2'
@@ -434,11 +463,14 @@ const agreements = ref([])
 const technicians = ref([])
 const summary = ref({
   active: 0,
-  expiring: 0,
-  cancelled: 0
+  draft: 0,
+  paused: 0,
+  cancelled: 0,
+  totalMonthlyRevenue: 0,
+  averageAgreementPrice: 0
 })
 const searchQuery = ref('')
-const currentTab = ref('active')
+const currentTab = ref('all')
 const sortOption = ref('Newest')
 const openDropdown = ref(null)
 const currentPage = ref(1)
@@ -453,18 +485,20 @@ const technicianOptions = computed(() => {
   return ['All', ...technicians.value.map(t => t.name)]
 })
 
-const sortOptions = ['Newest', 'Oldest', 'Highest Value', 'Lowest Value', 'Ending Soon']
+const sortOptions = ['Newest', 'Oldest', 'Highest Value', 'Lowest Value']
 
 // Filters
 const filters = ref({
   technician: 'All'
 })
 
-// Dynamic tabs with counts
+// Dynamic tabs with counts from loaded agreements
 const dynamicTabs = computed(() => [
-  { label: 'Active', value: 'active', count: summary.value.active || 0 },
-  { label: 'Expiring', value: 'expiring', count: summary.value.expiring || 0 },
-  { label: 'Cancelled', value: 'cancelled', count: summary.value.cancelled || 0 }
+  { label: 'All', value: 'all', count: agreements.value.length },
+  { label: 'Draft', value: 'draft', count: agreements.value.filter(a => a.status === 'draft').length },
+  { label: 'Active', value: 'active', count: agreements.value.filter(a => a.status === 'active').length },
+  { label: 'Paused', value: 'paused', count: agreements.value.filter(a => a.status === 'paused').length },
+  { label: 'Cancelled', value: 'cancelled', count: agreements.value.filter(a => a.status === 'cancelled').length }
 ])
 
 // Computed
@@ -481,16 +515,9 @@ const filteredAgreements = computed(() => {
     )
   }
 
-  // Tab-based filtering (frontend only)
-  if (currentTab.value === 'active') {
-    result = result.filter(a => a.status === 'active')
-  } else if (currentTab.value === 'expiring') {
-    result = result.filter(a => {
-      const days = daysUntil(a.end_date)
-      return a.status === 'active' && days <= 30 && days >= 0
-    })
-  } else if (currentTab.value === 'cancelled') {
-    result = result.filter(a => a.status === 'cancelled')
+  // Status-based filtering
+  if (currentTab.value !== 'all') {
+    result = result.filter(a => a.status === currentTab.value)
   }
 
   // Technician filter
@@ -512,9 +539,6 @@ const filteredAgreements = computed(() => {
     case 'Lowest Value':
       result.sort((a, b) => (a.price || 0) - (b.price || 0))
       break
-    case 'Ending Soon':
-      result.sort((a, b) => new Date(a.end_date) - new Date(b.end_date))
-      break
   }
 
   return result
@@ -529,14 +553,6 @@ const paginatedAgreements = computed(() => {
 })
 
 // Helper functions
-const daysUntil = (dateString) => {
-  if (!dateString) return Infinity
-  const endDate = new Date(dateString)
-  const today = new Date()
-  const diffTime = endDate - today
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-}
-
 const formatDate = (dateString) => {
   if (!dateString) return 'N/A'
   const date = new Date(dateString)
@@ -575,8 +591,10 @@ const getInitials = (name) => {
 
 const getEmptyStateMessage = () => {
   const messages = {
+    'all': 'No agreements found',
+    'draft': 'No draft agreements found',
     'active': 'No active agreements found',
-    'expiring': 'No agreements expiring within the next 30 days',
+    'paused': 'No paused agreements found',
     'cancelled': 'No cancelled agreements found'
   }
   return messages[currentTab.value] || 'No agreements found'
@@ -613,38 +631,20 @@ const getActions = (status) => {
 }
 
 // API Functions
-const fetchSummary = async () => {
-  try {
-    const response = await api().get('/service-agreement-management/agreement/summary')
-    summary.value = {
-      active: response.data?.active_agreements || 0,
-      expiring: response.data?.expiring_this_month || 0,
-      cancelled: response.data?.cancelled_this_month || 0,
-      totalMonthlyRevenue: response.data?.total_monthly_revenue || 0,
-      averageAgreementPrice: response.data?.average_agreement_price || 0,
-
-    }
-  } catch (error) {
-    console.error('Error fetching summary:', error)
-    Swal.fire({
-      icon: 'error',
-      title: 'Failed to Load Dashboard',
-      text: error.response?.data?.message || 'Something went wrong'
-    })
-  }
-}
-
 const fetchAgreements = async () => {
   loading.value = true
   try {
-    const response = await api().get('/service-agreement-management/agreements', {
+    const response = await api().get('/service-agreement-management/agreements-advance', {
       params: {
         with: 'customer,assignedTechnician,pools'
       }
     })
 
     agreements.value = response.data.data || response.data || []
-
+    
+    // Update summary from agreements
+    updateSummaryFromAgreements()
+    
     // Reset pagination
     resetPagination()
   } catch (error) {
@@ -657,6 +657,39 @@ const fetchAgreements = async () => {
     agreements.value = []
   } finally {
     loading.value = false
+  }
+}
+
+const updateSummaryFromAgreements = () => {
+  const active = agreements.value.filter(a => a.status === 'active')
+  const draft = agreements.value.filter(a => a.status === 'draft')
+  const paused = agreements.value.filter(a => a.status === 'paused')
+  const cancelled = agreements.value.filter(a => a.status === 'cancelled')
+  
+  // Calculate total monthly revenue (sum of active agreements)
+const totalMonthlyRevenue = agreements.value.reduce(
+  (sum, a) => sum + Number(a.price || 0),
+  0
+)
+  
+  // Calculate average agreement price (across all agreements)
+const totalPrice = agreements.value.reduce(
+  (sum, a) => sum + Number(a.price ?? 0),
+  0
+)
+
+const averageAgreementPrice =
+  agreements.value.length > 0
+    ? Math.round(totalPrice / agreements.value.length)
+    : 0
+
+  summary.value = {
+    active: active.length,
+    draft: draft.length,
+    paused: paused.length,
+    cancelled: cancelled.length,
+    totalMonthlyRevenue,
+    averageAgreementPrice
   }
 }
 
@@ -720,11 +753,10 @@ const downloadAgreementPdf = (agreement) => {
 }
 
 // Actions
-const switchTab = (tab) => {
-  if (currentTab.value === tab.value) return
-  currentTab.value = tab.value
+const switchTab = (tabValue) => {
+  if (currentTab.value === tabValue) return
+  currentTab.value = tabValue
   currentPage.value = 1
-  // No API call - just frontend filtering
 }
 
 const resetPagination = () => {
@@ -782,7 +814,7 @@ const updateAgreementStatus = async (id, status, additionalData = {}) => {
       text: `Agreement ${status} successfully`
     })
 
-    await Promise.all([fetchAgreements(), fetchSummary()])
+    await fetchAgreements()
   } catch (error) {
     console.error('Error updating agreement:', error)
     Swal.fire({
@@ -875,7 +907,7 @@ const handleDeleteDraft = async (agreement) => {
         text: 'Draft agreement deleted successfully'
       })
 
-      await Promise.all([fetchAgreements(), fetchSummary()])
+      await fetchAgreements()
     } catch (error) {
       console.error('Error deleting agreement:', error)
       Swal.fire({
@@ -898,7 +930,6 @@ const handleExport = () => {
 // Lifecycle
 onMounted(async () => {
   await Promise.all([
-    fetchSummary(),
     fetchAgreements(),
     fetchTechnicians()
   ])
@@ -944,5 +975,23 @@ tbody tr {
   .grid-cols-2 {
     grid-template-columns: 1fr;
   }
+}
+
+/* Scrollable tabs on mobile */
+.overflow-x-auto {
+  scrollbar-width: thin;
+}
+
+.overflow-x-auto::-webkit-scrollbar {
+  height: 4px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
 }
 </style>

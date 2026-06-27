@@ -226,75 +226,120 @@
 
           <!-- Table Body -->
           <div class="divide-y divide-slate-100">
-            <div
-              v-for="pool in paginatedPools"
-              :key="pool.id"
-              class="group grid grid-cols-12 gap-4 px-5 py-3.5 items-center hover:bg-slate-50 transition-all duration-200 relative border-l-2 border-transparent hover:border-blue-500"
-            >
-              <!-- Pool -->
-              <div class="col-span-3 flex items-center gap-3">
-                <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-200 flex-shrink-0">
-                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7c0 0 2-2 5-2s5 2 8 2 5-2 5-2v10c0 0-2 2-5 2s-5-2-8-2-5 2-5 2V7z"/>
-                  </svg>
+            <div v-for="pool in paginatedPools" :key="pool.id" class="relative">
+              <!-- Main Row -->
+              <div 
+                class="group grid grid-cols-12 gap-4 px-5 py-3.5 items-center hover:bg-slate-50 transition-all duration-200 relative border-l-2 border-transparent hover:border-blue-500 cursor-pointer"
+                @click="toggleRow(pool.id)"
+              >
+                <!-- Pool -->
+                <div class="col-span-3 flex items-center gap-3">
+                  <div class="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-200 flex-shrink-0">
+                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7c0 0 2-2 5-2s5 2 8 2 5-2 5-2v10c0 0-2 2-5 2s-5-2-8-2-5 2-5 2V7z"/>
+                    </svg>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-sm font-semibold text-slate-800 truncate">{{ pool.label || pool.name }}</div>
+                    <div class="text-xs text-slate-400 font-mono">#{{ pool.id }}</div>
+                  </div>
                 </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-slate-800 truncate">{{ pool.label || pool.name }}</div>
-                  <div class="text-xs text-slate-400 font-mono">#{{ pool.id.toString().padStart(4, '0') }}</div>
+
+                <!-- Customer -->
+                <div class="col-span-2 flex items-center gap-2">
+                  <div :class="['flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold text-white flex-shrink-0', getAvatarColor(pool.customer?.contact_name)]">
+                    {{ (pool.customer?.contact_name || 'U').charAt(0).toUpperCase() }}
+                  </div>
+                  <div class="text-sm text-slate-700 truncate">{{ pool.customer?.contact_name || 'Unknown' }}</div>
+                </div>
+
+                <!-- Chemical Type -->
+                <div class="col-span-2">
+                  <span :class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border', getChemicalStyle(pool.chemical_type || pool.chemicalType)]">
+                    <span :class="['w-1.5 h-1.5 rounded-full', getChemicalDot(pool.chemical_type || pool.chemicalType)]"></span>
+                    {{ formatChemicalType(pool.chemical_type || pool.chemicalType) }}
+                  </span>
+                </div>
+
+                <!-- Volume -->
+                <div class="col-span-1 text-right">
+                  <span class="text-sm font-semibold text-slate-700">{{ formatVolume(pool.volume_gallons || pool.volume) }}</span>
+                  <span class="text-xs text-slate-400 ml-0.5">gal</span>
+                </div>
+
+                <!-- Equipment -->
+                <div class="col-span-1 flex justify-center">
+                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    </svg>
+                    {{ pool.equipment?.length || 0 }}
+                    <svg 
+                      v-if="pool.equipment?.length" 
+                      :class="['w-3 h-3 transition-transform duration-200', expandedRows.has(pool.id) ? 'rotate-180' : '']" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </span>
+                </div>
+
+                <!-- Status -->
+                <div class="col-span-1 flex justify-center">
+                  <span :class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border', getStatusStyle(pool.is_active)]">
+                    <span :class="['w-1.5 h-1.5 rounded-full', pool.is_active ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500']"></span>
+                    {{ pool.is_active ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+
+                <!-- Actions -->
+                <div class="col-span-2 flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200" @click.stop>
+                  <button @click="openViewModal(pool)" class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-600 text-slate-500 border border-slate-200 hover:border-blue-300 transition-all duration-200" title="View">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  </button>
+                  <button @click="openEditModal(pool)" class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-600 text-slate-500 border border-slate-200 hover:border-amber-300 transition-all duration-200" title="Edit">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  </button>
+                  <button @click="confirmDelete(pool)" class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 hover:text-rose-600 text-slate-500 border border-slate-200 hover:border-rose-300 transition-all duration-200" title="Delete">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                  </button>
                 </div>
               </div>
 
-              <!-- Customer -->
-              <div class="col-span-2 flex items-center gap-2">
-                <div :class="['flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold text-white flex-shrink-0', getAvatarColor(pool.customer)]">
-                  {{ (pool.customer || 'U').charAt(0).toUpperCase() }}
-                </div>
-                <div class="text-sm text-slate-700 truncate">{{ pool.customer || 'Unknown' }}</div>
-              </div>
-
-              <!-- Chemical Type -->
-              <div class="col-span-2">
-                <span :class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border', getChemicalStyle(pool.chemical_type || pool.chemicalType)]">
-                  <span :class="['w-1.5 h-1.5 rounded-full', getChemicalDot(pool.chemical_type || pool.chemicalType)]"></span>
-                  {{ formatChemicalType(pool.chemical_type || pool.chemicalType) }}
-                </span>
-              </div>
-
-              <!-- Volume -->
-              <div class="col-span-1 text-right">
-                <span class="text-sm font-semibold text-slate-700">{{ formatVolume(pool.volume_gallons || pool.volume) }}</span>
-                <span class="text-xs text-slate-400 ml-0.5">gal</span>
-              </div>
-
-              <!-- Equipment -->
-              <div class="col-span-1 flex justify-center">
-                <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-violet-50 text-violet-700 border border-violet-200">
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <!-- Expanded Equipment Details -->
+              <div v-if="expandedRows.has(pool.id) && pool.equipment?.length" 
+                   class="col-span-12 px-5 py-4 bg-slate-50/80 border-t border-slate-100">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                   </svg>
-                  {{ pool.equipment || 0 }}
-                </span>
-              </div>
-
-              <!-- Status -->
-              <div class="col-span-1 flex justify-center">
-                <span :class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border', getStatusStyle(pool.is_active)]">
-                  <span :class="['w-1.5 h-1.5 rounded-full', pool.is_active ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500']"></span>
-                  {{ pool.is_active ? 'Active' : 'Inactive' }}
-                </span>
-              </div>
-
-              <!-- Actions -->
-              <div class="col-span-2 flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <button @click="openViewModal(pool)" class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-blue-100 hover:text-blue-600 text-slate-500 border border-slate-200 hover:border-blue-300 transition-all duration-200" title="View">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                </button>
-                <button @click="openEditModal(pool)" class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-amber-100 hover:text-amber-600 text-slate-500 border border-slate-200 hover:border-amber-300 transition-all duration-200" title="Edit">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                </button>
-                <button @click="confirmDelete(pool)" class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 hover:text-rose-600 text-slate-500 border border-slate-200 hover:border-rose-300 transition-all duration-200" title="Delete">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                </button>
+                  <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Equipment Details</span>
+                  <span class="text-xs text-slate-400">({{ pool.equipment.length }} items)</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div v-for="eq in pool.equipment" :key="eq.id"
+                       class="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+                    <div :class="['flex items-center justify-center w-8 h-8 rounded-lg flex-shrink-0', getEquipmentBgColor(eq.type)]">
+                      <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-slate-800 truncate">{{ eq.brand }}</span>
+                        <span class="text-xs text-slate-400 truncate">{{ eq.model }}</span>
+                        <span class="ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full capitalize bg-violet-50 text-violet-600 border border-violet-200 whitespace-nowrap">{{ eq.type }}</span>
+                      </div>
+                      <div class="text-xs text-slate-500 mt-0.5 flex items-center gap-2 flex-wrap">
+                        <span class="font-mono">SN: {{ eq.serial_number || '—' }}</span>
+                        <span class="text-slate-300">•</span>
+                        <span>Installed: {{ formatDate(eq.install_date) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -307,6 +352,7 @@
           v-for="pool in paginatedPools"
           :key="pool.id"
           class="rounded-2xl bg-white border border-slate-200 p-4 hover:border-slate-300 transition-all duration-200 shadow-sm"
+          @click="toggleRow(pool.id)"
         >
           <div class="flex items-start justify-between mb-3">
             <div class="flex items-center gap-3">
@@ -317,7 +363,7 @@
               </div>
               <div>
                 <div class="text-sm font-bold text-slate-800">{{ pool.label || pool.name }}</div>
-                <div class="text-xs text-slate-400 font-mono">#{{ pool.id.toString().padStart(4, '0') }}</div>
+                <div class="text-xs text-slate-400 font-mono">#{{ pool.id }}</div>
               </div>
             </div>
             <span :class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border', getStatusStyle(pool.is_active)]">
@@ -328,10 +374,10 @@
 
           <div class="grid grid-cols-2 gap-2 mb-3 text-xs">
             <div class="flex items-center gap-2 text-slate-500">
-              <div :class="['flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold text-white', getAvatarColor(pool.customer)]">
-                {{ (pool.customer || 'U').charAt(0) }}
+              <div :class="['flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold text-white', getAvatarColor(pool.customer?.contact_name)]">
+                {{ (pool.customer?.contact_name || 'U').charAt(0).toUpperCase() }}
               </div>
-              {{ pool.customer || 'Unknown' }}
+              {{ pool.customer?.contact_name || 'Unknown' }}
             </div>
             <div class="flex items-center justify-end">
               <span :class="['inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border', getChemicalStyle(pool.chemical_type || pool.chemicalType)]">
@@ -342,12 +388,42 @@
               <span class="font-semibold text-slate-700">{{ formatVolume(pool.volume_gallons || pool.volume) }}</span> gal
             </div>
             <div class="flex items-center justify-end gap-1 text-violet-600">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
-              {{ pool.equipment || 0 }} items
+              
+              <svg 
+                v-if="pool.equipment?.length" 
+                :class="['w-3 h-3 transition-transform duration-200', expandedRows.has(pool.id) ? 'rotate-180' : '']" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
             </div>
           </div>
 
-          <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
+          <!-- Mobile Expanded Equipment -->
+          <div v-if="expandedRows.has(pool.id) && pool.equipment?.length" class="mt-3 pt-3 border-t border-slate-100 space-y-2">
+            <div v-for="eq in pool.equipment" :key="eq.id"
+                 class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg border border-slate-200">
+              <div :class="['flex items-center justify-center w-6 h-6 rounded-lg flex-shrink-0', getEquipmentBgColor(eq.type)]">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-semibold text-slate-800 truncate">{{ eq.brand }}</span>
+                  <span class="text-[10px] text-slate-400 truncate">{{ eq.model }}</span>
+                  <span class="ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded capitalize bg-violet-50 text-violet-600 border border-violet-200">{{ eq.type }}</span>
+                </div>
+                <div class="text-[10px] text-slate-500 flex items-center gap-1">
+                  <span>SN: {{ eq.serial_number || '—' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-3 border-t border-slate-100" @click.stop>
             <button @click="openViewModal(pool)" class="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 border border-slate-200 hover:border-blue-300 transition-all">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
               View
@@ -456,7 +532,7 @@
                   <div>
                     <h2 class="text-xl font-bold text-slate-800">{{ selectedPool?.label || selectedPool?.name }}</h2>
                     <div class="flex items-center gap-3 mt-1">
-                      <span class="text-xs text-slate-400 font-mono">#{{ selectedPool?.id?.toString().padStart(4, '0') }}</span>
+                      <span class="text-xs text-slate-400 font-mono">#{{ selectedPool?.id }}</span>
                       <span :class="['inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold border', getStatusStyle(selectedPool?.is_active)]">
                         <span :class="['w-1.5 h-1.5 rounded-full', selectedPool?.is_active ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500']"></span>
                         {{ selectedPool?.is_active ? 'Active' : 'Inactive' }}
@@ -474,12 +550,12 @@
             <div class="p-6 overflow-y-auto max-h-[70vh] space-y-4">
               <!-- Customer Info -->
               <div class="flex items-center gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                <div :class="['flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold text-white', getAvatarColor(selectedPool?.customer || '')]">
-                  {{ (selectedPool?.customer || 'U').charAt(0).toUpperCase() }}
+                <div :class="['flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold text-white', getAvatarColor(selectedPool?.customer?.contact_name || '')]">
+                  {{ (selectedPool?.customer?.contact_name || 'U').charAt(0).toUpperCase() }}
                 </div>
                 <div>
                   <div class="text-xs text-slate-500 font-medium">Customer</div>
-                  <div class="text-sm font-semibold text-slate-800">{{ selectedPool?.customer || 'Unknown' }}</div>
+                  <div class="text-sm font-semibold text-slate-800">{{ selectedPool?.customer?.contact_name || 'Unknown' }}</div>
                 </div>
               </div>
 
@@ -512,7 +588,7 @@
                     <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
                     <span class="text-xs text-slate-500 font-medium">Equipment Count</span>
                   </div>
-                  <div class="text-lg font-bold text-violet-700">{{ selectedPool?.equipment || 0 }} <span class="text-sm font-normal text-slate-500">items</span></div>
+                  <div class="text-lg font-bold text-violet-700">{{ selectedPool?.equipment?.length || 0 }} <span class="text-sm font-normal text-slate-500">items</span></div>
                 </div>
 
                 <!-- Season -->
@@ -559,6 +635,44 @@
                   <span class="text-xs text-amber-600 font-medium">Access Notes</span>
                 </div>
                 <div class="text-sm text-slate-700">{{ selectedPool.access_notes }}</div>
+              </div>
+
+              <!-- Equipment List in View Modal -->
+              <div v-if="selectedPool?.equipment?.length > 0" class="mt-2">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                  </svg>
+                  <h4 class="text-sm font-bold text-slate-700">Equipment Details</h4>
+                  <span class="text-xs text-slate-400">({{ selectedPool.equipment.length }} items)</span>
+                </div>
+                
+                <div class="space-y-2">
+                  <div v-for="eq in selectedPool.equipment" :key="eq.id"
+                       class="flex items-center gap-4 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <div :class="['flex items-center justify-center w-10 h-10 rounded-lg flex-shrink-0', getEquipmentBgColor(eq.type)]">
+                      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                      </svg>
+                    </div>
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm font-semibold text-slate-800">{{ eq.brand }}</span>
+                        <span class="text-xs text-slate-400">{{ eq.model }}</span>
+                        <span class="ml-auto text-xs font-medium px-2 py-0.5 rounded-full capitalize bg-violet-50 text-violet-600 border border-violet-200">{{ eq.type }}</span>
+                      </div>
+                      <div class="text-xs text-slate-500 mt-1 flex items-center gap-3">
+                        <span>SN: <span class="font-mono text-slate-600">{{ eq.serial_number || '—' }}</span></span>
+                        <span>•</span>
+                        <span>Installed: {{ formatDate(eq.install_date) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="p-4 text-center rounded-xl bg-slate-50 border border-slate-200">
+                <p class="text-sm text-slate-500">No equipment registered for this pool</p>
               </div>
             </div>
 
@@ -610,10 +724,6 @@
                     <input v-model="editForm.label" type="text" placeholder="e.g. Lakeside Community Pool" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
                   </div>
                   <div class="grid grid-cols-2 gap-3">
-                    <div>
-                      <label class="block text-xs font-semibold text-slate-600 mb-1.5">Customer <span class="text-rose-500">*</span></label>
-                      <input v-model="editForm.customer" type="text" placeholder="Customer name" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
-                    </div>
                     <div>
                       <label class="block text-xs font-semibold text-slate-600 mb-1.5">Pool Volume (gal)</label>
                       <input v-model="editForm.volume_gallons" type="number" placeholder="e.g. 25000" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all" />
@@ -712,7 +822,7 @@
             </div>
 
             <div class="flex items-center gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
-              <button @click="savePool" :disabled="!editForm.label || !editForm.customer" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-600 disabled:hover:to-cyan-600 transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0">
+              <button @click="savePool" :disabled="!editForm.label" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-blue-600 disabled:hover:to-cyan-600 transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 {{ isAdding ? 'Add Pool' : 'Save Changes' }}
               </button>
@@ -758,31 +868,21 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
 import api from "../../../../services/api.js"
 
-// ===== API BASE URL =====
-const API_BASE = '/pool-management/pools'
-
-// ===== SAMPLE DATA =====
-const pools = ref([
-  { id: 1, label: 'Lakeside Community Pool', customer: 'Riverside HOA', chemical_type: 'chlorine', volume_gallons: 45000, equipment: 6, is_active: true, service_address: '123 Lake Dr, Austin, TX 78701', access_notes: 'Gate code: 4521. Pool closes at 10pm.', gate_code: '4521', has_dog: false, season: 'year_round' },
-  { id: 2, label: 'Sunset Villa Pool', customer: 'James Morrison', chemical_type: 'salt', volume_gallons: 18000, equipment: 3, is_active: true, service_address: '456 Sunset Blvd, Austin, TX 78702', access_notes: '', gate_code: '', has_dog: true, season: 'year_round' },
-  { id: 3, label: 'Grand Palms Resort', customer: 'GPR Management', chemical_type: 'chlorine', volume_gallons: 120000, equipment: 12, is_active: true, service_address: '789 Palm Ave, Austin, TX 78703', access_notes: 'Commercial account. Contact manager on arrival.', gate_code: '7890', has_dog: false, season: 'year_round' },
-  { id: 4, label: 'Cedar Ridge Swim Club', customer: 'Cedar Ridge HOA', chemical_type: 'bromine', volume_gallons: 38000, equipment: 8, is_active: false, service_address: '321 Cedar Rd, Austin, TX 78704', access_notes: 'Seasonal closure — reopen August.', gate_code: '3210', has_dog: false, season: 'summer' },
-  { id: 5, label: 'Blue Lagoon Spa', customer: 'Sarah & Tom Chen', chemical_type: 'salt', volume_gallons: 8000, equipment: 4, is_active: true, service_address: '654 Blue St, Austin, TX 78705', access_notes: '', gate_code: '', has_dog: true, season: 'year_round' },
-  { id: 6, label: 'Magnolia Estates Pool', customer: 'Magnolia HOA', chemical_type: 'chlorine', volume_gallons: 32000, equipment: 5, is_active: true, service_address: '987 Magnolia Ln, Austin, TX 78706', access_notes: '', gate_code: '9876', has_dog: false, season: 'year_round' },
-  { id: 7, label: 'Desert Oasis Spa', customer: 'Raj Patel', chemical_type: 'bromine', volume_gallons: 6000, equipment: 2, is_active: false, service_address: '147 Desert Dr, Austin, TX 78707', access_notes: 'Resurfacing in progress.', gate_code: '1470', has_dog: false, season: 'winter' },
-  { id: 8, label: 'The Waterfront Club', customer: 'WFC Holdings', chemical_type: 'salt', volume_gallons: 75000, equipment: 14, is_active: true, service_address: '258 Waterfront Way, Austin, TX 78708', access_notes: '', gate_code: '2580', has_dog: false, season: 'year_round' },
-])
+// ===== API INSTANCE =====
+const apiClient = api()
 
 // ===== STATE =====
+const pools = ref([])
 const searchQuery = ref('')
 const activeFilter = ref('all')
 const isLoading = ref(false)
 const isRefreshing = ref(false)
 const currentPage = ref(1)
 const perPage = ref(10)
+const expandedRows = ref(new Set())
 
 const viewModal = ref(false)
 const editModal = ref(false)
@@ -792,6 +892,7 @@ const poolToDelete = ref(null)
 const isAdding = ref(false)
 
 const editForm = reactive({
+  id: null,
   label: '',
   customer: '',
   chemical_type: 'chlorine',
@@ -820,7 +921,7 @@ const stats = computed(() => ({
   total: pools.value.length,
   active: pools.value.filter(p => p.is_active).length,
   inactive: pools.value.filter(p => !p.is_active).length,
-  equipment: pools.value.reduce((sum, p) => sum + (p.equipment || 0), 0),
+  equipment: pools.value.reduce((sum, p) => sum + (p.equipment?.length || 0), 0),
 }))
 
 const filteredPools = computed(() => {
@@ -829,7 +930,7 @@ const filteredPools = computed(() => {
     const q = searchQuery.value.toLowerCase()
     list = list.filter(p => 
       (p.label || p.name || '').toLowerCase().includes(q) || 
-      (p.customer || '').toLowerCase().includes(q)
+      (p.customer?.contact_name || '').toLowerCase().includes(q)
     )
   }
   if (activeFilter.value !== 'all') {
@@ -865,52 +966,77 @@ const visiblePages = computed(() => {
   return [1, '...', current - 1, current, current + 1, '...', total]
 })
 
+// ===== TOGGLE ROW =====
+function toggleRow(id) {
+  if (expandedRows.value.has(id)) {
+    expandedRows.value.delete(id)
+  } else {
+    expandedRows.value.add(id)
+  }
+}
+
 // ===== API METHODS =====
 
-// Edit Pool - POST /pool-management/pools/{id} with _method: PUT
+// Get all pools
+async function fetchPools() {
+  try {
+    const response = await apiClient.get('/pool-management/pools-advance?with=equipment,customer')
+    return response.data.data || response
+  } catch (error) {
+    console.error('Error fetching pools:', error)
+    throw error
+  }
+}
+
+// Create new pool
+async function createPool(data) {
+  try {
+    const response = await apiClient.post('/pool-management/pools', data)
+    return response.data || response
+  } catch (error) {
+    console.error('Error creating pool:', error)
+    throw error
+  }
+}
+
+// Update pool
 async function updatePool(id, data) {
   try {
-    const response = await fetch(`${API_BASE}/${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...data,
-        _method: 'PUT'
-      })
-    })
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
-    return await response.json()
+    const response = await apiClient.post(`/pool-management/pools/${id}`, data)
+    return response.data || response
   } catch (error) {
     console.error('Error updating pool:', error)
     throw error
   }
 }
 
-// Delete Pool - DELETE /pool-management/pools/{id}
+// Delete pool
 async function deletePoolApi(id) {
   try {
-    const response = await fetch(`${API_BASE}/${id}`, {
-      method: 'DELETE',
-    })
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-    
-    return await response.json()
+    const response = await apiClient.delete(`/pool-management/pools/${id}`)
+    return response.data || response
   } catch (error) {
     console.error('Error deleting pool:', error)
     throw error
   }
 }
 
+// ===== LOAD DATA =====
+async function loadPools() {
+  try {
+    isLoading.value = true
+    const data = await fetchPools()
+    pools.value = Array.isArray(data) ? data : []
+  } catch (error) {
+    console.error('Failed to load pools from API:', error)
+    pools.value = []
+  } finally {
+    isLoading.value = false
+  }
+}
+
 // ===== UI METHODS =====
+
 function setFilter(val) {
   activeFilter.value = val
   currentPage.value = 1
@@ -922,9 +1048,10 @@ function clearFilters() {
   currentPage.value = 1
 }
 
-function handleRefresh() {
+async function handleRefresh() {
   isRefreshing.value = true
-  setTimeout(() => { isRefreshing.value = false }, 1200)
+  await loadPools()
+  isRefreshing.value = false
 }
 
 function openViewModal(pool) {
@@ -937,12 +1064,11 @@ function openEditModal(pool) {
   if (pool) {
     Object.assign(editForm, { 
       ...pool,
-      // Ensure all fields exist
       label: pool.label || pool.name || '',
-      customer: pool.customer || '',
+      customer: pool.customer?.contact_name || '',
       chemical_type: pool.chemical_type || pool.chemicalType || 'chlorine',
       volume_gallons: pool.volume_gallons || pool.volume || '',
-      equipment: pool.equipment || 0,
+      equipment: pool.equipment?.length || 0,
       is_active: pool.is_active !== undefined ? pool.is_active : true,
       service_address: pool.service_address || pool.address || '',
       access_notes: pool.access_notes || pool.notes || '',
@@ -957,6 +1083,7 @@ function openEditModal(pool) {
 function openAddModal() {
   isAdding.value = true
   Object.assign(editForm, { 
+    id: null,
     label: '',
     customer: '',
     chemical_type: 'chlorine',
@@ -976,49 +1103,27 @@ async function savePool() {
   try {
     isLoading.value = true
     
-    // Prepare data for API
     const poolData = {
       label: editForm.label,
+      customer: editForm.customer,
       service_address: editForm.service_address,
       access_notes: editForm.access_notes,
       gate_code: editForm.gate_code,
-      has_dog: editForm.has_dog,
+      has_dog: editForm.has_dog == true ? 1 : 0,
       volume_gallons: Number(editForm.volume_gallons) || 0,
       chemical_type: editForm.chemical_type,
       season: editForm.season,
-      is_active: editForm.is_active
+      is_active: editForm.is_active == true ? 1 : 0,
+      equipment: Number(editForm.equipment) || 0,
+      _method: "PUT"
     }
     
     if (isAdding.value) {
-      // For adding, we'd typically use POST without _method
-      // This is a simplified version - adjust based on your API
-      const newPool = {
-        id: Date.now(),
-        ...poolData,
-        customer: editForm.customer,
-        equipment: Number(editForm.equipment) || 0
-      }
+      const newPool = await createPool(poolData)
       pools.value.push(newPool)
     } else {
-      // Update existing pool - POST with _method: PUT
-      const updatedData = {
-        ...poolData,
-        customer: editForm.customer,
-        equipment: Number(editForm.equipment) || 0
-      }
-      
-      // Call API
-      await updatePool(editForm.id, updatedData)
-      
-      // Update local data
-      const idx = pools.value.findIndex(p => p.id === editForm.id)
-      if (idx !== -1) {
-        pools.value[idx] = { 
-          ...pools.value[idx],
-          ...updatedData,
-          id: editForm.id
-        }
-      }
+      await updatePool(editForm.id, poolData)
+      await loadPools()
     }
     
     editModal.value = false
@@ -1038,11 +1143,7 @@ function confirmDelete(pool) {
 async function deletePool() {
   try {
     isLoading.value = true
-    
-    // Call API
     await deletePoolApi(poolToDelete.value.id)
-    
-    // Remove from local data
     pools.value = pools.value.filter(p => p.id !== poolToDelete.value.id)
     deleteModal.value = false
     poolToDelete.value = null
@@ -1080,6 +1181,16 @@ function getAvatarColor(name) {
   return colors[(name?.charCodeAt(0) || 0) % colors.length]
 }
 
+function getEquipmentBgColor(type) {
+  const map = {
+    pump: 'bg-blue-500',
+    filter: 'bg-emerald-500',
+    heater: 'bg-amber-500',
+    other: 'bg-violet-500'
+  }
+  return map[type] || 'bg-slate-500'
+}
+
 function formatVolume(v) {
   return v ? Number(v).toLocaleString() : '—'
 }
@@ -1098,6 +1209,17 @@ function formatSeason(season) {
   }
   return map[season] || season.charAt(0).toUpperCase() + season.slice(1)
 }
+
+function formatDate(date) {
+  if (!date) return '—'
+  const d = new Date(date)
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+// ===== LIFECYCLE =====
+onMounted(() => {
+  loadPools()
+})
 </script>
 
 <style scoped>

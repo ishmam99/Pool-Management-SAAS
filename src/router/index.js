@@ -113,35 +113,23 @@ const routes = [
         component: () => import('../views/provider/pages/service/CalenderView.vue')
       },
       {
-        path: '/provider/services-route-board',
-        name: 'provider-services-route-board',
-        component: () => import('../views/provider/pages/service/RouteBoardToday.vue')
-      }, {
-        path: '/provider/services-route-builder',
-        name: 'provider-services-route-builder',
-        component: () => import('../views/provider/pages/service/RouteBuilder.vue')
-      }, {
         path: '/provider/services-unassigned',
         name: 'provider-services-unassigned',
-        component: () => import('../views/provider/pages/service/UnassignedVisits.vue')
-      }, {
-        path: '/provider/services-season-manager',
-        name: 'provider-services-season-manager',
-        component: () => import('../views/provider/pages/service/SeasonManager.vue')
+        component: () => import('../views/provider/pages/service/ListView.vue')
       },
 
-       // Maintenance
+      // Maintenance
       {
         path: '/provider/schedule-maintenance',
         name: 'provider-schedule-maintenance',
         component: () => import('../views/provider/pages/maintenance/ScheduleMaintenance.vue')
       },
-        {
+      {
         path: '/provider/maintenance/create',
         name: 'provider-create-maintenance',
         component: () => import('../views/provider/pages/maintenance/CreateMaintenance.vue')
       },
-        {
+      {
         path: '/provider/maintenance/:status',
         name: 'provider-view-maintenance',
         component: () => import('../views/provider/pages/maintenance/[status].vue')

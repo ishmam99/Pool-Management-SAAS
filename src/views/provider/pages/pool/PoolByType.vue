@@ -1,738 +1,660 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-4 md:p-6 lg:p-8">
-    <!-- Page Header -->
-    <div class="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-      <div>
-        <h1 class="text-3xl font-bold tracking-tight text-slate-800">Pools By Type</h1>
-        <p class="mt-1 text-sm text-slate-500">
-          Analyze and manage pools based on residential, commercial, and specialty categories.
-        </p>
-      </div>
-      <div class="flex gap-3">
-        <button
-          class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 hover:shadow-md"
-        >
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-          </svg>
-          Export
-        </button>
-        <button
-          class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-600/25 transition-all hover:shadow-blue-600/40 hover:scale-[1.02]"
-        >
-          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-          </svg>
-          Add Pool
-        </button>
-      </div>
-    </div>
+  <div class="min-h-screen bg-slate-50 font-inter">
 
-    <!-- Loading State for Summary Cards -->
-    <div v-if="loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      <div v-for="i in 5" :key="i" class="animate-pulse rounded-2xl bg-white p-6 shadow-sm">
-        <div class="h-8 w-16 rounded bg-slate-200"></div>
-        <div class="mt-2 h-4 w-24 rounded bg-slate-200"></div>
-        <div class="mt-4 h-6 w-12 rounded bg-slate-200"></div>
+    <!-- ===== PAGE HEADER ===== -->
+    <div class="relative overflow-hidden bg-gradient-to-br from-slate-100 via-white to-slate-50 border-b border-slate-200">
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-cyan-500/10 blur-3xl"></div>
+        <div class="absolute -bottom-10 left-10 w-60 h-60 rounded-full bg-teal-500/10 blur-3xl"></div>
       </div>
-    </div>
-
-    <!-- Summary Cards -->
-    <div v-else class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
-      <div
-        class="group rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
-      >
+      <div class="relative max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
         <div class="flex items-center justify-between">
-          <span class="text-2xl font-bold text-slate-800">{{ summaryCards.totalPools }}</span>
-          <div class="rounded-xl bg-blue-50 p-2 text-blue-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16h16" />
-            </svg>
-          </div>
-        </div>
-        <p class="mt-1 text-sm text-slate-500">Total Pools</p>
-        <div class="mt-3 h-1 w-full rounded-full bg-slate-100">
-          <div class="h-1 w-full rounded-full bg-gradient-to-r from-blue-500 to-blue-600"></div>
-        </div>
-      </div>
-
-      <div
-        class="group rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-2xl font-bold text-emerald-600">{{ summaryCards.residential }}</span>
-          <div class="rounded-xl bg-emerald-50 p-2 text-emerald-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-          </div>
-        </div>
-        <p class="mt-1 text-sm text-slate-500">Residential</p>
-        <div class="mt-3 h-1 w-full rounded-full bg-slate-100">
-          <div class="h-1 w-[78.5%] rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
-        </div>
-      </div>
-
-      <div
-        class="group rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-2xl font-bold text-purple-600">{{ summaryCards.commercial }}</span>
-          <div class="rounded-xl bg-purple-50 p-2 text-purple-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-          </div>
-        </div>
-        <p class="mt-1 text-sm text-slate-500">Commercial</p>
-        <div class="mt-3 h-1 w-full rounded-full bg-slate-100">
-          <div class="h-1 w-[15%] rounded-full bg-gradient-to-r from-purple-400 to-purple-500"></div>
-        </div>
-      </div>
-
-      <div
-        class="group rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-2xl font-bold text-cyan-600">{{ summaryCards.spa }}</span>
-          <div class="rounded-xl bg-cyan-50 p-2 text-cyan-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-          </div>
-        </div>
-        <p class="mt-1 text-sm text-slate-500">Spa / Hot Tub</p>
-        <div class="mt-3 h-1 w-full rounded-full bg-slate-100">
-          <div class="h-1 w-[4.2%] rounded-full bg-gradient-to-r from-cyan-400 to-cyan-500"></div>
-        </div>
-      </div>
-
-      <div
-        class="group rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-2xl font-bold text-amber-600">{{ summaryCards.hotel }}</span>
-          <div class="rounded-xl bg-amber-50 p-2 text-amber-600">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-            </svg>
-          </div>
-        </div>
-        <p class="mt-1 text-sm text-slate-500">Hotels & Resorts</p>
-        <div class="mt-3 h-1 w-full rounded-full bg-slate-100">
-          <div class="h-1 w-[2.3%] rounded-full bg-gradient-to-r from-amber-400 to-amber-500"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Charts Section -->
-    <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-      <div class="rounded-2xl bg-white p-6 shadow-sm">
-        <h3 class="text-sm font-semibold text-slate-700">Pool Distribution</h3>
-        <div class="mt-4 space-y-3">
-          <div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-600">Residential</span>
-              <span class="font-medium text-slate-800">78%</span>
-            </div>
-            <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-              <div class="h-2 w-[78%] rounded-full bg-gradient-to-r from-emerald-400 to-emerald-500"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-600">Commercial</span>
-              <span class="font-medium text-slate-800">15%</span>
-            </div>
-            <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-              <div class="h-2 w-[15%] rounded-full bg-gradient-to-r from-purple-400 to-purple-500"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-600">Spa</span>
-              <span class="font-medium text-slate-800">4%</span>
-            </div>
-            <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-              <div class="h-2 w-[4%] rounded-full bg-gradient-to-r from-cyan-400 to-cyan-500"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-600">Hotel</span>
-              <span class="font-medium text-slate-800">3%</span>
-            </div>
-            <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-              <div class="h-2 w-[3%] rounded-full bg-gradient-to-r from-amber-400 to-amber-500"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="rounded-2xl bg-white p-6 shadow-sm">
-        <h3 class="text-sm font-semibold text-slate-700">Revenue By Type</h3>
-        <div class="mt-4 space-y-3">
-          <div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-600">Residential</span>
-              <span class="font-medium text-slate-800">$27,360</span>
-            </div>
-            <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-              <div class="h-2 w-[65%] rounded-full bg-gradient-to-r from-blue-400 to-blue-500"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-600">Commercial</span>
-              <span class="font-medium text-slate-800">$14,800</span>
-            </div>
-            <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-              <div class="h-2 w-[35%] rounded-full bg-gradient-to-r from-indigo-400 to-indigo-500"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex justify-between text-sm">
-              <span class="text-slate-600">Hotel</span>
-              <span class="font-medium text-slate-800">$8,500</span>
-            </div>
-            <div class="mt-1 h-2 w-full rounded-full bg-slate-100">
-              <div class="h-2 w-[20%] rounded-full bg-gradient-to-r from-amber-400 to-amber-500"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Category Cards -->
-    <div class="mt-8">
-      <h2 class="text-lg font-semibold text-slate-800">Pool Type Overview</h2>
-      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div
-          v-for="type in poolTypes"
-          :key="type.type"
-          class="group cursor-pointer rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-lg hover:-translate-y-1"
-          @click="selectedCategory = type.type"
-        >
-          <div class="flex items-center justify-between">
-            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 text-2xl">
-              {{ getIcon(type.type) }}
-            </div>
-            <span class="text-sm font-medium text-slate-400">{{ type.total }} Pools</span>
-          </div>
-          <h3 class="mt-3 text-lg font-semibold text-slate-800">{{ type.type }}</h3>
-          <div class="mt-4 grid grid-cols-2 gap-3">
-            <div>
-              <p class="text-xs text-slate-400">Active Agreements</p>
-              <p class="text-sm font-semibold text-slate-700">{{ type.active_agreements }}</p>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/30">
+              <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+              </svg>
             </div>
             <div>
-              <p class="text-xs text-slate-400">Monthly Revenue</p>
-              <p class="text-sm font-semibold text-emerald-600">${{ type.monthly_revenue.toLocaleString() }}</p>
-            </div>
-            <div class="col-span-2">
-              <p class="text-xs text-slate-400">Maintenance Due</p>
-              <p class="text-sm font-semibold" :class="type.maintenance_due > 0 ? 'text-amber-600' : 'text-emerald-600'">
-                {{ type.maintenance_due }}
-              </p>
+              <h1 class="text-xl lg:text-2xl font-bold text-slate-800 tracking-tight">Pool Types</h1>
+              <p class="text-sm text-slate-500 mt-0.5">Monitor every pool based on its chemical system.</p>
             </div>
           </div>
-          <div class="mt-4 flex items-center text-sm font-medium text-blue-600 transition-all group-hover:translate-x-1">
-            View Pools →
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Filters and Table Section -->
-    <div class="mt-8">
-      <div class="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm md:flex-row md:items-center">
-        <div class="relative flex-1">
-          <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search pools..."
-            class="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-700 transition-all focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/20"
-          />
-        </div>
-        <select
-          v-model="typeFilter"
-          class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 transition-all focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/20"
-        >
-          <option v-for="option in filterOptions.types" :key="option" :value="option">
-            {{ option }}
-          </option>
-        </select>
-        <select
-          v-model="statusFilter"
-          class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 transition-all focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/20"
-        >
-          <option v-for="option in filterOptions.statuses" :key="option" :value="option">
-            {{ option }}
-          </option>
-        </select>
-        <select
-          v-model="waterTypeFilter"
-          class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 transition-all focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/20"
-        >
-          <option v-for="option in filterOptions.waterTypes" :key="option" :value="option">
-            {{ option }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Table -->
-      <div class="mt-4 overflow-hidden rounded-2xl bg-white shadow-sm">
-        <div v-if="loading" class="animate-pulse">
-          <div v-for="i in 5" :key="i" class="flex items-center gap-4 border-b border-slate-100 p-4">
-            <div class="h-12 w-12 rounded-lg bg-slate-200"></div>
-            <div class="flex-1 space-y-2">
-              <div class="h-4 w-32 rounded bg-slate-200"></div>
-              <div class="h-3 w-24 rounded bg-slate-200"></div>
-            </div>
-            <div class="h-8 w-20 rounded bg-slate-200"></div>
-          </div>
-        </div>
-
-        <div v-else-if="filteredPools.length === 0" class="py-16 text-center">
-          <svg class="mx-auto h-12 w-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-          </svg>
-          <h3 class="mt-4 text-lg font-semibold text-slate-700">No pools found</h3>
-          <p class="mt-1 text-sm text-slate-500">No pools match the selected category or filters.</p>
-          <button class="mt-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-600/25 transition-all hover:shadow-blue-600/40">
-            Add Pool
+          <button @click="fetchAll" :disabled="loading" class="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 shadow-sm transition-all duration-200 disabled:opacity-50">
+            <svg :class="['w-4 h-4', loading ? 'animate-spin' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            <span class="hidden sm:inline">Refresh</span>
           </button>
         </div>
-
-        <div v-else class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b border-slate-200 bg-slate-50/50">
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Pool</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Customer</th>
-                <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 md:table-cell">Location</th>
-                <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 lg:table-cell">Size</th>
-                <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 xl:table-cell">Water Type</th>
-                <th class="hidden px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 lg:table-cell">Agreement</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Revenue</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="pool in paginatedPools"
-                :key="pool.id"
-                class="border-b border-slate-100 transition-colors hover:bg-slate-50/50"
-              >
-                <td class="px-4 py-3">
-                  <div>
-                    <p class="font-medium text-slate-800">{{ pool.name }}</p>
-                    <p class="text-xs text-slate-400">{{ pool.id }}</p>
-                  </div>
-                </td>
-                <td class="px-4 py-3">
-                  <div>
-                    <p class="text-sm text-slate-700">{{ pool.customer }}</p>
-                    <p class="text-xs text-slate-400">{{ pool.location }}</p>
-                  </div>
-                </td>
-                <td class="hidden px-4 py-3 text-sm text-slate-600 md:table-cell">{{ pool.location }}</td>
-                <td class="hidden px-4 py-3 text-sm text-slate-600 lg:table-cell">{{ pool.size }}</td>
-                <td class="hidden px-4 py-3 text-sm text-slate-600 xl:table-cell">{{ pool.water_type }}</td>
-                <td class="hidden px-4 py-3 text-sm text-slate-600 lg:table-cell">{{ pool.agreement }}</td>
-                <td class="px-4 py-3 text-sm font-medium text-emerald-600">${{ pool.monthly_value }}/mo</td>
-                <td class="px-4 py-3">
-                  <span
-                    class="inline-block rounded-full px-3 py-1 text-xs font-medium"
-                    :class="{
-                      'bg-emerald-100 text-emerald-700': pool.status === 'Active',
-                      'bg-amber-100 text-amber-700': pool.status === 'Maintenance Required',
-                      'bg-slate-100 text-slate-500': pool.status === 'Inactive'
-                    }"
-                  >
-                    {{ pool.status === 'Maintenance Required' ? 'Needs Attention' : pool.status }}
-                  </span>
-                </td>
-                <td class="px-4 py-3 text-right">
-                  <div class="relative inline-block text-left">
-                    <button
-                      class="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
-                      @click="toggleDropdown(pool.id)"
-                    >
-                      <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                      </svg>
-                    </button>
-                    <div
-                      v-if="activeDropdown === pool.id"
-                      class="absolute right-0 z-10 mt-1 w-48 rounded-lg border border-slate-200 bg-white shadow-lg"
-                    >
-                      <div class="py-1">
-                        <button
-                          v-for="action in actions"
-                          :key="action"
-                          class="block w-full px-4 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50"
-                        >
-                          {{ action }}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        <div v-if="filteredPools.length > 0" class="flex items-center justify-between border-t border-slate-200 px-4 py-3">
-          <p class="text-sm text-slate-500">
-            Showing {{ (currentPage - 1) * itemsPerPage + 1 }}-{{ Math.min(currentPage * itemsPerPage, filteredPools.length) }}
-            of {{ filteredPools.length }} pools
-          </p>
-          <div class="flex gap-2">
-            <button
-              :disabled="currentPage === 1"
-              class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-              @click="currentPage--"
-            >
-              Previous
-            </button>
-            <button
-              :disabled="currentPage === totalPages"
-              class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-              @click="currentPage++"
-            >
-              Next
-            </button>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- Drawer -->
-    <div
-      v-if="drawerOpen"
-      class="fixed inset-0 z-50 overflow-hidden"
-      @click.self="drawerOpen = false"
-    >
-      <div class="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
-      <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl transition-transform">
-        <div class="flex h-full flex-col">
-          <div class="border-b border-slate-200 px-6 py-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-xl font-semibold text-slate-800">{{ selectedCategory }} Pools</h2>
-                <p class="text-sm text-slate-500">{{ filteredPools.length }} Total</p>
+    <div class="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+
+      <!-- ===== SUMMARY STAT CARDS ===== -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+
+        <!-- Skeleton -->
+        <template v-if="loading">
+          <div v-for="i in 5" :key="i" class="rounded-2xl bg-white border border-slate-200 p-5 animate-pulse shadow-sm">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-200"></div>
+              <div class="h-4 bg-slate-200 rounded-lg w-20"></div>
+            </div>
+            <div class="h-8 bg-slate-200 rounded-lg w-16 mb-2"></div>
+            <div class="h-3 bg-slate-200 rounded-lg w-12 mb-3"></div>
+            <div class="h-1.5 bg-slate-200 rounded-full"></div>
+          </div>
+        </template>
+
+        <!-- Loaded Cards -->
+        <template v-else>
+          <div
+            v-for="type in typeConfigs"
+            :key="type.key"
+            @click="selectType(type.key)"
+            :class="[
+              'group relative overflow-hidden rounded-2xl border p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg',
+              selectedType === type.key
+                ? type.selectedBorder + ' ' + type.selectedBg + ' shadow-md'
+                : 'border-slate-200 bg-white hover:border-slate-300 shadow-sm'
+            ]"
+          >
+            <div :class="['absolute -top-6 -right-6 w-24 h-24 rounded-full blur-2xl transition-all duration-300', type.glowBg, 'group-hover:opacity-100 opacity-60']"></div>
+            <div class="relative">
+              <div class="flex items-center gap-3 mb-4">
+                <div :class="['flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br border', type.iconBg, type.iconBorder]">
+                  <component :is="type.icon" class="w-5 h-5 text-white" />
+                </div>
+                <span class="text-sm font-semibold text-slate-700">{{ type.label }}</span>
               </div>
-              <button class="rounded-lg p-2 text-slate-400 hover:bg-slate-100" @click="drawerOpen = false">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <div class="text-3xl font-bold text-slate-800 mb-1">{{ summary[type.key] ?? 0 }}</div>
+              <div class="text-xs text-slate-500 mb-3">{{ getPercentage(type.key) }}% of total</div>
+              <div class="w-full h-1.5 rounded-full bg-slate-200 overflow-hidden">
+                <div
+                  :class="['h-full rounded-full bg-gradient-to-r transition-all duration-700', type.progressGradient]"
+                  :style="{ width: getPercentage(type.key) + '%' }"
+                ></div>
+              </div>
             </div>
           </div>
-          <div class="flex-1 overflow-y-auto p-6">
-            <div class="grid grid-cols-2 gap-4">
-              <div class="rounded-xl bg-slate-50 p-4">
-                <p class="text-xs text-slate-400">Active Agreements</p>
-                <p class="text-lg font-semibold text-slate-800">
-                  {{ poolTypes.find(t => t.type === selectedCategory)?.active_agreements || 0 }}
-                </p>
-              </div>
-              <div class="rounded-xl bg-slate-50 p-4">
-                <p class="text-xs text-slate-400">Monthly Revenue</p>
-                <p class="text-lg font-semibold text-emerald-600">
-                  ${{ poolTypes.find(t => t.type === selectedCategory)?.monthly_revenue.toLocaleString() || 0 }}
-                </p>
-              </div>
-              <div class="col-span-2 rounded-xl bg-slate-50 p-4">
-                <p class="text-xs text-slate-400">Average Pool Size</p>
-                <p class="text-lg font-semibold text-slate-800">19,500 Gallons</p>
-              </div>
+        </template>
+      </div>
+
+      <!-- ===== DOUGHNUT CHART ===== -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h2 class="text-base font-bold text-slate-800">Pool Distribution</h2>
+              <p class="text-xs text-slate-500 mt-0.5">By chemical type</p>
             </div>
-            <div class="mt-6 space-y-3">
-              <div
-                v-for="pool in filteredPools.slice(0, 5)"
-                :key="pool.id"
-                class="rounded-xl border border-slate-100 p-4 transition-colors hover:bg-slate-50"
-              >
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="font-medium text-slate-800">{{ pool.name }}</p>
-                    <p class="text-sm text-slate-500">{{ pool.customer }}</p>
+            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+              {{ totalPools }} Total
+            </span>
+          </div>
+
+          <!-- Chart skeleton -->
+          <div v-if="loading" class="flex items-center justify-center h-64">
+            <div class="w-48 h-48 rounded-full bg-slate-200 animate-pulse relative">
+              <div class="absolute inset-8 rounded-full bg-white"></div>
+            </div>
+          </div>
+
+          <div v-else class="relative flex items-center justify-center">
+            <canvas ref="chartCanvas" class="max-w-xs max-h-64"></canvas>
+            <div class="absolute text-center pointer-events-none">
+              <div class="text-3xl font-bold text-slate-800">{{ totalPools }}</div>
+              <div class="text-xs text-slate-500">Pools</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+          <h2 class="text-base font-bold text-slate-800 mb-6">Type Breakdown</h2>
+
+          <div v-if="loading" class="space-y-4">
+            <div v-for="i in 5" :key="i" class="flex items-center gap-3 animate-pulse">
+              <div class="w-3 h-3 rounded-full bg-slate-200"></div>
+              <div class="flex-1 h-4 bg-slate-200 rounded-lg"></div>
+              <div class="w-12 h-4 bg-slate-200 rounded-lg"></div>
+            </div>
+          </div>
+
+          <div v-else class="space-y-3">
+            <div
+              v-for="type in typeConfigs"
+              :key="type.key"
+              @click="selectType(type.key)"
+              class="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-slate-50 transition-all duration-200 group"
+            >
+              <div :class="['w-3 h-3 rounded-full bg-gradient-to-r flex-shrink-0', type.progressGradient]"></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm font-medium text-slate-600 group-hover:text-slate-800 transition-colors">{{ type.label }}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400">{{ summary[type.key] ?? 0 }} pools</span>
+                    <span class="text-xs font-semibold text-slate-600">{{ getPercentage(type.key) }}%</span>
                   </div>
-                  <span class="text-sm font-medium text-emerald-600">${{ pool.monthly_value }}/mo</span>
+                </div>
+                <div class="w-full h-1 rounded-full bg-slate-200 overflow-hidden">
+                  <div :class="['h-full rounded-full bg-gradient-to-r transition-all duration-700', type.progressGradient]" :style="{ width: getPercentage(type.key) + '%' }"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- ===== CHEMICAL TYPE GRID ===== -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-bold text-slate-800">Chemical Systems</h2>
+          <button v-if="selectedType" @click="clearSelection" class="text-xs font-medium text-cyan-600 hover:text-cyan-700 transition-colors flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            Clear Selection
+          </button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <div
+            v-for="type in typeConfigs"
+            :key="type.key"
+            @click="selectType(type.key)"
+            :class="[
+              'rounded-3xl shadow-sm border p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group',
+              selectedType === type.key
+                ? type.selectedBorder + ' ' + type.selectedBg + ' shadow-md'
+                : 'border-slate-200 bg-white hover:border-slate-300'
+            ]"
+          >
+            <div :class="['flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br mb-4 transition-transform duration-300 group-hover:scale-110', type.iconBg]">
+              <component :is="type.icon" class="w-7 h-7 text-white" />
+            </div>
+            <h3 class="text-base font-bold text-slate-800 mb-1">{{ type.label }}</h3>
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-2xl font-bold text-slate-800">{{ summary[type.key] ?? 0 }}</span>
+              <span class="text-sm text-slate-500">pools</span>
+              <span :class="['ml-auto text-xs font-semibold px-2 py-0.5 rounded-full', type.badgeBg, type.badgeText]">{{ getPercentage(type.key) }}%</span>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">{{ type.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== POOLS TABLE ===== -->
+      <div v-if="selectedType">
+        <div class="flex items-center gap-3 mb-4">
+          <div :class="['flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br', selectedConfig?.iconBg]">
+            <component :is="selectedConfig?.icon" class="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">{{ selectedConfig?.label }} Pools</h2>
+            <p class="text-xs text-slate-500">{{ filteredPools.length }} pools found</p>
+          </div>
+        </div>
+
+        <!-- Table Skeleton -->
+        <div v-if="loading" class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div class="bg-slate-50 border-b border-slate-200 px-5 py-3">
+            <div class="h-4 bg-slate-200 rounded-lg w-full animate-pulse"></div>
+          </div>
+          <div class="divide-y divide-slate-100 bg-white">
+            <div v-for="i in 4" :key="i" class="px-5 py-4 animate-pulse">
+              <div class="flex items-center gap-4">
+                <div class="w-9 h-9 rounded-xl bg-slate-200"></div>
+                <div class="flex-1 space-y-2">
+                  <div class="h-4 bg-slate-200 rounded-lg w-1/3"></div>
+                  <div class="h-3 bg-slate-200 rounded-lg w-1/5"></div>
+                </div>
+                <div class="hidden md:flex gap-6">
+                  <div class="h-4 bg-slate-200 rounded-lg w-24"></div>
+                  <div class="h-4 bg-slate-200 rounded-lg w-16"></div>
+                  <div class="h-6 bg-slate-200 rounded-full w-20"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else-if="filteredPools.length === 0" class="flex flex-col items-center justify-center py-20 rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div class="relative mb-6">
+            <div :class="['absolute inset-0 rounded-full blur-2xl scale-150 opacity-30', selectedConfig?.glowBg]"></div>
+            <div :class="['relative flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br border border-white/10', selectedConfig?.iconBg]">
+              <component :is="selectedConfig?.icon" class="w-10 h-10 text-white" />
+            </div>
+          </div>
+          <h3 class="text-lg font-bold text-slate-700 mb-2">No {{ selectedConfig?.label }} Pools Found</h3>
+          <p class="text-sm text-slate-500 text-center max-w-xs mb-6">There are no pools using the {{ selectedConfig?.label?.toLowerCase() }} chemical system yet.</p>
+          <button @click="clearSelection" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/25 transition-all hover:-translate-y-0.5">
+            View All Pools
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div v-else class="rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div class="overflow-x-auto">
+            <!-- Table Header -->
+            <div class="bg-slate-50 border-b border-slate-200 px-5 py-3 min-w-[700px]">
+              <div class="grid grid-cols-12 gap-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <div class="col-span-3">Pool</div>
+                <div class="col-span-2">Customer</div>
+                <div class="col-span-1 text-right">Volume</div>
+                <div class="col-span-2">Chemical</div>
+                <div class="col-span-1 text-center">Equipment</div>
+                <div class="col-span-1">Last Service</div>
+                <div class="col-span-1 text-center">Status</div>
+                <div class="col-span-1 text-right">Actions</div>
+              </div>
+            </div>
+
+            <!-- Table Body -->
+            <div class="divide-y divide-slate-100 bg-white min-w-[700px]">
+              <div
+                v-for="pool in filteredPools"
+                :key="pool.id"
+                class="group grid grid-cols-12 gap-4 px-5 py-3.5 items-center hover:bg-slate-50 transition-all duration-200 border-l-2 border-transparent hover:border-cyan-500"
+              >
+                <!-- Pool -->
+                <div class="col-span-3 flex items-center gap-3">
+                  <div :class="['flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br border border-white/10 flex-shrink-0', selectedConfig?.iconBg]">
+                    <component :is="selectedConfig?.icon" class="w-4 h-4 text-white" />
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-sm font-semibold text-slate-700 truncate">{{ pool.label }}</div>
+                    <div class="text-xs text-slate-400 font-mono">#{{ String(pool.id).padStart(4, '0') }}</div>
+                  </div>
+                </div>
+
+                <!-- Customer -->
+                <div class="col-span-2 flex items-center gap-2">
+                  <div :class="['flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold text-white flex-shrink-0', getAvatarColor(pool.customer?.contact_name || '')]">
+                    {{ (pool.customer?.contact_name || '?').charAt(0).toUpperCase() }}
+                  </div>
+                  <span class="text-sm text-slate-600 truncate">{{ pool.customer?.contact_name || 'N/A' }}</span>
+                </div>
+
+                <!-- Volume -->
+                <div class="col-span-1 text-right">
+                  <span class="text-sm font-semibold text-slate-700">{{ formatVolume(pool.volume_gallons) }}</span>
+                  <span class="text-xs text-slate-400 ml-0.5">gal</span>
+                </div>
+
+                <!-- Chemical -->
+                <div class="col-span-2">
+                  <span :class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border', getChemicalStyle(pool.chemical_type)]">
+                    <span :class="['w-1.5 h-1.5 rounded-full', getChemicalDot(pool.chemical_type)]"></span>
+                    {{ pool.chemical_type }}
+                  </span>
+                </div>
+
+                <!-- Equipment -->
+                <div class="col-span-1 flex justify-center">
+                  <span class="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold bg-violet-50 text-violet-600 border border-violet-200">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    </svg>
+                    {{ pool.equipment_count ?? 0 }}
+                  </span>
+                </div>
+
+                <!-- Last Service -->
+                <div class="col-span-1">
+                  <span class="text-xs text-slate-500">{{ formatDate(pool.updated_at) }}</span>
+                </div>
+
+                <!-- Status -->
+                <div class="col-span-1 flex justify-center">
+                  <span :class="['inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border', pool.is_active ? 'bg-emerald-50 text-emerald-600 border-emerald-200' : 'bg-rose-50 text-rose-600 border-rose-200']">
+                    <span :class="['w-1.5 h-1.5 rounded-full', pool.is_active ? 'bg-emerald-400 animate-pulse' : 'bg-rose-400']"></span>
+                    {{ pool.is_active ? 'Active' : 'Inactive' }}
+                  </span>
+                </div>
+
+                <!-- Actions -->
+                <div class="col-span-1 flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <button class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-cyan-50 hover:text-cyan-600 text-slate-400 border border-slate-200 hover:border-cyan-200 transition-all duration-200" title="View">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                  </button>
+                  <button class="flex items-center justify-center w-7 h-7 rounded-lg bg-slate-100 hover:bg-amber-50 hover:text-amber-600 text-slate-400 border border-slate-200 hover:border-amber-200 transition-all duration-200" title="Edit">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error Banner -->
+      <div v-if="error" class="flex items-center gap-3 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm">
+        <svg class="w-5 h-5 flex-shrink-0 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+        {{ error }}
+        <button @click="fetchAll" class="ml-auto text-xs font-semibold underline hover:no-underline">Retry</button>
+      </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch, nextTick, defineComponent, h } from 'vue'
+import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js'
+import api from '../../../../services/api.js'
 
-// Loading State
+Chart.register(DoughnutController, ArcElement, Tooltip, Legend)
+
+// ===== ICON COMPONENTS (inline Heroicons SVG) =====
+const DropletIcon = defineComponent({
+  render: () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M12 2C8.5 8 5 13 5 16a7 7 0 0014 0c0-3-3.5-8-7-14z' })
+  ])
+})
+
+const SparklesIcon = defineComponent({
+  render: () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' })
+  ])
+})
+
+const BeakerIcon = defineComponent({
+  render: () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z' })
+  ])
+})
+
+const ShieldIcon = defineComponent({
+  render: () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' })
+  ])
+})
+
+const LeafIcon = defineComponent({
+  render: () => h('svg', { fill: 'none', stroke: 'currentColor', viewBox: '0 0 24 24' }, [
+    h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M5 3s5 0 9 4 5 9 5 9-5 0-9-4S5 3 5 3zm0 0l7 14' })
+  ])
+})
+
+// ===== TYPE CONFIG =====
+const typeConfigs = [
+  {
+    key: 'chlorine',
+    label: 'Chlorine',
+    description: 'Traditional chlorine sanitation system.',
+    icon: DropletIcon,
+    iconBg: 'from-blue-500 to-cyan-500',
+    iconBorder: 'border-blue-400/20',
+    progressGradient: 'from-blue-500 to-cyan-500',
+    glowBg: 'bg-blue-500/10',
+    selectedBorder: 'border-blue-500/50',
+    selectedBg: 'bg-blue-50',
+    badgeBg: 'bg-blue-100',
+    badgeText: 'text-blue-600',
+    chartColor: '#3b82f6',
+  },
+  {
+    key: 'salt',
+    label: 'Salt',
+    description: 'Saltwater chlorination system.',
+    icon: SparklesIcon,
+    iconBg: 'from-emerald-500 to-green-500',
+    iconBorder: 'border-emerald-400/20',
+    progressGradient: 'from-emerald-500 to-green-500',
+    glowBg: 'bg-emerald-500/10',
+    selectedBorder: 'border-emerald-500/50',
+    selectedBg: 'bg-emerald-50',
+    badgeBg: 'bg-emerald-100',
+    badgeText: 'text-emerald-600',
+    chartColor: '#10b981',
+  },
+  {
+    key: 'bromine',
+    label: 'Bromine',
+    description: 'Ideal for spas and indoor pools.',
+    icon: BeakerIcon,
+    iconBg: 'from-orange-500 to-amber-500',
+    iconBorder: 'border-orange-400/20',
+    progressGradient: 'from-orange-500 to-amber-500',
+    glowBg: 'bg-orange-500/10',
+    selectedBorder: 'border-orange-500/50',
+    selectedBg: 'bg-orange-50',
+    badgeBg: 'bg-orange-100',
+    badgeText: 'text-orange-600',
+    chartColor: '#f97316',
+  },
+  {
+    key: 'baquacil',
+    label: 'Baquacil',
+    description: 'Chlorine-free sanitization.',
+    icon: ShieldIcon,
+    iconBg: 'from-purple-500 to-fuchsia-500',
+    iconBorder: 'border-purple-400/20',
+    progressGradient: 'from-purple-500 to-fuchsia-500',
+    glowBg: 'bg-purple-500/10',
+    selectedBorder: 'border-purple-500/50',
+    selectedBg: 'bg-purple-50',
+    badgeBg: 'bg-purple-100',
+    badgeText: 'text-purple-600',
+    chartColor: '#a855f7',
+  },
+  {
+    key: 'mineral',
+    label: 'Mineral',
+    description: 'Mineral purification system.',
+    icon: LeafIcon,
+    iconBg: 'from-teal-500 to-cyan-500',
+    iconBorder: 'border-teal-400/20',
+    progressGradient: 'from-teal-500 to-cyan-500',
+    glowBg: 'bg-teal-500/10',
+    selectedBorder: 'border-teal-500/50',
+    selectedBg: 'bg-teal-50',
+    badgeBg: 'bg-teal-100',
+    badgeText: 'text-teal-600',
+    chartColor: '#14b8a6',
+  },
+]
+
+// ===== STATE =====
+const allPools = ref([])
+const summary = ref({ chlorine: 0, salt: 0, bromine: 0, baquacil: 0, mineral: 0 })
+const filteredPools = ref([])
+const selectedType = ref(null)
 const loading = ref(false)
+const error = ref(null)
+const chartCanvas = ref(null)
+let chartInstance = null
 
-// Summary Cards Data
-const summaryCards = {
-  totalPools: 214,
-  residential: 168,
-  commercial: 32,
-  spa: 9,
-  hotel: 5
+// ===== COMPUTED =====
+const totalPools = computed(() =>
+  Object.values(summary.value).reduce((a, b) => a + b, 0)
+)
+
+const selectedConfig = computed(() =>
+  typeConfigs.find(t => t.key === selectedType.value) ?? null
+)
+
+function getPercentage(key) {
+  if (!totalPools.value) return 0
+  return Math.round(((summary.value[key] ?? 0) / totalPools.value) * 100)
 }
 
-// Pool Types Data
-const poolTypes = ref([
-  {
-    type: 'Residential',
-    icon: 'Home',
-    total: 168,
-    active_agreements: 152,
-    monthly_revenue: 27360,
-    maintenance_due: 10
-  },
-  {
-    type: 'Commercial',
-    icon: 'Building',
-    total: 32,
-    active_agreements: 29,
-    monthly_revenue: 14800,
-    maintenance_due: 3
-  },
-  {
-    type: 'Spa',
-    icon: 'Waves',
-    total: 9,
-    active_agreements: 8,
-    monthly_revenue: 1200,
-    maintenance_due: 1
-  },
-  {
-    type: 'Hotel',
-    icon: 'Hotel',
-    total: 5,
-    active_agreements: 5,
-    monthly_revenue: 8500,
-    maintenance_due: 0
-  }
-])
-
-// Pools Data
-const pools = ref([
-  {
-    id: 'POOL-1001',
-    name: 'Backyard Pool',
-    customer: 'John Smith',
-    type: 'Residential',
-    location: 'Miami, FL',
-    size: '18,000 Gallons',
-    water_type: 'Chlorine',
-    agreement: 'Weekly Pool Care',
-    monthly_value: 180,
-    status: 'Active'
-  },
-  {
-    id: 'POOL-1002',
-    name: 'Villa Main Pool',
-    customer: 'Sarah Johnson',
-    type: 'Residential',
-    location: 'Miami, FL',
-    size: '24,000 Gallons',
-    water_type: 'Salt Water',
-    agreement: 'Premium Pool Care',
-    monthly_value: 320,
-    status: 'Maintenance Required'
-  },
-  {
-    id: 'POOL-1003',
-    name: 'Ocean Resort Pool',
-    customer: 'Ocean Resort',
-    type: 'Hotel',
-    location: 'Miami Beach, FL',
-    size: '65,000 Gallons',
-    water_type: 'Chlorine',
-    agreement: 'Commercial Premium',
-    monthly_value: 2500,
-    status: 'Active'
-  },
-  {
-    id: 'POOL-1004',
-    name: 'Community Center Pool',
-    customer: 'City of Miami',
-    type: 'Commercial',
-    location: 'Miami, FL',
-    size: '42,000 Gallons',
-    water_type: 'Chlorine',
-    agreement: 'Commercial Standard',
-    monthly_value: 1200,
-    status: 'Active'
-  },
-  {
-    id: 'POOL-1005',
-    name: 'Luxury Spa',
-    customer: 'Robert Chen',
-    type: 'Spa',
-    location: 'Coral Gables, FL',
-    size: '2,500 Gallons',
-    water_type: 'Salt Water',
-    agreement: 'Spa Care Plus',
-    monthly_value: 150,
-    status: 'Active'
-  }
-])
-
-// Filters
-const searchQuery = ref('')
-const typeFilter = ref('All')
-const statusFilter = ref('All')
-const waterTypeFilter = ref('All')
-const selectedCategory = ref('Residential')
-const drawerOpen = ref(false)
-const activeDropdown = ref(null)
-const currentPage = ref(1)
-const itemsPerPage = ref(5)
-
-// Filter Options
-const filterOptions = {
-  types: ['All', 'Residential', 'Commercial', 'Spa', 'Hotel', 'Community'],
-  statuses: ['All', 'Active', 'Inactive', 'Maintenance Required'],
-  waterTypes: ['All', 'Chlorine', 'Salt Water']
-}
-
-// Actions
-const actions = ['View Pool', 'Edit Pool', 'View Equipment', 'Service History', 'Create Maintenance', 'Delete Pool']
-
-// Computed
-const filteredPools = computed(() => {
-  let result = pools.value
-
-  // Search filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    result = result.filter(pool =>
-      pool.name.toLowerCase().includes(query) ||
-      pool.customer.toLowerCase().includes(query) ||
-      pool.id.toLowerCase().includes(query)
-    )
-  }
-
-  // Type filter
-  if (typeFilter.value !== 'All') {
-    result = result.filter(pool => pool.type === typeFilter.value)
-  }
-
-  // Status filter
-  if (statusFilter.value !== 'All') {
-    result = result.filter(pool => pool.status === statusFilter.value)
-  }
-
-  // Water type filter
-  if (waterTypeFilter.value !== 'All') {
-    result = result.filter(pool => pool.water_type === waterTypeFilter.value)
-  }
-
-  // Category selection filter
-  if (selectedCategory.value) {
-    result = result.filter(pool => pool.type === selectedCategory.value)
-  }
-
-  return result
-})
-
-const totalPages = computed(() => {
-  return Math.ceil(filteredPools.value.length / itemsPerPage.value)
-})
-
-const paginatedPools = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage.value
-  const end = start + itemsPerPage.value
-  return filteredPools.value.slice(start, end)
-})
-
-// Methods
-const getIcon = (type) => {
-  const icons = {
-    'Residential': '🏠',
-    'Commercial': '🏢',
-    'Spa': '🌊',
-    'Hotel': '🏨',
-    'Community': '🏘️'
-  }
-  return icons[type] || '🏊'
-}
-
-const toggleDropdown = (poolId) => {
-  if (activeDropdown.value === poolId) {
-    activeDropdown.value = null
-  } else {
-    activeDropdown.value = poolId
-  }
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.relative.inline-block')) {
-    activeDropdown.value = null
-  }
-})
-
-// Watch for changes to update pagination
-import { watch } from 'vue'
-watch([searchQuery, typeFilter, statusFilter, waterTypeFilter, selectedCategory], () => {
-  currentPage.value = 1
-})
-
-// API Integration (Commented)
-/*
-import axios from '@/services/api'
-
-const fetchPoolsByType = async (type) => {
+// ===== API =====
+async function fetchPools() {
   loading.value = true
+  error.value = null
   try {
-    const response = await axios.get(`/pools?type=${type}`)
-    pools.value = response.data.data
-  } catch (error) {
-    console.error(error)
+    const response = await api().get('/pool-management/pools')
+    const data = response.data
+    
+    // Extract pools array from paginated response
+    const pools = data.data || data || []
+    allPools.value = pools
+    
+    // Calculate summary
+    const summaryData = { chlorine: 0, salt: 0, bromine: 0, baquacil: 0, mineral: 0 }
+    pools.forEach(pool => {
+      const type = pool.chemical_type?.toLowerCase()
+      if (summaryData.hasOwnProperty(type)) {
+        summaryData[type]++
+      }
+    })
+    summary.value = summaryData
+    
+    return pools
+  } catch (e) {
+    error.value = 'Failed to load pools data. Please try again.'
+    console.error('Error fetching pools:', e)
+    throw e
   } finally {
     loading.value = false
   }
 }
-*/
+
+async function fetchAll() {
+  try {
+    await fetchPools()
+    if (selectedType.value) {
+      filterPoolsByType(selectedType.value)
+    }
+  } catch (e) {
+    // Error already handled in fetchPools
+  }
+}
+
+// ===== ACTIONS =====
+function filterPoolsByType(type) {
+  loading.value = true
+  try {
+    const filtered = allPools.value.filter(pool => 
+      pool.chemical_type?.toLowerCase() === type.toLowerCase()
+    )
+    filteredPools.value = filtered
+  } catch (e) {
+    error.value = `Failed to filter ${type} pools.`
+    console.error('Error filtering pools:', e)
+  } finally {
+    loading.value = false
+  }
+}
+
+function selectType(key) {
+  if (selectedType.value === key) {
+    clearSelection()
+    return
+  }
+  selectedType.value = key
+  filterPoolsByType(key)
+}
+
+function clearSelection() {
+  selectedType.value = null
+  filteredPools.value = []
+}
+
+// ===== CHART =====
+function buildChart() {
+  if (!chartCanvas.value) return
+  if (chartInstance) chartInstance.destroy()
+
+  const data = typeConfigs.map(t => summary.value[t.key] ?? 0)
+  const colors = typeConfigs.map(t => t.chartColor)
+  const labels = typeConfigs.map(t => t.label)
+
+  chartInstance = new Chart(chartCanvas.value, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: colors.map(c => c + 'cc'),
+        borderColor: colors,
+        borderWidth: 2,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '72%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#ffffff',
+          borderColor: '#e2e8f0',
+          borderWidth: 1,
+          titleColor: '#1e293b',
+          bodyColor: '#64748b',
+          padding: 10,
+          callbacks: {
+            label: (ctx) => ` ${ctx.label}: ${ctx.parsed} pools (${getPercentage(typeConfigs[ctx.dataIndex].key)}%)`
+          }
+        }
+      },
+      animation: { duration: 800, easing: 'easeInOutQuart' }
+    }
+  })
+}
+
+// ===== STYLE HELPERS =====
+function getChemicalStyle(type) {
+  const map = {
+    chlorine: 'bg-blue-50 text-blue-600 border-blue-200',
+    salt: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+    bromine: 'bg-orange-50 text-orange-600 border-orange-200',
+    baquacil: 'bg-purple-50 text-purple-600 border-purple-200',
+    mineral: 'bg-teal-50 text-teal-600 border-teal-200',
+  }
+  return map[type?.toLowerCase()] || 'bg-slate-50 text-slate-600 border-slate-200'
+}
+
+function getChemicalDot(type) {
+  const map = {
+    chlorine: 'bg-blue-500',
+    salt: 'bg-emerald-500',
+    bromine: 'bg-orange-500',
+    baquacil: 'bg-purple-500',
+    mineral: 'bg-teal-500',
+  }
+  return map[type?.toLowerCase()] || 'bg-slate-500'
+}
+
+function getAvatarColor(name) {
+  const colors = ['bg-violet-600', 'bg-blue-600', 'bg-cyan-600', 'bg-emerald-600', 'bg-amber-600', 'bg-rose-600', 'bg-pink-600', 'bg-indigo-600']
+  return colors[(name?.charCodeAt(0) || 0) % colors.length]
+}
+
+function formatVolume(v) {
+  return v ? Number(v).toLocaleString() : '—'
+}
+
+function formatDate(date) {
+  if (!date) return '—'
+  try {
+    const d = new Date(date)
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  } catch {
+    return '—'
+  }
+}
+
+// ===== LIFECYCLE =====
+onMounted(async () => {
+  await fetchPools()
+  await nextTick()
+  buildChart()
+})
+
+watch(summary, async () => {
+  await nextTick()
+  buildChart()
+}, { deep: true })
 </script>
 
 <style scoped>
-/* Smooth transitions for dropdown and drawer */
-.relative.inline-block,
-.fixed.inset-0 {
-  transition: all 0.2s ease;
-}
-
-/* Custom scrollbar for drawer */
-.overflow-y-auto::-webkit-scrollbar {
-  width: 4px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
-
-.overflow-y-auto::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+.font-inter { font-family: 'Inter', sans-serif; }
 </style>

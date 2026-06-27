@@ -244,7 +244,7 @@ const menus = [
       { to: '/provider/pools', icon: 'ri-list-unordered', text: 'All Pools' },
       { to: '/provider/pools-types', icon: 'ri-grid-line', text: 'By Type' },
       { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Equipment Register' },
-      { to: '/provider/pools-map', icon: 'ri-map-2-line', text: 'Pool Map View' }
+      // { to: '/provider/pools-map', icon: 'ri-map-2-line', text: 'Pool Map View' }
     ]
   },
   {
@@ -254,10 +254,7 @@ const menus = [
     groups: [],
     links: [
       { to: '/provider/services-calendar', icon: 'ri-calendar-2-line', text: 'Calendar View' },
-      // { to: '/provider/services-route-board', icon: 'ri-road-map-line', text: 'Route Board (Today)' },
-      // { to: '/provider/services-route-builder', icon: 'ri-route-line', text: 'Route Builder' },
-      { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'Unassigned Visits' },
-      // { to: '/provider/services-season-manager', icon: 'ri-calendar-event-line', text: 'Season Manager' }
+      { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'List View' },
     ]
   },
   {

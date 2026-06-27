@@ -13,25 +13,20 @@
           <!-- Customer Selection -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Customer Information</h2>
-            
+
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Select Customer *</label>
-                <select
-                  v-model="form.customer_id"
+                <select v-model="form.customer_id"
                   class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none"
-                  @change="onCustomerChange"
-                >
+                  @change="onCustomerChange">
                   <option value="">Select a customer...</option>
-                  <option 
-                    v-for="customer in customers" 
-                    :key="customer.id" 
-                    :value="customer.id"
-                  >
+                  <option v-for="customer in customers" :key="customer.id" :value="customer.id">
                     {{ customer.contact_name }} - {{ customer.email }}
                   </option>
                 </select>
-                <p v-if="validationErrors.customer_id" class="mt-2 text-sm text-red-600">{{ validationErrors.customer_id[0] }}</p>
+                <p v-if="validationErrors.customer_id" class="mt-2 text-sm text-red-600">{{
+                  validationErrors.customer_id[0] }}</p>
               </div>
 
               <!-- Customer Details Card -->
@@ -55,7 +50,9 @@
                   </div>
                   <div>
                     <p class="text-sm text-gray-500">Status</p>
-                    <span :class="selectedCustomer.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'" class="inline-flex px-2 py-1 text-xs font-medium rounded-full">
+                    <span
+                      :class="selectedCustomer.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'"
+                      class="inline-flex px-2 py-1 text-xs font-medium rounded-full">
                       {{ selectedCustomer.status || 'N/A' }}
                     </span>
                   </div>
@@ -69,23 +66,24 @@
           </div>
 
           <!-- Existing Agreement Warning -->
-          <div v-if="selectedCustomer && hasActiveAgreement" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
+          <div v-if="selectedCustomer && hasActiveAgreement"
+            class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg">
             <div class="flex">
               <div class="flex-shrink-0">
                 <ExclamationTriangleIcon class="h-5 w-5 text-yellow-400" aria-hidden="true" />
               </div>
-              <div class="ml-3">
+              <div class="ml-3 flex-1">
                 <h3 class="text-sm font-medium text-yellow-800">Active Agreement Warning</h3>
                 <div class="mt-2 text-sm text-yellow-700">
                   <p>This customer already has an active service agreement.</p>
                   <div class="mt-2 bg-yellow-100 rounded p-3">
                     <div class="grid grid-cols-2 gap-2 text-sm">
                       <div>
-                        <span class="font-medium">Agreement ID:</span>
+                        <span class="font-medium">Agreement ID: </span>
                         <span>#{{ activeAgreement.id }}</span>
                       </div>
                       <div>
-                        <span class="font-medium">Frequency:</span>
+                        <span class="font-medium">Frequency: </span>
                         <span>{{ activeAgreement.frequency }}</span>
                       </div>
                       <div>
@@ -93,12 +91,29 @@
                         <span>${{ activeAgreement.price }}</span>
                       </div>
                       <div>
-                        <span class="font-medium">Start Date:</span>
+                        <span class="font-medium">Start Date: </span>
                         <span>{{ activeAgreement.start_date }}</span>
                       </div>
                       <div class="col-span-2">
-                        <span class="font-medium">End Date:</span>
+                        <span class="font-medium">End Date: </span>
                         <span>{{ activeAgreement.end_date || 'No end date' }}</span>
+                      </div>
+                      <div class="col-span-2">
+                        <span class="font-medium">Associated Pools: </span>
+                        <div class="mt-1 flex flex-wrap gap-1">
+                          <span v-for="pool in activeAgreement.pools" :key="pool.id"
+                            class="inline-flex items-center px-2 py-1 bg-yellow-200 text-yellow-800 text-xs font-medium rounded">
+                            {{ pool.label || pool.name }}
+                          </span>
+                          <span v-if="!activeAgreement.pools || activeAgreement.pools.length === 0"
+                            class="text-yellow-600 text-xs">
+                            No pools associated
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-span-2" v-if="activeAgreement.assigned_technician_id">
+                        <span class="font-medium">Assigned Technician: </span>
+                        <span>{{ getTechnicianName(activeAgreement.assigned_technician_id) || 'Unassigned' }}</span>
                       </div>
                     </div>
                   </div>
@@ -110,25 +125,17 @@
           <!-- Pool Selection -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Pool Selection *</h2>
-            
+
             <div v-if="selectedCustomer && selectedCustomer.pools && selectedCustomer.pools.length > 0">
               <p class="text-sm text-gray-600 mb-4">Select at least one pool for this agreement</p>
               <div class="space-y-3">
-                <div
-                  v-for="pool in selectedCustomer.pools"
-                  :key="pool.id"
-                  class="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <input
-                    type="checkbox"
-                    :id="`pool-${pool.id}`"
-                    :value="pool.id"
-                    v-model="form.pool_ids"
-                    class="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                  />
+                <div v-for="pool in selectedCustomer.pools" :key="pool.id"
+                  class="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                  <input type="checkbox" :id="`pool-${pool.id}`" :value="pool.id" v-model="form.pool_ids"
+                    class="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" />
                   <label :for="`pool-${pool.id}`" class="flex-1 cursor-pointer">
                     <div class="flex flex-col">
-                      <span class="font-medium text-gray-900">{{ pool.name }}</span>
+                      <span class="font-medium text-gray-900">{{ pool.label }}</span>
                       <div class="grid grid-cols-3 gap-2 mt-1 text-sm text-gray-600">
                         <span>Chemical: {{ pool.chemical_type || 'N/A' }}</span>
                         <span>Volume: {{ formatGallons(pool.volume_gallons) }}</span>
@@ -138,7 +145,8 @@
                   </label>
                 </div>
               </div>
-              <p v-if="validationErrors.pool_ids" class="mt-2 text-sm text-red-600">{{ validationErrors.pool_ids[0] }}</p>
+              <p v-if="validationErrors.pool_ids" class="mt-2 text-sm text-red-600">{{ validationErrors.pool_ids[0] }}
+              </p>
             </div>
             <div v-else-if="selectedCustomer" class="text-center py-8">
               <p class="text-gray-500">No pools found for this customer.</p>
@@ -151,86 +159,91 @@
           <!-- Agreement Details -->
           <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4">Agreement Details</h2>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Frequency *</label>
-                <select
-                  v-model="form.frequency"
-                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none"
-                >
+                <select v-model="form.frequency"
+                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none">
                   <option value="weekly">Weekly</option>
                   <option value="biweekly">Biweekly</option>
                   <option value="monthly">Monthly</option>
                 </select>
-                <p v-if="validationErrors.frequency" class="mt-2 text-sm text-red-600">{{ validationErrors.frequency[0] }}</p>
+                <p v-if="validationErrors.frequency" class="mt-2 text-sm text-red-600">{{ validationErrors.frequency[0]
+                }}</p>
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Billing Cycle *</label>
-                <select
-                  v-model="form.billing_cycle"
-                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none"
-                >
+                <select v-model="form.billing_cycle"
+                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none">
                   <option value="weekly">Weekly</option>
                   <option value="biweekly">Biweekly</option>
                   <option value="monthly">Monthly</option>
                 </select>
-                <p v-if="validationErrors.billing_cycle" class="mt-2 text-sm text-red-600">{{ validationErrors.billing_cycle[0] }}</p>
+                <p v-if="validationErrors.billing_cycle" class="mt-2 text-sm text-red-600">{{
+                  validationErrors.billing_cycle[0] }}</p>
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Price *</label>
                 <div class="relative">
                   <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
-                  <input
-                    type="number"
-                    v-model="form.price"
-                    step="0.01"
-                    min="0.01"
+                  <input type="number" v-model="form.price" step="0.01" min="0.01"
                     class="w-full rounded-lg border border-gray-300 bg-white py-3 pl-8 pr-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                    placeholder="0.00"
-                  />
+                    placeholder="0.00" />
                 </div>
                 <p v-if="validationErrors.price" class="mt-2 text-sm text-red-600">{{ validationErrors.price[0] }}</p>
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Assigned Technician</label>
-                <select
-                  v-model="form.assigned_technician_id"
-                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none"
-                >
-                  <option value="">Unassigned</option>
+                <select v-model="form.assigned_technician_id"
+                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none">
+                  <option value="">-- Unassigned --</option>
                   <option v-for="technician in technicians" :key="technician.id" :value="technician.id">
                     {{ technician.name }}
                   </option>
                 </select>
-                <p v-if="technicians.length === 0" class="mt-2 text-sm text-yellow-600">
-                  No technicians available. Agreement can still be created without assigning a technician.
-                </p>
+                <p class="mt-2 text-sm text-gray-500">Optional: Leave unassigned to assign later</p>
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Start Date *</label>
-                <input
-                  type="date"
-                  v-model="form.start_date"
-                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                />
-                <p v-if="validationErrors.start_date" class="mt-2 text-sm text-red-600">{{ validationErrors.start_date[0] }}</p>
+                <input type="date" v-model="form.start_date"
+                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
+                <p v-if="validationErrors.start_date" class="mt-2 text-sm text-red-600">{{
+                  validationErrors.start_date[0] }}</p>
               </div>
 
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">End Date</label>
-                <input
-                  type="date"
-                  v-model="form.end_date"
-                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                />
-                <p v-if="validationErrors.end_date" class="mt-2 text-sm text-red-600">{{ validationErrors.end_date[0] }}</p>
+                <input type="date" v-model="form.end_date"
+                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
+                <p v-if="validationErrors.end_date" class="mt-2 text-sm text-red-600">{{ validationErrors.end_date[0] }}
+                </p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Start Time *</label>
+                <input type="time" v-model="form.start_time"
+                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
+                <p v-if="validationErrors.start_time" class="mt-2 text-sm text-red-600">
+                  {{ validationErrors.start_time[0] }}
+                </p>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">End Time</label>
+                <input type="time" v-model="form.end_time"
+                  class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" />
+                <p v-if="validationErrors.end_time" class="mt-2 text-sm text-red-600">
+                  {{ validationErrors.end_time[0] }}
+                </p>
+                <p class="mt-1 text-sm text-gray-500">Optional: Leave empty for no end time</p>
               </div>
             </div>
+
+
 
             <div class="mt-4">
               <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -240,7 +253,9 @@
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" v-model="form.auto_renew" class="sr-only peer" />
-                  <div class="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                  <div
+                    class="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
+                  </div>
                 </label>
               </div>
             </div>
@@ -248,24 +263,22 @@
 
           <!-- Actions -->
           <div class="flex flex-col sm:flex-row gap-4">
-            <button
-              @click="createAgreement"
-              :disabled="submitting || !isFormValid"
-              class="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <button @click="createAgreement" :disabled="submitting || !isFormValid"
+              class="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
               <span v-if="!submitting">Create Agreement</span>
               <span v-else class="flex items-center justify-center">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
                 </svg>
                 Creating Agreement...
               </span>
             </button>
-            <button
-              @click="cancel"
-              class="flex-1 bg-white border border-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500/20 transition-colors"
-            >
+            <button @click="cancel"
+              class="flex-1 bg-white border border-gray-300 text-gray-700 py-3 px-6 rounded-lg font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500/20 transition-colors">
               Cancel
             </button>
           </div>
@@ -276,7 +289,7 @@
           <div class="sticky top-8">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <h2 class="text-lg font-semibold text-gray-900 mb-4">Agreement Summary</h2>
-              
+
               <div class="space-y-4">
                 <div>
                   <p class="text-sm text-gray-500">Customer</p>
@@ -287,11 +300,8 @@
                   <p class="text-sm text-gray-500">Selected Pools</p>
                   <p class="font-medium text-gray-900">{{ form.pool_ids.length }} pool(s) selected</p>
                   <div class="mt-1 flex flex-wrap gap-1">
-                    <span
-                      v-for="poolId in form.pool_ids"
-                      :key="poolId"
-                      class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded"
-                    >
+                    <span v-for="poolId in form.pool_ids" :key="poolId"
+                      class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded">
                       {{ getPoolName(poolId) }}
                     </span>
                   </div>
@@ -377,17 +387,25 @@ const selectedTechnician = computed(() => {
 
 const hasActiveAgreement = computed(() => {
   if (!selectedCustomer.value || !selectedCustomer.value.agreements) return false
-  return selectedCustomer.value.agreements.some(agreement => 
+  return selectedCustomer.value.agreements.some(agreement =>
     agreement.status === 'active' || agreement.status === 'Active'
   )
 })
 
 const activeAgreement = computed(() => {
   if (!selectedCustomer.value || !selectedCustomer.value.agreements) return null
-  return selectedCustomer.value.agreements.find(agreement => 
+  return selectedCustomer.value.agreements.find(agreement =>
     agreement.status === 'active' || agreement.status === 'Active'
   )
 })
+
+
+
+const getTechnicianName = (technicianId) => {
+  if (!technicianId) return null
+  const technician = technicians.value.find(t => t.id == technicianId)
+  return technician ? technician.name : null
+}
 
 const isFormValid = computed(() => {
   return (
@@ -419,7 +437,7 @@ const onCustomerChange = () => {
 const loadCustomers = async () => {
   try {
     const response = await api().get('/customer-management/customers-advance', {
-      params: { with: 'pools,agreements' }
+      params: { with: 'pools,agreements.pools' }
     })
     customers.value = response.data.data || []
   } catch (error) {
@@ -435,7 +453,7 @@ const loadCustomers = async () => {
 const loadTechnicians = async () => {
   try {
     const response = await api().get('/user-management/technicians')
-    technicians.value = response.data.data || []
+    technicians.value = response.data || []
   } catch (error) {
     console.error('Failed to load technicians:', error)
     // Non-critical, just log error
@@ -487,19 +505,48 @@ const createAgreement = async () => {
       assigned_technician_id: form.assigned_technician_id || null,
       start_date: form.start_date,
       end_date: form.end_date || null,
-      auto_renew: form.auto_renew,
-      pool_ids: form.pool_ids
+      auto_renew: form.auto_renew == true ? 1 : 0,
+      pool_ids: form.pool_ids,
+      status: "active"
     }
 
+    // Step 1: Create the agreement
     const response = await api().post('/service-agreement-management/agreements', payload)
+    const agreementId = response.data.data.id
 
-    await Swal.fire({
-      icon: 'success',
-      title: 'Agreement Created',
-      text: response.data.message || 'Service agreement created successfully'
-    })
+    // Step 2: Automatically generate visits
+  const visitPayload = {
+  start_time: form.start_time,  
+  end_time: form.end_time || null 
+}
 
-    router.push('/provider/customers-agreements')
+    try {
+      await api().post(
+        `/service-agreement-management/${agreementId}/generate-visits`,
+        visitPayload // Send the prepared payload
+      )
+
+      await Swal.fire({
+        icon: 'success',
+        title: 'Agreement Created',
+        text: 'Service agreement created successfully with scheduled visits'
+      })
+
+      router.push('/provider/customers-agreements')
+    } catch (visitError) {
+      // Agreement created but visit generation failed
+      console.error('Failed to generate visits:', visitError)
+
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Agreement Created with Warning',
+        text: 'Service agreement was created successfully but automatic visit generation failed. Please generate visits manually.',
+        footer: 'Agreement ID: #' + agreementId
+      })
+
+      // Still redirect to agreements page
+      router.push('/provider/customers-agreements')
+    }
   } catch (error) {
     // Handle Laravel validation errors
     if (error.response?.data?.errors) {
@@ -520,6 +567,13 @@ const createAgreement = async () => {
     submitting.value = false
   }
 }
+
+const formatDateForAPI = (dateString) => {
+  if (!dateString) return null;
+  return dateString;
+};
+
+
 
 const cancel = () => {
   router.push('/provider/customers-agreements')
