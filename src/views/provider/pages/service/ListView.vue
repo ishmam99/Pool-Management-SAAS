@@ -1,493 +1,297 @@
-```vue
 <template>
-  <div class="min-h-screen bg-gray-50 p-6">
-    <!-- Loading State -->
-    <div v-if="loading" class="space-y-6">
-      <!-- Header Skeleton -->
-      <div class="animate-pulse">
-        <div class="h-8 w-48 bg-gray-200 rounded mb-2"></div>
-        <div class="h-4 w-96 bg-gray-200 rounded"></div>
+  <div class=" px-4 sm:px-6 lg:px-8 py-6 font-sans text-gray-800">
+    <!-- ====== HEADER ====== -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">Schedule Visits</h1>
+        <p class="text-sm text-gray-500 mt-0.5">Manage scheduled pool service visits, technicians, priorities, and visit
+          statuses.</p>
       </div>
-      
-      <!-- KPI Skeleton -->
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <div v-for="i in 5" :key="i" class="bg-white rounded-2xl p-6 shadow-sm">
-          <div class="animate-pulse">
-            <div class="h-4 w-24 bg-gray-200 rounded mb-2"></div>
-            <div class="h-8 w-16 bg-gray-200 rounded mb-2"></div>
-            <div class="h-3 w-20 bg-gray-200 rounded"></div>
-          </div>
-        </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button @click="fetchVisits" :disabled="loading"
+          class="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 card-shadow transition disabled:opacity-50">
+          <i class="fas fa-sync-alt" :class="{ 'fa-spin': loading }"></i> Refresh
+        </button>
+        <button
+          class="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 card-shadow transition">
+          <i class="fas fa-calendar-alt"></i> Calendar View
+        </button>
+        <button
+          class="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 card-shadow transition">
+          <i class="fas fa-route"></i> Route Board
+        </button>
       </div>
-      
-      <!-- Filter Skeleton -->
-      <div class="bg-white rounded-2xl p-4 shadow-sm">
-        <div class="animate-pulse flex gap-4">
-          <div class="h-10 w-64 bg-gray-200 rounded"></div>
-          <div class="h-10 w-40 bg-gray-200 rounded"></div>
-          <div class="h-10 w-40 bg-gray-200 rounded"></div>
-          <div class="h-10 w-40 bg-gray-200 rounded"></div>
-          <div class="h-10 w-40 bg-gray-200 rounded"></div>
-        </div>
+    </div>
+
+    <!-- ====== KPI CARDS ====== -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-6">
+      <div v-for="(kpi, key) in kpis" :key="key" class="bg-white p-4 rounded-xl card-shadow border border-gray-100">
+        <div class="text-xs text-gray-500 uppercase tracking-wider">{{ key }}</div>
+        <div class="text-2xl font-semibold mt-1">{{ kpi }}</div>
       </div>
-      
-      <!-- Main Layout Skeleton -->
-      <div class="flex gap-6">
-        <div class="w-7/10 space-y-4">
-          <div class="bg-white rounded-2xl p-4 shadow-sm">
-            <div class="animate-pulse space-y-4">
-              <div v-for="i in 3" :key="i" class="border rounded-xl p-4">
-                <div class="flex items-start justify-between">
-                  <div class="space-y-2">
-                    <div class="h-4 w-24 bg-gray-200 rounded"></div>
-                    <div class="h-6 w-32 bg-gray-200 rounded"></div>
-                    <div class="h-4 w-48 bg-gray-200 rounded"></div>
-                  </div>
-                  <div class="flex gap-2">
-                    <div class="h-8 w-20 bg-gray-200 rounded"></div>
-                    <div class="h-8 w-20 bg-gray-200 rounded"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+    </div>
+
+    <!-- ====== TABS + SEARCH + FILTERS ====== -->
+    <div class="bg-white rounded-xl card-shadow border border-gray-100 p-4 mb-6">
+      <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+        <!-- tabs -->
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button v-for="tab in tabs" :key="tab.key" @click="activeTab = tab.key"
+            :class="['px-3 py-1.5 text-sm rounded-full font-medium transition', activeTab === tab.key ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200']">
+            {{ tab.label }} <span class="ml-1 text-xs opacity-80">({{ tabCounts[tab.key] }})</span>
+          </button>
         </div>
-        <div class="w-3/10 space-y-4">
-          <div class="bg-white rounded-2xl p-6 shadow-sm">
-            <div class="animate-pulse space-y-4">
-              <div class="h-6 w-32 bg-gray-200 rounded"></div>
-              <div class="h-12 w-full bg-gray-200 rounded"></div>
-              <div class="space-y-2">
-                <div v-for="i in 3" :key="i" class="border rounded-xl p-4">
-                  <div class="h-4 w-24 bg-gray-200 rounded mb-2"></div>
-                  <div class="h-6 w-32 bg-gray-200 rounded"></div>
-                </div>
-              </div>
-            </div>
+        <!-- search + filters -->
+        <div class="flex flex-wrap items-center gap-2 ml-auto">
+          <div class="relative">
+            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <input v-model="searchQuery" type="text" placeholder="Search ID, pool, address, tech"
+              class="pl-8 pr-3 py-1.5 border border-gray-200 rounded-lg text-sm w-48 md:w-56 focus:ring-1 focus:ring-indigo-400 focus:outline-none">
           </div>
+          <select v-model="filterTechnician"
+            class="py-1.5 px-2 border border-gray-200 rounded-lg text-sm bg-white focus:ring-1 focus:ring-indigo-400">
+            <option value="">All Technicians</option>
+            <option v-for="t in technicians" :key="t.id" :value="t.id">{{ t.name }}</option>
+          </select>
+          <select v-model="filterPriority"
+            class="py-1.5 px-2 border border-gray-200 rounded-lg text-sm bg-white focus:ring-1 focus:ring-indigo-400">
+            <option value="">All Priorities</option>
+            <option value="first_visit">First Visit</option>
+            <option value="normal">Normal</option>
+            <option value="urgent">Urgent</option>
+          </select>
+          <select v-model="sortKey"
+            class="py-1.5 px-2 border border-gray-200 rounded-lg text-sm bg-white focus:ring-1 focus:ring-indigo-400">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="service_address">Service Address A-Z</option>
+            <option value="priority">Priority</option>
+          </select>
         </div>
       </div>
     </div>
 
-    <!-- Empty State -->
-    <div v-else-if="!visits.length && !loading" class="flex items-center justify-center min-h-[600px]">
-      <div class="text-center">
-        <div class="text-6xl mb-4">✅</div>
-        <h3 class="text-2xl font-semibold text-gray-900 mb-2">No unassigned visits</h3>
-        <p class="text-gray-500">All service visits have been assigned to technicians.</p>
+    <!-- ====== TABLE (desktop) / CARDS (mobile) ====== -->
+    <div class="bg-white rounded-xl card-shadow border border-gray-100 overflow-hidden">
+      <!-- loading skeleton -->
+      <div v-if="loading" class="p-4 space-y-4">
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+        <div class="skeleton h-8 w-full rounded"></div>
+      </div>
+
+      <!-- empty state -->
+      <div v-else-if="visits.length === 0" class="py-16 text-center">
+        <i class="fas fa-calendar-times text-5xl text-gray-300 mb-4"></i>
+        <p class="text-gray-500 text-lg">No visits found.</p>
+      </div>
+
+      <!-- TABLE (hidden on mobile) -->
+      <div v-else class="hidden md:block overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 zebra">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visit ID</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pool</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Address
+              </th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technician</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr v-for="v in visits" :key="v.id">
+              <td class="px-4 py-3"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-mono">#{{ v.id }}</span>
+              </td>
+              <td class="px-4 py-3 text-sm">{{ formatDate(v.scheduled_date) }}</td>
+              <td class="px-4 py-3 text-sm">{{ v.pool?.label || '—' }}</td>
+              <td class="px-4 py-3 text-sm">{{ v.pool?.service_address || '—' }}</td>
+              <td class="px-4 py-3 text-sm">{{ v.technician?.name || '—' }}</td>
+              <td class="px-4 py-3 text-sm">{{ formatTime(v.time_window_start) }} – {{ formatTime(v.time_window_end) }}
+              </td>
+              <td class="px-4 py-3"><span :class="priorityBadgeClass(v.priority)">{{ formatPriority(v.priority)
+                  }}</span></td>
+              <td class="px-4 py-3"><span :class="statusBadgeClass(v.status)">{{ formatStatus(v.status) }}</span></td>
+              <td class="px-4 py-3 text-right relative">
+                <div class="inline-block text-left">
+                  <button @click="toggleMenu(v.id)"
+                    class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <div v-if="activeMenu === v.id"
+                    class="absolute right-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 z-10 py-1 text-sm">
+                    <button @click="openDetail(v)" class="block w-full px-4 py-2 text-left hover:bg-gray-50">
+                      <i class="fas fa-eye mr-2 text-gray-400"></i> View Details
+                    </button>
+                    <button @click="openEdit(v)" class="block w-full px-4 py-2 text-left hover:bg-gray-50">
+                      <i class="fas fa-edit mr-2 text-gray-400"></i> Edit Visit
+                    </button>
+                    <button @click="openChangeStatus(v)" class="block w-full px-4 py-2 text-left hover:bg-gray-50">
+                      <i class="fas fa-exchange-alt mr-2 text-gray-400"></i> Change Status
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- pagination -->
+      <div v-if="!loading && visits.length > 0"
+        class="px-4 py-3 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm">
+        <span class="text-gray-500">Showing {{ pagination.from }} – {{ pagination.to }} of {{ pagination.total }}
+          visits</span>
+        <div class="flex items-center gap-2">
+          <button @click="changePage(currentPage - 1)" :disabled="!pagination.prev_page_url"
+            class="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 transition">Previous</button>
+          <span class="px-2">Page {{ pagination.current_page }} of {{ pagination.last_page }}</span>
+          <button @click="changePage(currentPage + 1)" :disabled="!pagination.next_page_url"
+            class="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 transition">Next</button>
+        </div>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div v-else>
-      <!-- Page Header -->
-      <div class="flex items-start justify-between mb-6">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Unassigned Visits</h1>
-          <p class="text-gray-500 mt-1">Manage and assign service visits that are awaiting technician assignment.</p>
-        </div>
-        <div class="flex gap-3">
-          <button 
-            v-if="selectedVisits.length > 0"
-            class="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-          >
-            Assign Selected ({{ selectedVisits.length }})
-          </button>
-          <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors">
-            Auto Assign
-          </button>
-          <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors">
-            Create Route
-          </button>
-          <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors">
-            Export
-          </button>
-        </div>
-      </div>
-
-      <!-- KPI Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <p class="text-sm font-medium text-gray-500">Total Unassigned</p>
-          <p class="text-3xl font-bold text-gray-900 mt-1">{{ summary.totalUnassigned }}</p>
-          <p class="text-xs text-gray-400 mt-1">Pending Assignment</p>
-        </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <p class="text-sm font-medium text-gray-500">High Priority</p>
-          <p class="text-3xl font-bold text-orange-500 mt-1">{{ summary.highPriority }}</p>
-          <p class="text-xs text-gray-400 mt-1">Requires Attention</p>
-        </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <p class="text-sm font-medium text-gray-500">Emergency</p>
-          <p class="text-3xl font-bold text-red-500 mt-1">{{ summary.emergency }}</p>
-          <p class="text-xs text-gray-400 mt-1">Immediate Action</p>
-        </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <p class="text-sm font-medium text-gray-500">Today's Visits</p>
-          <p class="text-3xl font-bold text-gray-900 mt-1">{{ summary.todayVisits }}</p>
-          <p class="text-xs text-gray-400 mt-1">Scheduled Today</p>
-        </div>
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-          <p class="text-sm font-medium text-gray-500">Revenue Impact</p>
-          <p class="text-3xl font-bold text-green-600 mt-1">${{ summary.estimatedRevenue.toLocaleString() }}</p>
-          <p class="text-xs text-gray-400 mt-1">Pending Revenue</p>
-        </div>
-      </div>
-
-      <!-- Filter Toolbar -->
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 mb-6">
-        <div class="flex flex-wrap gap-4 items-center">
-          <!-- Search -->
-          <div class="flex-1 min-w-[200px]">
-            <div class="relative">
-              <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <input 
-                v-model="searchQuery"
-                type="text" 
-                placeholder="Search visits..." 
-                class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-            </div>
-          </div>
-
-          <!-- Priority Filter -->
-          <select v-model="filters.priority" class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="option in filterOptions.priorities" :key="option" :value="option === 'All Priorities' ? '' : option">
-              {{ option }}
-            </option>
-          </select>
-
-          <!-- Service Type Filter -->
-          <select v-model="filters.serviceType" class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="option in filterOptions.serviceTypes" :key="option" :value="option === 'All Services' ? '' : option">
-              {{ option }}
-            </option>
-          </select>
-
-          <!-- Date Filter -->
-          <select v-model="filters.date" class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="option in filterOptions.dates" :key="option" :value="option === 'All' ? '' : option">
-              {{ option }}
-            </option>
-          </select>
-
-          <!-- Zone Filter -->
-          <select v-model="filters.zone" class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="option in filterOptions.zones" :key="option" :value="option === 'All Zones' ? '' : option">
-              {{ option }}
-            </option>
-          </select>
-
-          <!-- Group By -->
-          <select v-model="groupBy" class="px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option v-for="option in groupByOptions" :key="option" :value="option === 'None' ? '' : option">
-              Group By: {{ option }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Bulk Selection Toolbar -->
-      <div v-if="selectedVisits.length > 0" class="bg-blue-50 rounded-2xl p-3 mb-4 flex items-center justify-between">
-        <span class="font-medium text-blue-700">{{ selectedVisits.length }} Visits Selected</span>
-        <div class="flex gap-3">
-          <button class="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">Assign Technician</button>
-          <button class="px-3 py-1.5 border border-blue-300 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100">Auto Assign</button>
-          <button class="px-3 py-1.5 border border-blue-300 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100">Create Route</button>
-          <button class="px-3 py-1.5 text-red-600 rounded-lg text-sm font-medium hover:bg-red-50">Delete</button>
-        </div>
-      </div>
-
-      <!-- Main Layout -->
-      <div class="flex gap-6">
-        <!-- Left Panel: Visit List -->
-        <div class="w-7/10">
-          <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="divide-y divide-gray-100">
-              <div 
-                v-for="visit in filteredVisits" 
-                :key="visit.id"
-                class="p-4 hover:bg-gray-50 transition-colors cursor-pointer"
-                @click="selectedVisit = visit"
-              >
-                <div class="flex items-start gap-4">
-                  <!-- Checkbox -->
-                  <input 
-                    type="checkbox" 
-                    :checked="selectedVisits.includes(visit.id)"
-                    @change="toggleSelection(visit.id)"
-                    class="mt-1 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  >
-                  
-                  <!-- Visit Card -->
-                  <div class="flex-1">
-                    <div class="flex items-start justify-between">
-                      <div class="space-y-1">
-                        <div class="flex items-center gap-2">
-                          <span class="text-sm font-mono text-gray-500">{{ visit.id }}</span>
-                          <span 
-                            class="px-2 py-0.5 text-xs font-medium rounded-full"
-                            :class="{
-                              'bg-blue-100 text-blue-700': visit.priority === 'Normal',
-                              'bg-orange-100 text-orange-700': visit.priority === 'High',
-                              'bg-red-100 text-red-700': visit.priority === 'Emergency'
-                            }"
-                          >
-                            {{ visit.priority }}
-                          </span>
-                          <span class="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-700 rounded-full">
-                            Awaiting Assignment
-                          </span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                          <span class="text-lg font-semibold text-gray-900">🏊 {{ visit.customer }}</span>
-                          <span class="text-sm text-gray-500">• {{ visit.pool }}</span>
-                        </div>
-                        <div class="flex items-center gap-4 text-sm text-gray-600">
-                          <span>📍 {{ visit.address.split(',').pop().trim() }}</span>
-                          <span class="text-gray-300">|</span>
-                          <span>{{ visit.service }}</span>
-                          <span class="text-gray-300">|</span>
-                          <span>🕒 {{ visit.scheduled_time }}</span>
-                          <span class="text-gray-300">|</span>
-                          <span>⏱ {{ visit.duration }}</span>
-                          <span class="text-gray-300">|</span>
-                          <span class="font-medium text-green-600">💵 ${{ visit.estimated_value }}</span>
-                        </div>
-                      </div>
-                      <div class="flex gap-2">
-                        <button class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Assign</button>
-                        <button class="px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">View</button>
-                        <button class="px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">Edit</button>
-                        <button class="px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors">Delete</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <!-- ====== MODAL: DETAIL / EDIT / STATUS ====== -->
+    <div v-if="modalOpen" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      @click.self="closeModal">
+      <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+        <!-- detail mode -->
+        <div v-if="modalMode === 'detail'">
+          <h3 class="text-lg font-bold mb-4">Visit Details</h3>
+          <dl class="grid grid-cols-2 gap-3 text-sm">
+            <dt class="text-gray-500">Visit ID</dt>
+            <dd>#{{ selectedVisit?.id }}</dd>
+            <dt class="text-gray-500">Scheduled Date</dt>
+            <dd>{{ moment(selectedVisit?.scheduled_date).format("LLLL") }}</dd>
+            <dt class="text-gray-500">Start Time</dt>
+            <dd>{{ formatTime(selectedVisit?.time_window_start) }}</dd>
+            <dt class="text-gray-500">End Time</dt>
+            <dd>{{ formatTime(selectedVisit?.time_window_end) }}</dd>
+            <dt class="text-gray-500">Status</dt>
+            <dd><span :class="statusBadgeClass(selectedVisit?.status)">{{ formatStatus(selectedVisit?.status) }}</span>
+            </dd>
+            <dt class="text-gray-500">Priority</dt>
+            <dd><span :class="priorityBadgeClass(selectedVisit?.priority)">{{ formatPriority(selectedVisit?.priority)
+                }}</span></dd>
+            <dt class="text-gray-500">Pool Name</dt>
+            <dd>{{ selectedVisit?.pool?.label || '—' }}</dd>
+            <dt class="text-gray-500">Service Address</dt>
+            <dd>{{ selectedVisit?.pool?.service_address || '—' }}</dd>
+            <dt class="text-gray-500">Technician Name</dt>
+            <dd>{{ selectedVisit?.technician?.name || '—' }}</dd>
+            <dt class="text-gray-500">Technician Phone</dt>
+            <dd>{{ selectedVisit?.technician?.phone || '—' }}</dd>
+            <dt class="text-gray-500">Agreement ID</dt>
+            <dd>{{ selectedVisit?.service_agreement?.id || '—' }}</dd>
+            <dt class="text-gray-500">Frequency</dt>
+            <dd>{{ selectedVisit?.service_agreement?.frequency || '—' }}</dd>
+            <dt class="text-gray-500">Agreement Price</dt>
+            <dd>{{ selectedVisit?.service_agreement?.price || '—' }}</dd>
+            <dt class="text-gray-500">Work Order ID</dt>
+            <dd>{{ selectedVisit?.work_order?.id || '—' }}</dd>
+            <dt class="text-gray-500">Work Order Type</dt>
+            <dd>{{ selectedVisit?.work_order?.type || '—' }}</dd>
+            <dt class="text-gray-500">Work Order Status</dt>
+            <dd>{{ selectedVisit?.work_order?.status || '—' }}</dd>
+          </dl>
+          <div class="mt-6 flex justify-end">
+            <button @click="closeModal"
+              class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Close</button>
           </div>
         </div>
 
-        <!-- Right Panel: Assignment Center -->
-        <div class="w-3/10 space-y-4">
-          <!-- Assignment Summary -->
-          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <h3 class="font-semibold text-gray-900 mb-4">Assignment Summary</h3>
-            <div class="text-center mb-4">
-              <p class="text-4xl font-bold text-gray-900">{{ visits.length }}</p>
-              <p class="text-sm text-gray-500">Visits Pending Assignment</p>
+        <!-- edit mode (includes change status) -->
+        <div v-else-if="modalMode === 'edit' || modalMode === 'status'">
+          <h3 class="text-lg font-bold mb-4">{{ modalMode === 'edit' ? 'Edit Visit' : 'Change Status' }}</h3>
+          <form @submit.prevent="saveVisit" class="space-y-4">
+            <!-- technician -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Technician</label>
+              <select v-model="editForm.technician_id"
+                class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-indigo-400">
+                <option v-for="t in technicians" :key="t.id" :value="t.id">{{ t.name }}</option>
+              </select>
             </div>
-            <div class="space-y-2 text-sm">
-              <div class="flex justify-between">
-                <span class="text-gray-500">Estimated Revenue:</span>
-                <span class="font-semibold text-green-600">${{ summary.estimatedRevenue.toLocaleString() }}</span>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Date</label>
+                <input v-model="editForm.scheduled_date" type="date"
+                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
               </div>
-              <div class="flex justify-between">
-                <span class="text-gray-500">Estimated Hours:</span>
-                <span class="font-semibold text-gray-900">22h 40m</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Available Technicians -->
-          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <h3 class="font-semibold text-gray-900 mb-4">Available Technicians</h3>
-            <div class="space-y-3">
-              <div 
-                v-for="tech in technicians" 
-                :key="tech.id"
-                class="border border-gray-100 rounded-xl p-4 hover:shadow-md transition-shadow"
-              >
-                <div class="flex items-start justify-between mb-2">
-                  <div>
-                    <p class="font-medium text-gray-900">👤 {{ tech.name }}</p>
-                    <p class="text-xs text-gray-500">Zone: {{ tech.zone }}</p>
-                  </div>
-                  <span 
-                    class="px-2 py-0.5 text-xs font-medium rounded-full"
-                    :class="{
-                      'bg-green-100 text-green-700': tech.status === 'Available',
-                      'bg-orange-100 text-orange-700': tech.status === 'Busy',
-                      'bg-gray-100 text-gray-700': tech.status === 'Off Duty'
-                    }"
-                  >
-                    {{ tech.status }}
-                  </span>
-                </div>
-                <div class="space-y-1">
-                  <div class="flex justify-between text-sm">
-                    <span class="text-gray-500">Assigned:</span>
-                    <span class="font-medium">{{ tech.visits_assigned }} / {{ tech.capacity }} Visits</span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-1.5">
-                    <div 
-                      class="h-1.5 rounded-full transition-all"
-                      :class="{
-                        'bg-green-500': (tech.visits_assigned / tech.capacity) < 0.7,
-                        'bg-orange-500': (tech.visits_assigned / tech.capacity) >= 0.7 && (tech.visits_assigned / tech.capacity) < 0.9,
-                        'bg-red-500': (tech.visits_assigned / tech.capacity) >= 0.9
-                      }"
-                      :style="{ width: `${(tech.visits_assigned / tech.capacity) * 100}%` }"
-                    ></div>
-                  </div>
-                </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Priority</label>
+                <select v-model="editForm.priority"
+                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                  <option value="first_visit">First Visit</option>
+                  <option value="normal">Normal</option>
+                  <option value="urgent">Urgent</option>
+                </select>
               </div>
             </div>
-          </div>
-
-          <!-- AI Assignment Suggestions -->
-          <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
-            <h3 class="font-semibold text-gray-900 mb-3">🤖 AI Assignment Suggestions</h3>
-            <div class="bg-white rounded-xl p-4 shadow-sm">
-              <div class="flex items-start justify-between">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">Start Time</label>
+                <input v-model="editForm.time_window_start" type="time"
+                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700">End Time</label>
+                <input v-model="editForm.time_window_end" type="time"
+                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Status</label>
+              <select v-model="editForm.status" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                <option value="scheduled">Scheduled</option>
+                <option value="in_progress">In Progress</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="missed">Missed</option>
+                <option value="rescheduled">Rescheduled</option>
+              </select>
+            </div>
+            <!-- rescheduled extra fields -->
+            <div v-if="editForm.status === 'rescheduled'" class="border-l-4 border-indigo-300 pl-4 space-y-3">
+              <div>
+                <label class="block text-sm font-medium text-gray-700">New Date</label>
+                <input v-model="editForm.rescheduled_date" type="date" required
+                  class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+              </div>
+              <div class="grid grid-cols-2 gap-3">
                 <div>
-                  <p class="text-sm font-medium text-gray-900">Assign John Smith</p>
-                  <p class="text-xs text-gray-500">→ Mike Carter</p>
-                  <p class="text-xs text-blue-600 mt-1">Reason: Closest Technician</p>
+                  <label class="block text-sm font-medium text-gray-700">Start</label>
+                  <input v-model="editForm.rescheduled_start" type="time" required
+                    class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
                 </div>
-                <div class="flex gap-2">
-                  <button class="px-3 py-1 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700">Assign</button>
-                  <button class="px-3 py-1 text-xs border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">Ignore</button>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700">End</label>
+                  <input v-model="editForm.rescheduled_end" type="time" required
+                    class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Visit Details Drawer -->
-    <div 
-      v-if="selectedVisit"
-      class="fixed inset-y-0 right-0 w-96 bg-white shadow-2xl transform transition-transform duration-300 z-50 overflow-y-auto"
-      :class="selectedVisit ? 'translate-x-0' : 'translate-x-full'"
-    >
-      <div class="p-6">
-        <div class="flex justify-between items-center mb-6">
-          <h2 class="text-xl font-bold text-gray-900">Visit Details</h2>
-          <button @click="selectedVisit = null" class="text-gray-400 hover:text-gray-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        <div class="space-y-6">
-          <!-- Customer Information -->
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Customer Information</h3>
-            <div class="space-y-1">
-              <p class="font-medium text-gray-900">{{ selectedVisit.customer }}</p>
-              <p class="text-sm text-gray-600">Phone: (555) 123-4567</p>
-              <p class="text-sm text-gray-600">Email: customer@example.com</p>
-              <p class="text-sm text-gray-600">{{ selectedVisit.address }}</p>
+            <div class="flex justify-end gap-3 mt-4">
+              <button type="button" @click="closeModal"
+                class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Cancel</button>
+              <button type="submit" :disabled="saving"
+                class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50">
+                {{ saving ? 'Saving...' : 'Save' }}
+              </button>
             </div>
-          </div>
-
-          <!-- Pool Information -->
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Pool Information</h3>
-            <div class="space-y-1">
-              <p class="font-medium text-gray-900">{{ selectedVisit.pool }}</p>
-              <p class="text-sm text-gray-600">Type: In-ground</p>
-              <p class="text-sm text-gray-600">Water Type: Chlorine</p>
-              <p class="text-sm text-gray-600">Size: 20,000 gallons</p>
-            </div>
-          </div>
-
-          <!-- Visit Information -->
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Visit Information</h3>
-            <div class="space-y-1">
-              <p class="text-sm"><span class="text-gray-500">Visit ID:</span> {{ selectedVisit.id }}</p>
-              <p class="text-sm"><span class="text-gray-500">Service Type:</span> {{ selectedVisit.service }}</p>
-              <p class="text-sm"><span class="text-gray-500">Scheduled Date:</span> {{ selectedVisit.scheduled_date }}</p>
-              <p class="text-sm"><span class="text-gray-500">Scheduled Time:</span> {{ selectedVisit.scheduled_time }}</p>
-              <p class="text-sm"><span class="text-gray-500">Duration:</span> {{ selectedVisit.duration }}</p>
-              <p class="text-sm"><span class="text-gray-500">Priority:</span> {{ selectedVisit.priority }}</p>
-            </div>
-          </div>
-
-          <!-- Agreement -->
-          <div>
-            <h3 class="text-sm font-medium text-gray-500 uppercase mb-2">Agreement</h3>
-            <div class="space-y-1">
-              <p class="text-sm"><span class="text-gray-500">Service Plan:</span> Premium Pool Care</p>
-              <p class="text-sm"><span class="text-gray-500">Frequency:</span> Weekly</p>
-              <p class="text-sm"><span class="text-gray-500">Monthly Value:</span> $720</p>
-            </div>
-          </div>
-
-          <button class="w-full py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors">
-            Assign Technician
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Assign Technician Modal -->
-    <div v-if="showAssignModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-2xl p-6 w-full max-w-md">
-        <h3 class="text-xl font-bold text-gray-900 mb-4">Assign Technician</h3>
-        <div class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Technician</label>
-            <select class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option v-for="tech in technicians" :key="tech.id" :value="tech.id">
-                {{ tech.name }} ({{ tech.status }})
-              </option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Scheduled Time</label>
-            <input type="time" class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-            <textarea rows="3" class="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Add notes..."></textarea>
-          </div>
-        </div>
-        <div class="flex gap-3 mt-6">
-          <button class="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700">Assign</button>
-          <button @click="showAssignModal = false" class="flex-1 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Auto Assign Modal -->
-    <div v-if="showAutoAssignModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-2xl p-6 w-full max-w-md">
-        <h3 class="text-xl font-bold text-gray-900 mb-4">Auto Assign Visits</h3>
-        <div class="space-y-4">
-          <div class="bg-blue-50 rounded-xl p-4">
-            <p class="text-sm text-gray-600">{{ visits.length }} Visits Ready</p>
-            <p class="text-sm text-gray-600">Available Technicians: {{ technicians.filter(t => t.status === 'Available').length }}</p>
-          </div>
-          <div>
-            <label class="flex items-center gap-2">
-              <input type="checkbox" checked class="w-4 h-4 text-blue-600">
-              <span class="text-sm text-gray-700">Optimize Travel Distance</span>
-            </label>
-          </div>
-          <div>
-            <label class="flex items-center gap-2">
-              <input type="checkbox" checked class="w-4 h-4 text-blue-600">
-              <span class="text-sm text-gray-700">Balance Workload</span>
-            </label>
-          </div>
-          <div>
-            <label class="flex items-center gap-2">
-              <input type="checkbox" checked class="w-4 h-4 text-blue-600">
-              <span class="text-sm text-gray-700">Prioritize Emergency Visits</span>
-            </label>
-          </div>
-        </div>
-        <div class="flex gap-3 mt-6">
-          <button class="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700">Run Assignment</button>
-          <button @click="showAutoAssignModal = false" class="flex-1 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-50">Cancel</button>
+          </form>
         </div>
       </div>
     </div>
@@ -495,243 +299,292 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue';
+import api from '../../../../services/api.js';
+import Swal from 'sweetalert2';
 
-// Mock Data
-const visits = ref([
-  {
-    id: 'VIS-1001',
-    customer: 'John Smith',
-    pool: 'Backyard Pool',
-    service: 'Weekly Pool Cleaning',
-    address: '245 Ocean Drive, Miami FL',
-    scheduled_date: '2026-06-23',
-    scheduled_time: '10:00 AM',
-    duration: '45 min',
-    priority: 'Normal',
-    estimated_value: 180
-  },
-  {
-    id: 'VIS-1002',
-    customer: 'Sarah Johnson',
-    pool: 'Villa Main Pool',
-    service: 'Chemical Balance',
-    address: '890 Palm Ave, Miami FL',
-    scheduled_date: '2026-06-23',
-    scheduled_time: '01:00 PM',
-    duration: '30 min',
-    priority: 'High',
-    estimated_value: 240
-  },
-  {
-    id: 'VIS-1003',
-    customer: 'Ocean Resort',
-    pool: 'Main Hotel Pool',
-    service: 'Equipment Inspection',
-    address: '500 Beach Road, Miami FL',
-    scheduled_date: '2026-06-23',
-    scheduled_time: '09:00 AM',
-    duration: '90 min',
-    priority: 'Emergency',
-    estimated_value: 750
-  },
-  {
-    id: 'VIS-1004',
-    customer: 'Robert Chen',
-    pool: 'Garden Pool',
-    service: 'Maintenance',
-    address: '123 Oak Street, Miami FL',
-    scheduled_date: '2026-06-24',
-    scheduled_time: '11:30 AM',
-    duration: '60 min',
-    priority: 'Normal',
-    estimated_value: 220
-  },
-  {
-    id: 'VIS-1005',
-    customer: 'Maria Garcia',
-    pool: 'Lap Pool',
-    service: 'Pool Cleaning',
-    address: '456 Palm Drive, Miami FL',
-    scheduled_date: '2026-06-24',
-    scheduled_time: '02:00 PM',
-    duration: '45 min',
-    priority: 'High',
-    estimated_value: 310
+// ----- DATA -----
+const visits = ref([]);
+const technicians = ref([]);
+const loading = ref(false);
+const saving = ref(false);
+const searchQuery = ref('');
+const activeTab = ref('all');
+const filterTechnician = ref('');
+const filterPriority = ref('');
+const sortKey = ref('newest');
+const currentPage = ref(1);
+const activeMenu = ref(null);
+const modalOpen = ref(false);
+const modalMode = ref('detail');
+const selectedVisit = ref(null);
+const editForm = ref({});
+const pagination = ref({
+  current_page: 1,
+  last_page: 1,
+  per_page: 10,
+  total: 0,
+  from: 0,
+  to: 0,
+  next_page_url: null,
+  prev_page_url: null
+});
+
+// ----- API FUNCTIONS -----
+const fetchTechnicians = async () => {
+  try {
+    const response = await api().get(`/user-management/technicians`);
+    technicians.value = response.data;
+  } catch (error) {
+    console.error('Error fetching technicians:', error);
+    technicians.value = [];
   }
-])
+};
 
-const technicians = ref([
-  {
-    id: 1,
-    name: 'Mike Carter',
-    status: 'Available',
-    visits_assigned: 4,
-    capacity: 8,
-    zone: 'North'
-  },
-  {
-    id: 2,
-    name: 'Alex Green',
-    status: 'Available',
-    visits_assigned: 6,
-    capacity: 8,
-    zone: 'South'
-  },
-  {
-    id: 3,
-    name: 'David Ross',
-    status: 'Busy',
-    visits_assigned: 8,
-    capacity: 8,
-    zone: 'Central'
-  },
-  {
-    id: 4,
-    name: 'Lisa Park',
-    status: 'Off Duty',
-    visits_assigned: 0,
-    capacity: 8,
-    zone: 'West'
+const fetchVisits = async (page = 1) => {
+  loading.value = true;
+  try {
+    const response = await api().get(`/schedule-visit-management/visits`, {
+      params: { page }
+    });
+
+    pagination.value = response.data;
+    visits.value = response.data.data;
+  } catch (error) {
+    console.error('Error fetching visits:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Failed to load visits. Please try again.',
+    });
+    visits.value = [];
+  } finally {
+    loading.value = false;
   }
-])
+};
 
-// State
-const loading = ref(false)
-const searchQuery = ref('')
-const selectedVisit = ref(null)
-const selectedVisits = ref([])
-const showAssignModal = ref(false)
-const showAutoAssignModal = ref(false)
-const groupBy = ref('')
+const updateVisit = async (visitId, data) => {
+  saving.value = true;
+  try {
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
 
-const filters = ref({
-  priority: '',
-  serviceType: '',
-  date: '',
-  zone: ''
-})
+    Object.keys(data).forEach(key => {
+      if (data[key] !== null && data[key] !== undefined) {
+        formData.append(key, data[key]);
+      }
+    });
 
-const filterOptions = {
-  priorities: ['All Priorities', 'Normal', 'High', 'Emergency'],
-  serviceTypes: ['All Services', 'Pool Cleaning', 'Chemical Balance', 'Equipment Inspection', 'Repair', 'Maintenance'],
-  dates: ['Today', 'Tomorrow', 'This Week', 'Next Week', 'All'],
-  zones: ['All Zones', 'North', 'South', 'East', 'West', 'Central']
-}
+    await api().post(`/schedule-visit-management/visits/${visitId}`, formData);
 
-const groupByOptions = ['None', 'Priority', 'Zone', 'Service Type', 'Date']
+    await Swal.fire({
+      icon: 'success',
+      title: 'Visit updated successfully.',
+      timer: 2000,
+      showConfirmButton: false
+    });
 
-// Computed
-const summary = computed(() => {
-  const total = visits.value.length
-  const high = visits.value.filter(v => v.priority === 'High').length
-  const emergency = visits.value.filter(v => v.priority === 'Emergency').length
-  const today = visits.value.filter(v => v.scheduled_date === '2026-06-23').length
-  const revenue = visits.value.reduce((sum, v) => sum + v.estimated_value, 0)
-  
+    closeModal();
+    await fetchVisits(currentPage.value);
+  } catch (error) {
+    console.error('Error updating visit:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.response?.data?.message || 'Failed to update visit. Please try again.',
+    });
+  } finally {
+    saving.value = false;
+  }
+};
+
+const changePage = (page) => {
+  if (page >= 1 && page <= pagination.value.last_page) {
+    currentPage.value = page;
+    fetchVisits(page);
+  }
+};
+
+// ----- HELPERS (format, badge) -----
+const formatDate = (d) => {
+  if (!d) return '—';
+
+  return new Date(d).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+const formatTime = (t) => t ? t.slice(0, 5) : '—';
+const formatStatus = (s) => s ? s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—';
+const formatPriority = (p) => p ? p.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—';
+const statusBadgeClass = (s) => {
+  const map = {
+    scheduled: 'bg-blue-100 text-blue-700',
+    in_progress: 'bg-orange-100 text-orange-700',
+    completed: 'bg-green-100 text-green-700',
+    cancelled: 'bg-red-100 text-red-700',
+    missed: 'bg-gray-100 text-gray-700',
+    rescheduled: 'bg-purple-100 text-purple-700'
+  };
+  return 'badge-pill ' + (map[s] || 'bg-gray-100 text-gray-700');
+};
+const priorityBadgeClass = (p) => {
+  const map = {
+    first_visit: 'bg-blue-100 text-blue-700',
+    normal: 'bg-gray-100 text-gray-700',
+    urgent: 'bg-red-100 text-red-700'
+  };
+  return 'badge-pill ' + (map[p] || 'bg-gray-100 text-gray-700');
+};
+
+// ----- COMPUTED: filter, sort, KPIs -----
+const tabCounts = computed(() => {
+  const all = visits.value;
+  const counts = { all: all.length };
+  ['scheduled', 'in_progress', 'completed', 'cancelled', 'missed', 'rescheduled'].forEach(st => {
+    counts[st] = all.filter(v => v.status === st).length;
+  });
+  return counts;
+});
+
+const kpis = computed(() => {
+  const all = visits.value;
   return {
-    totalUnassigned: total,
-    highPriority: high,
-    emergency: emergency,
-    todayVisits: today,
-    estimatedRevenue: revenue
-  }
-})
+    'Total Visits': all.length,
+    'Scheduled': all.filter(v => v.status === 'scheduled').length,
+    'In Progress': all.filter(v => v.status === 'in_progress').length,
+    'Completed': all.filter(v => v.status === 'completed').length,
+    'Cancelled': all.filter(v => v.status === 'cancelled').length,
+    'Missed': all.filter(v => v.status === 'missed').length,
+  };
+});
 
-const filteredVisits = computed(() => {
-  let result = visits.value
+// ----- MODALS -----
+const toggleMenu = (id) => {
+  activeMenu.value = activeMenu.value === id ? null : id;
+};
 
-  // Search
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    result = result.filter(v => 
-      v.customer.toLowerCase().includes(query) ||
-      v.pool.toLowerCase().includes(query) ||
-      v.address.toLowerCase().includes(query) ||
-      v.id.toLowerCase().includes(query)
-    )
-  }
+const closeModal = () => {
+  modalOpen.value = false;
+  activeMenu.value = null;
+  selectedVisit.value = null;
+};
 
-  // Priority filter
-  if (filters.value.priority) {
-    result = result.filter(v => v.priority === filters.value.priority)
-  }
+const openDetail = (v) => {
+  selectedVisit.value = v;
+  modalMode.value = 'detail';
+  modalOpen.value = true;
+  activeMenu.value = null;
+};
 
-  // Service Type filter
-  if (filters.value.serviceType) {
-    result = result.filter(v => v.service.includes(filters.value.serviceType))
-  }
+const openEdit = (v) => {
+  selectedVisit.value = v;
+  modalMode.value = 'edit';
+  editForm.value = {
+    technician_id: v.technician_id || null,
+    scheduled_date: v.scheduled_date,
+    time_window_start: v.time_window_start,
+    time_window_end: v.time_window_end,
+    priority: v.priority,
+    status: v.status,
+    rescheduled_date: '',
+    rescheduled_start: '',
+    rescheduled_end: ''
+  };
+  modalOpen.value = true;
+  activeMenu.value = null;
+};
 
-  // Date filter
-  if (filters.value.date) {
-    const today = new Date().toISOString().split('T')[0]
-    if (filters.value.date === 'Today') {
-      result = result.filter(v => v.scheduled_date === today)
-    } else if (filters.value.date === 'Tomorrow') {
-      const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0]
-      result = result.filter(v => v.scheduled_date === tomorrow)
+const openChangeStatus = (v) => {
+  openEdit(v);
+  modalMode.value = 'status';
+};
+
+const saveVisit = async () => {
+  if (!selectedVisit.value) return;
+
+  const payload = {
+    technician_id: editForm.value.technician_id,
+    scheduled_date: editForm.value.scheduled_date,
+    time_window_start: editForm.value.time_window_start,
+    time_window_end: editForm.value.time_window_end,
+    priority: editForm.value.priority,
+    status: editForm.value.status
+  };
+
+  if (payload.status === 'rescheduled') {
+    if (!editForm.value.rescheduled_date || !editForm.value.rescheduled_start || !editForm.value.rescheduled_end) {
+      await Swal.fire({
+        icon: 'warning',
+        title: 'Missing Fields',
+        text: 'Please fill in all rescheduled date and time fields.',
+      });
+      return;
     }
-    // This Week, Next Week, All would have more complex logic
+    payload.scheduled_date = editForm.value.rescheduled_date;
+    payload.time_window_start = editForm.value.rescheduled_start;
+    payload.time_window_end = editForm.value.rescheduled_end;
   }
 
-  // Zone filter (mock - using address)
-  if (filters.value.zone) {
-    result = result.filter(v => v.address.includes(filters.value.zone))
-  }
+  await updateVisit(selectedVisit.value.id, payload);
+};
 
-  // Group by
-  if (groupBy.value) {
-    // Grouping logic would be implemented here
-    // For now, just return filtered results
-  }
+// ----- LIFECYCLE -----
+onMounted(async () => {
+  await Promise.all([fetchTechnicians(), fetchVisits(1)]);
+});
 
-  return result
-})
+// ----- WATCHERS -----
+watch([activeTab, filterTechnician, filterPriority, sortKey], () => {
+  // Re-fetch with filters applied
+  fetchVisits(1);
+});
 
-// Methods
-const toggleSelection = (visitId) => {
-  const index = selectedVisits.value.indexOf(visitId)
-  if (index > -1) {
-    selectedVisits.value.splice(index, 1)
-  } else {
-    selectedVisits.value.push(visitId)
-  }
-}
-
-// API Integration (commented)
-// import axios from '@/services/api'
-// const fetchUnassignedVisits = async () => {
-//   loading.value = true
-//   try {
-//     const response = await axios.get('/service-visits/unassigned')
-//     visits.value = response.data.data
-//   } catch(error) {
-//     console.error(error)
-//   } finally {
-//     loading.value = false
-//   }
-// }
-
-onMounted(() => {
-  // fetchUnassignedVisits()
-  // Using mock data only
-})
+const tabs = [
+  { key: 'all', label: 'All' },
+  { key: 'scheduled', label: 'Scheduled' },
+  { key: 'in_progress', label: 'In Progress' },
+  { key: 'completed', label: 'Completed' },
+  { key: 'cancelled', label: 'Cancelled' },
+  { key: 'missed', label: 'Missed' },
+  { key: 'rescheduled', label: 'Rescheduled' }
+];
 </script>
 
-<style scoped>
-.w-7\/10 {
-  width: 70%;
+<style>
+.card-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
-.w-3\/10 {
-  width: 30%;
+.badge-pill {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-@media (max-width: 1024px) {
-  .w-7\/10,
-  .w-3\/10 {
-    width: 100%;
+.zebra tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }
+
+[v-cloak] {
+  display: none;
+}
 </style>
-```
