@@ -292,6 +292,78 @@ const routes = [
     ]
   },
 
+   // Technician
+  {
+    path: '/technician',
+    component: () => import('../views/technician/layout/TechnicianLayout.vue'),
+    children: [
+      {
+        path: '/technician/dashboard',
+        name: 'technician-dashboard',
+        component: () => import('../views/technician/techDashboard.vue')
+      },
+      {
+        path: '/customer/schedule',
+        name: 'customer-schedule',
+        component: () => import('../views/customer/pages/Schedule.vue')
+      },
+      {
+        path: '/customer/pools',
+        name: 'customer-pools',
+        component: () => import('../views/customer/pages/Pools.vue')
+      },
+      {
+        path: '/customer/pools/:id/history',
+        name: 'customer-pool-history',
+        component: () => import('../views/customer/pages/PoolHistory.vue')
+      },
+      {
+        path: '/customer/water-quality',
+        redirect: '/customer/pools'
+      },
+      {
+        path: '/customer/photos',
+        name: 'customer-photos',
+        component: () => import('../views/customer/pages/Photos.vue')
+      },
+      {
+        path: '/customer/billing',
+        name: 'customer-billing',
+        component: () => import('../views/customer/pages/Billing.vue')
+      },
+      {
+        path: '/customer/billing/:id',
+        name: 'customer-invoice-detail',
+        component: () => import('../views/customer/pages/InvoiceDetail.vue')
+      },
+      {
+        path: '/customer/agreements',
+        name: 'customer-agreements',
+        component: () => import('../views/customer/pages/Agreements.vue')
+      },
+      {
+        path: '/customer/messages',
+        name: 'customer-messages',
+        component: () => import('../views/customer/pages/Messages.vue')
+      },
+      {
+        path: '/customer/profile',
+        name: 'customer-profile',
+        component: () => import('../views/customer/pages/Profile.vue')
+      },
+      {
+        path: '/customer/payment-methods',
+        name: 'customer-payment-methods',
+        component: () => import('../views/customer/pages/PaymentMethods.vue')
+      },
+      {
+        path: '/customer/help',
+        name: 'customer-help',
+        component: () => import('../views/customer/pages/Help.vue')
+      },
+    ]
+  },
+
 
 ]
 
