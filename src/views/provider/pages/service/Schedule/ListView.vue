@@ -107,6 +107,7 @@
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
               <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Work Order</th>
               <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
             </tr>
           </thead>
@@ -121,8 +122,16 @@
               <td class="px-4 py-3 text-sm">{{ formatTime(v.time_window_start) }} – {{ formatTime(v.time_window_end) }}
               </td>
               <td class="px-4 py-3"><span :class="priorityBadgeClass(v.priority)">{{ formatPriority(v.priority)
-              }}</span></td>
+                  }}</span></td>
               <td class="px-4 py-3"><span :class="statusBadgeClass(v.status)">{{ formatStatus(v.status) }}</span></td>
+              <td class="px-4 py-3">
+                <span  v-if="v.work_order" @click="openWorkOrderPreview(v.work_order)" class="badge-pill bg-green-100 text-green-700">
+                  #{{ v.work_order.id }} View Order
+                </span>
+                <span v-else class="badge-pill bg-gray-100 text-gray-500">
+                  No Work Order
+                </span>
+              </td>
               <td class="px-4 py-3 text-right relative">
                 <div class="inline-block text-left">
                   <button @click="toggleMenu(v.id)"
@@ -130,7 +139,7 @@
                     <i class="ri-menu-line"></i>
                   </button>
                   <div v-if="activeMenu === v.id"
-                    class="absolute right-0 mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 z-50 py-1 text-sm">
+                    class="absolute right-0 mt-1 w-52 bg-white rounded-lg shadow-lg border border-gray-100 z-50 py-1 text-sm">
                     <button @click="openDetail(v)" class="block w-full px-4 py-2 text-left hover:bg-gray-50">
                       <i class="fas fa-eye mr-2 text-gray-400"></i> View Details
                     </button>
@@ -140,6 +149,22 @@
                     <button @click="openChangeStatus(v)" class="block w-full px-4 py-2 text-left hover:bg-gray-50">
                       <i class="fas fa-exchange-alt mr-2 text-gray-400"></i> Change Status
                     </button>
+                    
+                    <!-- Work Order Actions -->
+                    <div v-if="!v.work_order" class="border-t border-gray-100 mt-1 pt-1">
+                      <button @click="handleCreateWorkOrder(v)" class="block w-full px-4 py-2 text-left hover:bg-green-50 text-green-700">
+                        <i class="ri-file-add-line mr-2"></i> Create Work Order
+                      </button>
+                    </div>
+                    <div v-else class="border-t border-gray-100 mt-1 pt-1">
+                      <div class="px-4 py-2 text-green-700 flex items-center gap-2">
+                        <i class="fas fa-check-circle text-green-500"></i>
+                        <span class="text-sm font-medium">Work Order Created</span>
+                      </div>
+                      <button @click="openWorkOrderPreview(v.work_order)" class="block w-full px-4 py-2 text-left hover:bg-gray-50">
+                        <i class="ri-file-list-3-line mr-2 text-gray-400"></i> View Work Order
+                      </button>
+                    </div>
                   </div>
                 </div>
               </td>
@@ -184,7 +209,7 @@
             </dd>
             <dt class="text-gray-500">Priority</dt>
             <dd><span :class="priorityBadgeClass(selectedVisit?.priority)">{{ formatPriority(selectedVisit?.priority)
-            }}</span></dd>
+                }}</span></dd>
             <dt class="text-gray-500">Pool Name</dt>
             <dd>{{ selectedVisit?.pool?.label || '—' }}</dd>
             <dt class="text-gray-500">Service Address</dt>
@@ -217,7 +242,8 @@
           <h3 class="text-lg font-bold mb-4">{{ modalMode === 'edit' ? 'Edit Visit' : 'Change Status' }}</h3>
           <form @submit.prevent="saveVisit" class="space-y-4">
             <!-- Check if date is before today -->
-            <div v-if="isDateBeforeToday(editForm.scheduled_date)" class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-800">
+            <div v-if="isDateBeforeToday(editForm.scheduled_date)"
+              class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-800">
               <i class="fas fa-info-circle mr-2"></i>
               This visit is in the past. You can only change the status.
             </div>
@@ -225,10 +251,8 @@
             <!-- technician - disabled if date is before today -->
             <div>
               <label class="block text-sm font-medium text-gray-700">Technician</label>
-              <select v-model="editForm.technician_id"
-                :disabled="isDateBeforeToday(editForm.scheduled_date)"
-                :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-indigo-400', 
-                  isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
+              <select v-model="editForm.technician_id" :disabled="isDateBeforeToday(editForm.scheduled_date)" :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-indigo-400',
+                isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
                 <option v-for="t in technicians" :key="t.id" :value="t.id">{{ t.name }}</option>
               </select>
             </div>
@@ -236,16 +260,13 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Date</label>
                 <input v-model="editForm.scheduled_date" type="date"
-                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
-                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                  :disabled="isDateBeforeToday(editForm.scheduled_date)" :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
                     isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">Priority</label>
-                <select v-model="editForm.priority"
-                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
-                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
-                    isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
+                <select v-model="editForm.priority" :disabled="isDateBeforeToday(editForm.scheduled_date)" :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                  isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
                   <option value="first_visit">First Visit</option>
                   <option value="normal">Normal</option>
                   <option value="urgent">Urgent</option>
@@ -256,15 +277,13 @@
               <div>
                 <label class="block text-sm font-medium text-gray-700">Start Time</label>
                 <input v-model="editForm.time_window_start" type="time"
-                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
-                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                  :disabled="isDateBeforeToday(editForm.scheduled_date)" :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
                     isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700">End Time</label>
                 <input v-model="editForm.time_window_end" type="time"
-                  :disabled="isDateBeforeToday(editForm.scheduled_date)"
-                  :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
+                  :disabled="isDateBeforeToday(editForm.scheduled_date)" :class="['mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm',
                     isDateBeforeToday(editForm.scheduled_date) ? 'bg-gray-100 cursor-not-allowed opacity-60' : '']">
               </div>
             </div>
@@ -311,12 +330,147 @@
         </div>
       </div>
     </div>
+
+    <!-- ====== WORK ORDER PREVIEW MODAL ====== -->
+    <div v-if="workOrderModalOpen" class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      @click.self="closeWorkOrderModal">
+      <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold text-gray-900">Work Order Details</h3>
+          <button @click="closeWorkOrderModal" class="text-gray-400 hover:text-gray-600">
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+
+        <div v-if="selectedWorkOrder" class="space-y-6">
+          <!-- General Information -->
+          <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+              <i class="fas fa-info-circle text-indigo-500"></i>
+              General Information
+            </h4>
+            <dl class="grid grid-cols-2 gap-3 text-sm">
+              <dt class="text-gray-500">Work Order ID</dt>
+              <dd class="font-medium">#{{ selectedWorkOrder.id }}</dd>
+              
+              <dt class="text-gray-500">Status</dt>
+              <dd>
+                <span :class="workOrderStatusBadgeClass(selectedWorkOrder.status)">
+                  {{ formatWorkOrderStatus(selectedWorkOrder.status) }}
+                </span>
+              </dd>
+              
+              <dt class="text-gray-500">Type</dt>
+              <dd class="font-medium">{{ selectedWorkOrder.type || '—' }}</dd>
+              
+              <dt class="text-gray-500">Scheduled Visit ID</dt>
+              <dd class="font-medium">#{{ selectedWorkOrder.scheduled_visit_id || '—' }}</dd>
+              
+              <dt class="text-gray-500">Pool ID</dt>
+              <dd class="font-medium">#{{ selectedWorkOrder.pool_id || '—' }}</dd>
+              
+              <dt class="text-gray-500">Customer ID</dt>
+              <dd class="font-medium">#{{ selectedWorkOrder.customer_id || '—' }}</dd>
+              
+              <dt class="text-gray-500">Technician ID</dt>
+              <dd class="font-medium">#{{ selectedWorkOrder.technician_id || '—' }}</dd>
+              
+              <dt class="text-gray-500">Created At</dt>
+              <dd class="font-medium">{{ formatDateTime(selectedWorkOrder.created_at) }}</dd>
+              
+              <dt class="text-gray-500">Updated At</dt>
+              <dd class="font-medium">{{ formatDateTime(selectedWorkOrder.updated_at) }}</dd>
+            </dl>
+          </div>
+
+          <!-- Checklist -->
+          <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+              <i class="fas fa-check-circle text-green-500"></i>
+              Checklist
+            </h4>
+            <div v-if="selectedWorkOrder.checklist && selectedWorkOrder.checklist.length > 0" class="space-y-1">
+              <div v-for="(item, index) in selectedWorkOrder.checklist" :key="index" 
+                   class="flex items-center gap-2 text-sm text-gray-700">
+                <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                <span>{{ item }}</span>
+              </div>
+            </div>
+            <p v-else class="text-sm text-gray-500">No checklist items available</p>
+          </div>
+
+          <!-- Notes -->
+          <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+              <i class="fas fa-sticky-note text-yellow-500"></i>
+              Notes
+            </h4>
+            <p class="text-sm text-gray-700">{{ selectedWorkOrder.notes || '—' }}</p>
+          </div>
+
+          <!-- GPS Information -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Start Location -->
+            <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <i class="fas fa-play-circle text-green-500"></i>
+                Start Location
+              </h4>
+              <dl class="space-y-1 text-sm">
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Latitude</dt>
+                  <dd class="font-medium">{{ selectedWorkOrder.start_latitude || '—' }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Longitude</dt>
+                  <dd class="font-medium">{{ selectedWorkOrder.start_longitude || '—' }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Started At</dt>
+                  <dd class="font-medium">{{ formatDateTime(selectedWorkOrder.started_at) || '—' }}</dd>
+                </div>
+              </dl>
+            </div>
+
+            <!-- Finish Location -->
+            <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <i class="fas fa-stop-circle text-red-500"></i>
+                Finish Location
+              </h4>
+              <dl class="space-y-1 text-sm">
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Latitude</dt>
+                  <dd class="font-medium">{{ selectedWorkOrder.finish_latitude || '—' }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Longitude</dt>
+                  <dd class="font-medium">{{ selectedWorkOrder.finish_longitude || '—' }}</dd>
+                </div>
+                <div class="flex justify-between">
+                  <dt class="text-gray-500">Finished At</dt>
+                  <dd class="font-medium">{{ formatDateTime(selectedWorkOrder.finished_at) || '—' }}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="flex justify-end pt-4 border-t border-gray-200">
+            <button @click="closeWorkOrderModal"
+              class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
-import api from '../../../../services/api.js';
+import api from '../../../../../services/api.js';
 import Swal from 'sweetalert2';
 
 // ----- DATA -----
@@ -345,6 +499,10 @@ const pagination = ref({
   next_page_url: null,
   prev_page_url: null
 });
+
+// Work Order data
+const workOrderModalOpen = ref(false);
+const selectedWorkOrder = ref(null);
 
 // ----- API FUNCTIONS -----
 const fetchTechnicians = async () => {
@@ -421,10 +579,76 @@ const changePage = (page) => {
   }
 };
 
+// ----- WORK ORDER FUNCTIONS -----
+const createWorkOrder = async (visit) => {
+  const payload = {
+    scheduled_visit_id: visit.id,
+    pool_id: visit.pool_id,
+    customer_id: visit.service_agreement?.customer_id,
+    technician_id: visit.technician_id,
+    type: "routine",
+    checklist: [
+      "Check chlorine levels",
+      "Clean skimmer basket",
+      "Inspect pump",
+      "Test pH levels"
+    ],
+    notes: "Regular routine visit"
+  };
+
+  return await api().post("/work-order-management/work-orders", payload);
+};
+
+const handleCreateWorkOrder = async (visit) => {
+  try {
+    const result = await Swal.fire({
+      title: 'Create Work Order?',
+      text: 'This will create a routine work order for this scheduled visit.',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Create',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (result.isConfirmed) {
+      await createWorkOrder(visit);
+      
+      await Swal.fire({
+        icon: 'success',
+        title: 'Work Order created successfully.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      activeMenu.value = null;
+      await fetchVisits(currentPage.value);
+    }
+  } catch (error) {
+    console.error('Error creating work order:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.response?.data?.message || 'Failed to create work order. Please try again.',
+    });
+  }
+};
+
+const openWorkOrderPreview = (workOrder) => {
+  selectedWorkOrder.value = workOrder;
+  workOrderModalOpen.value = true;
+  activeMenu.value = null;
+};
+
+const closeWorkOrderModal = () => {
+  workOrderModalOpen.value = false;
+  selectedWorkOrder.value = null;
+};
+
 // ----- HELPERS (format, badge) -----
 const formatDate = (d) => {
   if (!d) return '—';
-
   return new Date(d).toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
@@ -432,10 +656,19 @@ const formatDate = (d) => {
   });
 };
 
-// FIX 2: Time format in h:i (24-hour format with leading zeros)
+const formatDateTime = (d) => {
+  if (!d) return '—';
+  return new Date(d).toLocaleString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
 const formatTime = (t) => {
   if (!t) return '—';
-  // If time is in HH:MM:SS format, extract HH:MM
   if (t.includes(':')) {
     const parts = t.split(':');
     return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
@@ -446,7 +679,11 @@ const formatTime = (t) => {
 const formatStatus = (s) => s ? s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—';
 const formatPriority = (p) => p ? p.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—';
 
-// FIX 1: Check if date is before today
+const formatWorkOrderStatus = (s) => {
+  if (!s) return '—';
+  return s.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+};
+
 const isDateBeforeToday = (date) => {
   if (!date) return false;
   const today = new Date();
@@ -467,6 +704,7 @@ const statusBadgeClass = (s) => {
   };
   return 'badge-pill ' + (map[s] || 'bg-gray-100 text-gray-700');
 };
+
 const priorityBadgeClass = (p) => {
   const map = {
     first_visit: 'bg-blue-100 text-blue-700',
@@ -474,6 +712,17 @@ const priorityBadgeClass = (p) => {
     urgent: 'bg-red-100 text-red-700'
   };
   return 'badge-pill ' + (map[p] || 'bg-gray-100 text-gray-700');
+};
+
+const workOrderStatusBadgeClass = (s) => {
+  const map = {
+    pending: 'badge-pill bg-gray-100 text-gray-700',
+    assigned: 'badge-pill bg-blue-100 text-blue-700',
+    in_progress: 'badge-pill bg-orange-100 text-orange-700',
+    completed: 'badge-pill bg-green-100 text-green-700',
+    cancelled: 'badge-pill bg-red-100 text-red-700'
+  };
+  return map[s] || 'badge-pill bg-gray-100 text-gray-700';
 };
 
 // ----- COMPUTED: filter, sort, KPIs -----
@@ -542,14 +791,11 @@ const openChangeStatus = (v) => {
 const saveVisit = async () => {
   if (!selectedVisit.value) return;
 
-  // FIX 1: If date is before today, only allow status change
   if (isDateBeforeToday(editForm.value.scheduled_date)) {
-    // Only send status update
     const payload = {
       status: editForm.value.status
     };
-    
-    // If status is rescheduled, we need to allow the reschedule fields
+
     if (payload.status === 'rescheduled') {
       if (!editForm.value.rescheduled_date || !editForm.value.rescheduled_start || !editForm.value.rescheduled_end) {
         await Swal.fire({
@@ -559,18 +805,15 @@ const saveVisit = async () => {
         });
         return;
       }
-      // For rescheduled, we need to update the date and time as well
-      // Even though it's before today, rescheduling means it's a new date
       payload.scheduled_date = editForm.value.rescheduled_date;
       payload.time_window_start = editForm.value.rescheduled_start;
       payload.time_window_end = editForm.value.rescheduled_end;
     }
-    
+
     await updateVisit(selectedVisit.value.id, payload);
     return;
   }
 
-  // Normal flow for dates today or in the future
   const payload = {
     technician_id: editForm.value.technician_id,
     scheduled_date: editForm.value.scheduled_date,
@@ -604,7 +847,6 @@ onMounted(async () => {
 
 // ----- WATCHERS -----
 watch([activeTab, filterTechnician, filterPriority, sortKey], () => {
-  // Re-fetch with filters applied
   fetchVisits(1);
 });
 
@@ -645,7 +887,6 @@ const tabs = [
   0% {
     background-position: 200% 0;
   }
-
   100% {
     background-position: -200% 0;
   }

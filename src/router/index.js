@@ -68,15 +68,22 @@ const routes = [
         component: () => import('../views/provider/pages/customer/CreateCustomer.vue')
       },
       {
-        path: '/provider/customers-agreements',
+        path: '/provider/customer-details/:id',
+        name: 'provider-customer-details',
+        component: () => import('../views/provider/pages/customer/CustomerDetails.vue')
+      },
+      // Customer Service
+      {
+        path: '/provider/customer-service-agreements',
         name: 'provider-customers-agreements',
-        component: () => import('../views/provider/pages/customer/Aggreements.vue')
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementsList.vue')
       },
       {
-        path: '/provider/agreements-create',
+        path: '/provider/customer-service-agreements-create',
         name: 'provider-agreements-create',
-        component: () => import('../views/provider/pages/customer/AggreementCreate.vue')
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementCreate.vue')
       },
+      // Customer Maintenance
 
 
       // Pool
@@ -110,23 +117,39 @@ const routes = [
       {
         path: '/provider/services-calendar',
         name: 'provider-services-calendar',
-        component: () => import('../views/provider/pages/service/CalenderView.vue')
+        component: () => import('../views/provider/pages/service/Schedule/CalenderView.vue')
       },
       {
         path: '/provider/services-unassigned',
         name: 'provider-services-unassigned',
-        component: () => import('../views/provider/pages/service/ListView.vue')
+        component: () => import('../views/provider/pages/service/Schedule/ListView.vue')
+      },
+      {
+        path: '/provider/services-perform-service-by-pool',
+        name: 'provider-services-perform-service-by-pool',
+        component: () => import('../views/provider/pages/service/PerformService/PerformServicebyPool.vue')
+      },
+      {
+        path: '/provider/services-perform-service-today',
+        name: 'provider-services-perform-service-today',
+        component: () => import('../views/provider/pages/service/PerformService/PerformServiceToday.vue')
       },
 
+            {
+        path: '/provider/services-perform-service/:id',
+        name: 'provider-services-perform-service',
+        component: () => import('../views/provider/pages/service/PerformService/PerformService.vue')
+      },
+  {
+        path: '/provider/services-perform-service-by-pool-schedules/:id',
+        name: 'services-perform-service-by-pool-Schedules',
+        component: () => import('../views/provider/pages/service/PerformService/PerformServicebyPoolSchedules.vue')
+      },
       // Maintenance
+
       {
         path: '/provider/schedule-maintenance',
         name: 'provider-schedule-maintenance',
-        component: () => import('../views/provider/pages/maintenance/ScheduleMaintenance.vue')
-      },
-      {
-        path: '/provider/maintenance/create',
-        name: 'provider-create-maintenance',
         component: () => import('../views/provider/pages/maintenance/CreateMaintenance.vue')
       },
       {
@@ -134,36 +157,6 @@ const routes = [
         name: 'provider-view-maintenance',
         component: () => import('../views/provider/pages/maintenance/[status].vue')
       },
-      //   {
-      //   path: '/provider/',
-      //   name: 'provider-',
-      //   component: () => import('../views/provider/pages/maintenance/')
-      // },
-      //   {
-      //   path: '/provider/',
-      //   name: 'provider-',
-      //   component: () => import('../views/provider/pages/maintenance/')
-      // },
-      //   {
-      //   path: '/provider/',
-      //   name: 'provider-',
-      //   component: () => import('../views/provider/pages/maintenance/')
-      // },
-      //   {
-      //   path: '/provider/',
-      //   name: 'provider-',
-      //   component: () => import('../views/provider/pages/maintenance/')
-      // },
-      //   {
-      //   path: '/provider/',
-      //   name: 'provider-',
-      //   component: () => import('../views/provider/pages/maintenance/')
-      // },
-
-
-
-      // Maintainance
-
 
 
       // Technician

@@ -7,7 +7,8 @@
           Pool Service Provider Dashboard
         </h4>
         <div class="flex flex-col items-center gap-2">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 flex items-center justify-center text-white text-xl font-bold shadow-sm">
+          <div
+            class="w-12 h-12 rounded-full bg-gradient-to-r from-sky-500 to-cyan-500 flex items-center justify-center text-white text-xl font-bold shadow-sm">
             {{ companyInitials }}
           </div>
           <div class="text-center">
@@ -33,25 +34,22 @@
       <div class="space-y-2 flex-1 overflow-y-auto">
         <div v-for="menu in menus" :key="menu.id" class="accordion-group bg-transparent rounded-xl">
           <!-- Menu Header -->
-          <div class="flex items-center justify-between w-full p-3 rounded-xl transition-all duration-300 cursor-pointer"
-            :class="dropdownHeaderClass" @click="toggleAccordion(menu.id)"
-            :style="{
+          <div
+            class="flex items-center justify-between w-full p-3 rounded-xl transition-all duration-300 cursor-pointer"
+            :class="dropdownHeaderClass" @click="toggleAccordion(menu.id)" :style="{
               backgroundColor: openSection === menu.id ? getMenuColor(menu.title) : 'white',
               color: openSection === menu.id ? 'white' : getMenuColor(menu.title),
               border: `2px solid ${getMenuColor(menu.title)}`
             }">
             <div class="flex items-center gap-3">
-              <i class="py-1 px-2 rounded-md" 
-                :class="`${menu.icon}`"
-                :style="{
-                  backgroundColor: getMenuColor(menu.title),
-                  color: 'white'
-                }"></i>
+              <i class="py-1 px-2 rounded-md" :class="`${menu.icon}`" :style="{
+                backgroundColor: getMenuColor(menu.title),
+                color: 'white'
+              }"></i>
               <span>{{ menu.title }}</span>
             </div>
             <i class="ri-arrow-down-s-line transition-transform duration-300"
-              :class="{ 'rotate-180': openSection === menu.id }"
-              :style="{
+              :class="{ 'rotate-180': openSection === menu.id }" :style="{
                 color: openSection === menu.id ? 'white' : getMenuColor(menu.title)
               }"></i>
           </div>
@@ -59,71 +57,64 @@
           <!-- Dropdown Content -->
           <div v-show="openSection === menu.id" class="ml-4 mt-1 space-y-1 border-l-2 pl-3"
             :style="{ borderColor: getMenuColor(menu.title) }">
-            
+            <!-- Regular links (non-grouped) -->
+            <router-link v-for="link in menu.links" :key="link.to" :to="link.to"
+              class="flex items-center gap-2 p-2 text-sm rounded-lg transition-all duration-300"
+              :class="dropdownItemClass" active-class="router-link-active" :style="{
+                color: getMenuColor(menu.title),
+                borderLeft: `3px solid transparent`
+              }" @click="setActiveLink(menu.title, link.text)">
+              <i class="py-1 px-2 rounded-md text-white" :class="`${link.icon}`" :style="{
+                backgroundColor: getMenuColor(menu.title)
+              }"></i>
+              <span class="block max-w-[220px] truncate whitespace-nowrap" :title="link.text">
+                {{ link.text }}
+              </span>
+            </router-link>
             <!-- Render Groups -->
             <template v-for="group in menu.groups" :key="group.key">
               <!-- Group Header (with toggle for sub-items) -->
-              <div class="flex items-center justify-between w-full p-2 text-sm rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200"
+              <div
+                class="flex items-center justify-between w-full p-2 text-sm rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200"
                 :style="{
-                  color: getMenuColor(menu.title)
-                }"
-                @click="toggleGroup(group.key)">
+                  backgroundColor: openSection === group.key ? getMenuColor( group.title ) : 'white',
+                   color: openSection === group.key ? 'white' : getMenuColor(group.title),
+                  border: `2px solid ${getMenuColor( group.title )}`
+                }" @click="toggleGroup(group.key)">
                 <div class="flex items-center gap-2">
-                  <i class="py-1 px-2 rounded-md text-white text-xs" 
-                    :class="`${group.icon}`"
-                    :style="{
-                      backgroundColor: getMenuColor(menu.title)
-                    }"></i>
-                  <span>{{ group.title }}</span>
+                  <i class="py-1 px-2 rounded-md text-white text-xs" :class="`${group.icon}`" :style="{
+                    backgroundColor: getMenuColor( group.title )
+                  }"></i>
+                  <span class="text-sm" :style="{
+                    color: openSection ===  group.key ? 'white' : getMenuColor(group.title)
+                  }">{{ group.title }}</span>
                 </div>
+                
                 <i class="ri-arrow-down-s-line transition-transform duration-300 text-xs"
-                  :class="{ 'rotate-180': openGroup === group.key }"
-                  :style="{
-                    color: getMenuColor(menu.title)
+                  :class="{ 'rotate-180': openGroup === group.key }" :style="{
+                    color: openSection ===  group.key  ? 'white' : getMenuColor(group.title)
                   }"></i>
               </div>
-
               <!-- Group Sub-items -->
-              <div v-show="openGroup === group.key" class="ml-6 mt-1 space-y-1 border-l-2 pl-3"
+              <div v-show="openGroup === group.key" class="ml-2 mt-1 space-y-1 border-l-2 pl-3"
                 :style="{ borderColor: getMenuColor(menu.title) }">
                 <router-link v-for="link in group.links" :key="link.to" :to="link.to"
                   class="flex items-center gap-2 p-2 text-sm rounded-lg transition-all duration-300"
-                  :class="dropdownItemClass" active-class="router-link-active"
-                  :style="{
+                  :class="dropdownItemClass" active-class="router-link-active" :style="{
                     color: getMenuColor(menu.title),
                     borderLeft: `3px solid transparent`
-                  }"
-                  @click="setActiveLink(menu.title, link.text)">
-                  <i class="py-1 px-2 rounded-md text-white text-xs" 
-                    :class="`${link.icon}`"
-                    :style="{
-                      backgroundColor: getMenuColor(menu.title)
-                    }"></i>
-                  <span class="block max-w-[120px] truncate whitespace-nowrap" :title="link.text">
+                  }" @click="setActiveLink(menu.title, link.text)">
+                  <i class="py-1 px-2 rounded-md text-white text-[5px]" :class="`${link.icon}`" :style="{
+                    backgroundColor: getMenuColor(menu.title)
+                  }"></i>
+                  <span class="block max-w-[210px]  text-xs truncate whitespace-nowrap" :title="link.text">
                     {{ link.text }}
                   </span>
                 </router-link>
               </div>
             </template>
 
-            <!-- Regular links (non-grouped) -->
-            <router-link v-for="link in menu.links" :key="link.to" :to="link.to"
-              class="flex items-center gap-2 p-2 text-sm rounded-lg transition-all duration-300"
-              :class="dropdownItemClass" active-class="router-link-active"
-              :style="{
-                color: getMenuColor(menu.title),
-                borderLeft: `3px solid transparent`
-              }"
-              @click="setActiveLink(menu.title, link.text)">
-              <i class="py-1 px-2 rounded-md text-white" 
-                :class="`${link.icon}`"
-                :style="{
-                  backgroundColor: getMenuColor(menu.title)
-                }"></i>
-              <span class="block max-w-[200px] truncate whitespace-nowrap" :title="link.text">
-                {{ link.text }}
-              </span>
-            </router-link>
+
           </div>
         </div>
       </div>
@@ -186,6 +177,22 @@ const menuColors = {
   'Team': '#6b7280',
   'Company': '#4f46e5',
   'Settings': '#6b7280',
+
+  // Agreements
+  'Service Agreements': '#50BEC8',
+  'Maintenance Agreements': '#8E790D',
+
+  // Service Management
+  'Service Schedule': '#16a34a',      // Green
+  'Perform Service': '#2563eb',       // Blue
+
+  // Reserved (currently unused)
+  'Blank 1': '#a855f7',               // Purple
+  'Blank 2': '#f43f5e',               // Rose
+  'Blank 3': '#f97316',               // Orange
+  'Blank 4': '#0f766e',               // Teal
+  'Blank 5': '#7c3aed',               // Indigo
+  'Blank 6': '#ca8a04',               // Yellow
 }
 
 // Function to get menu color with fallback
@@ -226,12 +233,33 @@ const menus = [
     id: 'customers',
     title: 'Customers',
     icon: 'ri-user-community-line',
-    groups: [],
+
     links: [
       { to: '/provider/customers', icon: 'ri-list-unordered', text: 'All Customers' },
       { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add Customer' },
-      { to: '/provider/customers-agreements', icon: 'ri-file-text-line', text: 'Service Agreements' },
-      { to: '/provider/agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' }
+
+    ],
+
+    groups: [
+      {
+        key: 'customer-service-agreement',
+        icon: 'ri-file-text-line',
+        title: 'Service Agreements',
+        links: [
+          { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
+          { to: '/provider/customer-service-agreements', icon: 'ri-file-text-line', text: 'Service Agreements' },
+        ]
+      },
+      {
+        key: 'customer-maintenance-agreement',
+        icon: 'ri-file-text-line',
+        title: 'Maintenance Agreements',
+        links: [
+          { to: '/provider/agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
+          { to: '/provider/customers-agreements', icon: 'ri-file-text-line', text: 'Maintenance Agreements' },
+        ]
+      }
+
     ]
   },
   {
@@ -251,17 +279,34 @@ const menus = [
     id: 'service-management',
     title: 'Service Management',
     icon: 'ri-calendar-check-line',
-    groups: [],
-    links: [
-      { to: '/provider/services-calendar', icon: 'ri-calendar-2-line', text: 'Calendar View' },
-      { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'List View' },
-    ]
+     groups: [
+      {
+        key: 'service-management-schedule',
+        icon: 'ri-file-text-line',
+        title: 'Service Schedule',
+        links: [
+       { to: '/provider/services-calendar', icon: 'ri-calendar-2-line', text: 'Service Schedule Calendar View' },
+      { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'Service Schedule List View' },
+        ]
+      },
+      {
+        key: 'service-management-perform-service',
+        icon: 'ri-file-text-line',
+        title: 'Perform Service',
+        links: [
+          { to: '/provider/services-perform-service-by-pool', icon: 'ri-file-add-line', text: 'Perform Service by Pool' },
+          { to: '/provider/services-perform-service-today', icon: 'ri-file-text-line', text: 'Perform Service Today' },
+        ]
+      }
+
+    ],
+    
   },
   {
     id: 'maintenance-management',
     title: 'Maintenance Management',
     icon: 'ri-tools-line',
-  
+
     links: [
       { to: '/provider/schedule-maintenance', icon: 'ri-check-double-line', text: 'Create Schedule Maintenance' },
       // { to: '/provider/issues-repairs', icon: 'ri-alert-line', text: 'Issues & Repairs' },
@@ -280,7 +325,6 @@ const menus = [
     groups: [],
     links: [
       { to: '/provider/technicians', icon: 'ri-list-unordered', text: 'Technician List' },
-      { to: '/provider/technicians/map', icon: 'ri-map-pin-line', text: 'Live Map' },
       { to: '/provider/technicians/performance', icon: 'ri-bar-chart-line', text: 'Performance' },
       { to: '/provider/technicians/certifications', icon: 'ri-award-line', text: 'Certifications' }
     ]

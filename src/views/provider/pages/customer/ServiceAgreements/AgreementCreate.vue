@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-4 md:p-8">
-    <div class="max-w-7xl mx-auto">
+    <div class="">
       <!-- Header -->
       <div class="mb-8">
         <h1 class="text-2xl font-bold text-gray-900">Create Service Agreement</h1>
@@ -11,8 +11,11 @@
         <!-- Main Form -->
         <div class="lg:col-span-2 space-y-6">
           <!-- Customer Selection -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Customer Information</h2>
+          <div class="bg-cyan-50 rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">1</span>
+              <h2 class="text-lg font-semibold text-gray-900">Customer Information</h2>
+            </div>
 
             <div class="space-y-4">
               <div>
@@ -123,8 +126,11 @@
           </div>
 
           <!-- Pool Selection -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Pool Selection *</h2>
+          <div class="bg-purple-50 rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">2</span>
+              <h2 class="text-lg font-semibold text-gray-900">Pool Selection</h2>
+            </div>
 
             <div v-if="selectedCustomer && selectedCustomer.pools && selectedCustomer.pools.length > 0">
               <p class="text-sm text-gray-600 mb-4">Select at least one pool for this agreement</p>
@@ -157,8 +163,11 @@
           </div>
 
           <!-- Agreement Details -->
-          <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4">Agreement Details</h2>
+          <div class="bg-green-50 rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">3</span>
+              <h2 class="text-lg font-semibold text-gray-900">Agreement Details</h2>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -243,8 +252,6 @@
               </div>
             </div>
 
-
-
             <div class="mt-4">
               <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div>
@@ -257,6 +264,43 @@
                     class="w-11 h-6 bg-gray-200 peer-focus:ring-2 peer-focus:ring-blue-500/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600">
                   </div>
                 </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Service Includes -->
+          <div class="bg-pink-50 rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">4</span>
+              <h2 class="text-lg font-semibold text-gray-900">Service Includes</h2>
+            </div>
+            <p class="text-sm text-gray-600 mb-4 ml-11">Select the services that are included in this agreement.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div v-for="task in serviceTasks" :key="task" class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                <input 
+                  type="checkbox" 
+                  :id="`service-${task.replace(/\s+/g, '-').toLowerCase()}`" 
+                  :value="task" 
+                  v-model="form.service_includes"
+                  class="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                />
+                <label :for="`service-${task.replace(/\s+/g, '-').toLowerCase()}`" class="flex-1 cursor-pointer text-sm text-gray-700">
+                  {{ task }}
+                </label>
+              </div>
+            </div>
+
+            <div v-if="form.service_includes && form.service_includes.length > 0" class="mt-4 pt-4 border-t border-gray-200">
+              <p class="text-sm font-medium text-gray-700 mb-2">Selected Services ({{ form.service_includes.length }})</p>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="item in form.service_includes" 
+                  :key="item"
+                  class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100"
+                >
+                  {{ item }}
+                </span>
               </div>
             </div>
           </div>
@@ -287,7 +331,7 @@
         <!-- Summary Sidebar -->
         <div class="lg:col-span-1">
           <div class="sticky top-8">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="bg-yellow-50 rounded-xl shadow-sm border border-gray-200 p-6">
               <h2 class="text-lg font-semibold text-gray-900 mb-4">Agreement Summary</h2>
 
               <div class="space-y-4">
@@ -341,6 +385,19 @@
                   <p class="text-sm text-gray-500">End Date</p>
                   <p class="font-medium text-gray-900">{{ form.end_date || 'Not set' }}</p>
                 </div>
+
+                <div>
+                  <p class="text-sm text-gray-500">Service Includes</p>
+                  <div class="mt-1 flex flex-wrap gap-1">
+                    <span v-if="form.service_includes && form.service_includes.length > 0" 
+                      v-for="item in form.service_includes" 
+                      :key="item"
+                      class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded">
+                      {{ item }}
+                    </span>
+                    <span v-else class="text-gray-500 text-sm">No services selected</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -354,7 +411,7 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
-import api from '../../../../services/api'
+import api from '../../../../../services/api'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
@@ -363,6 +420,29 @@ const submitting = ref(false)
 const customers = ref([])
 const technicians = ref([])
 const validationErrors = reactive({})
+
+// Service tasks checklist
+const serviceTasks = [
+  'Skim Pool Surface',
+  'Brush Pool Walls',
+  'Brush Pool Steps',
+  'Vacuum Pool',
+  'Check Water Level',
+  'Test Water Chemistry',
+  'Balance Chemicals',
+  'Add Chlorine',
+  'Add Acid / pH Adjuster',
+  'Clean Pool Filter',
+  'Backwash Filter (if applicable)',
+  'Inspect Pump & Motor',
+  'Inspect Pool Equipment',
+  'Check Timer Settings',
+  'Inspect Pool Lights',
+  'Clean Tile Line',
+  'Remove Debris',
+  'Inspect for Leaks',
+  'Final Equipment Check'
+]
 
 const form = reactive({
   customer_id: '',
@@ -373,7 +453,8 @@ const form = reactive({
   start_date: '',
   end_date: '',
   auto_renew: true,
-  pool_ids: []
+  pool_ids: [],
+  service_includes: [] // Array of selected service tasks
 })
 
 // Computed
@@ -398,8 +479,6 @@ const activeAgreement = computed(() => {
     agreement.status === 'active' || agreement.status === 'Active'
   )
 })
-
-
 
 const getTechnicianName = (technicianId) => {
   if (!technicianId) return null
@@ -507,7 +586,8 @@ const createAgreement = async () => {
       end_date: form.end_date || null,
       auto_renew: form.auto_renew == true ? 1 : 0,
       pool_ids: form.pool_ids,
-      status: "active"
+      status: "active",
+      service_includes: form.service_includes // Send selected services as array
     }
 
     // Step 1: Create the agreement
@@ -567,13 +647,6 @@ const createAgreement = async () => {
     submitting.value = false
   }
 }
-
-const formatDateForAPI = (dateString) => {
-  if (!dateString) return null;
-  return dateString;
-};
-
-
 
 const cancel = () => {
   router.push('/provider/customers-agreements')

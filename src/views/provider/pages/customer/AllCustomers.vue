@@ -176,10 +176,10 @@
                     class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-sm font-semibold text-blue-700">
                     {{ getAvatarInitial(customer) }}
                   </div>
-                  <div>
-                    <p class="text-sm font-medium text-gray-900">{{ customer.contact_name }}</p>
+                <router-link :to="`/provider/customer-details/${customer.id}`">
+                    <p class="text-sm font-medium text-blue-900">{{ customer.contact_name }}</p>
                     <p class="text-xs text-gray-500">ID: {{ customer.id }}</p>
-                  </div>
+                  </router-link>
                 </div>
               </td>
               <!-- Contact -->
