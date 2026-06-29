@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 p-6">
-    <div class="max-w-7xl mx-auto">
+    <div class="mx-auto">
       <!-- Header -->
       <div class="flex items-center justify-between mb-6">
         <div>
@@ -10,12 +10,12 @@
           </h1>
           <p class="text-gray-500 text-sm">Create a new work order for pool maintenance</p>
         </div>
-        <router-link
+        <!-- <router-link
           to="/work-order-management/work-orders"
           class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
         >
           <i class="ri-arrow-left-line mr-2"></i> Back to Work Orders
-        </router-link>
+        </router-link> -->
       </div>
 
       <!-- Form Card -->
@@ -223,7 +223,7 @@ const form = reactive({
   type: '',
   status: '',
   scheduled_date: '',
-  checklist: [],
+  checklist: [],   // array of strings (UI)
   notes: '',
 });
 
@@ -290,6 +290,12 @@ const handleSubmit = async () => {
 
   loading.value = true;
   try {
+    // Transform checklist: array of strings → array of { item, isChecked }
+    const checklistPayload = form.checklist.map(item => ({
+      item: item,
+      isChecked: false,
+    }));
+
     const payload = {
       pool_id: form.pool_id,
       customer_id: form.customer_id,
@@ -297,7 +303,7 @@ const handleSubmit = async () => {
       type: form.type,
       status: form.status,
       scheduled_date: form.scheduled_date,
-      checklist: form.checklist,
+      checklist: checklistPayload,
       notes: form.notes,
     };
 
@@ -310,6 +316,7 @@ const handleSubmit = async () => {
       confirmButtonColor: '#4f46e5',
     });
 
+    // Optionally reset the form or redirect
     // router.push('/work-order-management/work-orders');
   } catch (error) {
     console.error('Create work order error:', error);
