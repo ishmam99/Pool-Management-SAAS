@@ -160,7 +160,16 @@ const routes = [
 
 
       // Technician
-
+      {
+        path: '/provider/technicians/new',
+        name: 'provider-technicians-add',
+        component: () => import('../views/provider/pages/technician/AddTechnician.vue')
+      },
+      {
+        path: '/provider/technicians',
+        name: 'provider-technicians-list',
+        component: () => import('../views/provider/pages/technician/Users.vue')
+      },
 
       // Water Quality Monitoring
       {
@@ -207,6 +216,28 @@ const routes = [
         path: '/provider/inventory/low-stock',
         name: 'provider-inventory-low-stock',
         component: () => import('../views/provider/pages/inventory/LowStock.vue')
+      },
+
+      // Billing
+      {
+        path: '/provider/billing/invoices',
+        name: 'provider-billing-invoices',
+        component: () => import('../views/provider/pages/billing/InvoiceList.vue')
+      },
+      {
+        path: '/provider/billing/invoices/create',
+        name: 'provider-billing-invoice-create',
+        component: () => import('../views/provider/pages/billing/InvoiceCreate.vue')
+      },
+      {
+        path: '/provider/billing/payments',
+        name: 'provider-billing-payments',
+        component: () => import('../views/provider/pages/billing/PaymentsList.vue')
+      },
+      {
+        path: '/provider/billing/payment-methods',
+        name: 'provider-billing-payment-methods',
+        component: () => import('../views/provider/pages/billing/PaymentMethods.vue')
       },
 
       // Customer
