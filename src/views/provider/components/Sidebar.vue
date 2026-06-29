@@ -255,8 +255,8 @@ const menus = [
         icon: 'ri-file-text-line',
         title: 'Maintenance Agreements',
         links: [
-          { to: '/provider/agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
-          { to: '/provider/customers-agreements', icon: 'ri-file-text-line', text: 'Maintenance Agreements' },
+          { to: '/provider/customer-maintenance-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
+          { to: '/provider/customer-maintenance-agreements', icon: 'ri-file-text-line', text: 'Maintenance Agreements' },
         ]
       }
 
@@ -324,7 +324,7 @@ const menus = [
     icon: 'ri-team-line',
     groups: [],
     links: [
-      { to: '/provider/technicians', icon: 'ri-list-unordered', text: 'Add New Technician' },
+      { to: '/provider/technicians/new', icon: 'ri-user-add-line', text: 'Add New Technician' },
       { to: '/provider/technicians', icon: 'ri-list-unordered', text: 'Technician List' },
     ]
   },
@@ -363,21 +363,21 @@ const menus = [
         icon: 'ri-file-text-line',
         title: 'Invoice',
         links: [
-          { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Create Invoices' },
+          { to: '/provider/billing/invoices/create', icon: 'ri-add-circle-line', text: 'Create Invoice' },
           { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Invoice List' },
         ]
       },
-
-
-
+      {
+        key: 'billing-payments',
+        icon: 'ri-money-dollar-circle-line',
+        title: 'Payments',
+        links: [
+          { to: '/provider/billing/payments', icon: 'ri-money-dollar-circle-line', text: 'Payment List' },
+          { to: '/provider/billing/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' },
+        ]
+      },
     ],
-
-    links: [
-
-      { to: '/provider/billing/payments', icon: 'ri-money-dollar-circle-line', text: 'Payment List' },
-      // { to: '/provider/billing/credit-memos', icon: 'ri-file-reduce-line', text: 'Credit Memos' },
-      // { to: '/provider/billing/settings', icon: 'ri-settings-3-line', text: 'Billing Settings' }
-    ]
+    links: []
   },
   {
     id: 'communication',

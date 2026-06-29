@@ -47,4 +47,10 @@ export const providerApi = {
 
   getLowStockAlerts: () =>
     api().get('inventory/low-stock').then((response) => response.data?.alerts ?? response.data),
+
+  getTechnicians: (params) =>
+    api().get('user-management/users', { params }).then((response) => response.data),
+
+  createTechnician: (payload) =>
+    api().post('user-management/users', payload).then(unwrap),
 }

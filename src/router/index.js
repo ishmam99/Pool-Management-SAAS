@@ -75,16 +75,25 @@ const routes = [
       // Customer Service
       {
         path: '/provider/customer-service-agreements',
-        name: 'provider-customers-agreements',
+        name: 'provider-customers-service-agreements',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementsList.vue')
       },
       {
         path: '/provider/customer-service-agreements-create',
-        name: 'provider-agreements-create',
+        name: 'provider-service-agreements-create',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementCreate.vue')
       },
       // Customer Maintenance
-
+ {
+        path: '/provider/customer-maintenance-agreements',
+        name: 'provider-maintenance-customers-agreements',
+        component: () => import('../views/provider/pages/customer/MaintenanceAgreements/AgreementList.vue')
+      },
+      {
+        path: '/provider/customer-maintenance-agreements-create',
+        name: 'provider-maintenance-agreements-create',
+        component: () => import('../views/provider/pages/customer/MaintenanceAgreements/AgreementCreate.vue')
+      },
 
       // Pool
       {
@@ -160,7 +169,16 @@ const routes = [
 
 
       // Technician
-
+      {
+        path: '/provider/technicians/new',
+        name: 'provider-technicians-add',
+        component: () => import('../views/provider/pages/technician/AddTechnician.vue')
+      },
+      {
+        path: '/provider/technicians',
+        name: 'provider-technicians-list',
+        component: () => import('../views/provider/pages/technician/Users.vue')
+      },
 
       // Water Quality Monitoring
       {
@@ -207,6 +225,28 @@ const routes = [
         path: '/provider/inventory/low-stock',
         name: 'provider-inventory-low-stock',
         component: () => import('../views/provider/pages/inventory/LowStock.vue')
+      },
+
+      // Billing
+      {
+        path: '/provider/billing/invoices',
+        name: 'provider-billing-invoices',
+        component: () => import('../views/provider/pages/billing/InvoiceList.vue')
+      },
+      {
+        path: '/provider/billing/invoices/create',
+        name: 'provider-billing-invoice-create',
+        component: () => import('../views/provider/pages/billing/InvoiceCreate.vue')
+      },
+      {
+        path: '/provider/billing/payments',
+        name: 'provider-billing-payments',
+        component: () => import('../views/provider/pages/billing/PaymentsList.vue')
+      },
+      {
+        path: '/provider/billing/payment-methods',
+        name: 'provider-billing-payment-methods',
+        component: () => import('../views/provider/pages/billing/PaymentMethods.vue')
       },
 
       // Customer
