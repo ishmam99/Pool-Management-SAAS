@@ -52,13 +52,13 @@
       <!-- Data Table -->
       <div v-else class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-gray-50 border-b border-gray-200">
+          <table class="w-full table-zebra">
+            <thead class="bg-sky-100  border-b border-gray-200">
               <tr>
                 <th
                   v-for="col in columns"
                   :key="col.key"
-                  class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                  class="px-6 py-3 text-left border-e border-slate-300 text-xs font-semibold text-gray-600 uppercase tracking-wider"
                 >
                   {{ col.label }}
                 </th>
@@ -71,12 +71,12 @@
               <tr
                 v-for="item in filteredItems"
                 :key="item.id"
-                class="hover:bg-gray-50 transition"
+                class="hover:bg-sky-50 transition"
               >
                 <td
                   v-for="col in columns"
                   :key="col.key"
-                  class="px-6 py-4 text-sm text-gray-700"
+                  class="px-6 py-4 text-sm border-e border-slate-200 text-gray-700"
                 >
                   <template v-if="col.key === 'status'">
                     <span
