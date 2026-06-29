@@ -9,7 +9,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const email = ref("");
-const password = ref("");
+const password = ref("12345678");
 const loading = ref(false);
 const showPassword = ref(false);
 const isFocused = ref(false);
@@ -51,7 +51,21 @@ const roleConfig = computed(() => {
       logoutEndpoint: "/customer-portal/logout",
       dashboard: "/customer/dashboard",
       userType: "customer"
-    }
+    },
+    technician: {
+      title: "Technician",
+      color: "from-purple-500 to-teal-500",
+      lightColor: "from-purple-400/20 to-teal-500/20",
+      gradient: "from-purple-500/30 to-teal-500/30",
+      icon: "ri-tools-fill",
+      description: "Manage your service visits",
+      subDescription: "Schedule, Routes & Service History",
+      emoji: "🔧",
+      loginEndpoint: "/user-management/login",
+      logoutEndpoint: "/user-management/logout",
+      dashboard: "/technician/dashboard",
+      userType: "technician"
+    },
   };
   return configs[activeTab.value] || configs.tenant;
 });
@@ -68,7 +82,13 @@ const tabs = [
     label: "Customer", 
     icon: "ri-user-3-fill",
     color: "emerald"
-  }
+  },
+  { 
+    id: "technician", 
+    label: "Technician", 
+    icon: "ri-tools-fill",
+    color: "purple"
+  },
 ];
 
 const handleLogin = async () => {
@@ -171,6 +191,51 @@ const handleLogin = async () => {
       router.push("/customer/dashboard");
     }
 
+    // Handle Technician Login (NEW)
+    else if (activeTab.value === "technician") {
+      const userData = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        phone: data.user.phone || '',
+        avatar: '',
+        roles: [data.user.role],
+        user_type: 'technician',
+        tenant_id: data.user.tenant_id,
+        tenant: data.tenant,
+        last_login_at: data.user.last_login_at
+      };
+
+      // Check if the user has technician role
+      if (data.user.role !== 'technician') {
+        throw new Error('Invalid technician credentials');
+      }
+
+      authStore.login(
+        userData,
+        data.token,
+        data.user.role,
+        "technician"
+      );
+
+      // Store tenant information
+      authStore.companyId = data.tenant.id;
+      authStore.companyName = data.tenant.company_name;
+
+      await Swal.fire({
+        icon: "success",
+        title: "Login Successful",
+        text: `Welcome ${data.user.name}!`,
+        confirmButtonColor: "#16a34a",
+        background: "#1e1b4b",
+        color: "#e2e8f0",
+        timer: 2000,
+        timerProgressBar: true,
+      });
+
+      router.push("/technician/dashboard");
+    }
+
   } catch (error) {
     let message = "Invalid credentials. Please try again.";
     if (error.response?.data?.message) {
@@ -214,7 +279,7 @@ const handleLogout = async () => {
     <div class="absolute inset-0 overflow-hidden">
       <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
       <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-blue-500/10 to-emerald-500/10 rounded-full blur-3xl animate-spin-slow"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-teal-500/10 rounded-full blur-3xl animate-spin-slow"></div>
       
       <!-- Floating Particles -->
       <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-white/20 rounded-full animate-float"></div>
@@ -223,7 +288,7 @@ const handleLogout = async () => {
     </div>
 
     <!-- Login Card -->
-    <div class="relative z-10 w-full max-w-md mx-4">
+    <div class="relative z-10 w-full max-w-xl mx-4">
       <div class="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-3xl">
         
         <!-- Header with Gradient -->
@@ -254,14 +319,14 @@ const handleLogout = async () => {
 
         <!-- Tabs -->
         <div class="px-6 pt-6">
-          <div class="grid grid-cols-2 gap-2 bg-white/5 rounded-2xl p-1 border border-white/5">
+          <div class="grid grid-cols-3 gap-2 bg-white/5 rounded-2xl p-1 border border-white/5">
             <button
               v-for="tab in tabs"
               :key="tab.id"
               @click="setActiveTab(tab.id)"
               class="relative py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 group"
               :class="activeTab === tab.id 
-                ? `bg-gradient-to-r ${activeTab === 'tenant' ? 'from-blue-500 to-cyan-500' : 'from-emerald-500 to-teal-500'} text-white shadow-lg scale-105`
+                ? `bg-gradient-to-r ${activeTab === 'tenant' ? 'from-blue-500 to-cyan-500' : activeTab === 'customer' ? 'from-emerald-500 to-teal-500' : 'from-purple-500 to-teal-500'} text-white shadow-lg scale-105`
                 : 'text-gray-400 hover:text-white hover:bg-white/5'
               "
             >
@@ -361,12 +426,12 @@ const handleLogout = async () => {
             <p class="text-gray-400 text-sm">
               Don't have an account? 
               <router-link 
-                :to="activeTab === 'tenant' ? '/poolServiceProviderRegister' : '/customerRegister'" 
+                :to="activeTab === 'tenant' ? '/poolServiceProviderRegister' : activeTab === 'technician' ? '/technicianRegister' : '/customerRegister'" 
                 class="text-blue-400 hover:text-blue-300 font-medium transition-colors group"
               >
                 Register as 
                 <span class="underline underline-offset-2 group-hover:underline-offset-4 transition-all">
-                  {{ activeTab === 'tenant' ? 'Service Provider' : 'Customer' }}
+                  {{ activeTab === 'tenant' ? 'Service Provider' : activeTab === 'technician' ? 'Technician' : 'Customer' }}
                 </span>
                 <i class="ri-arrow-right-line inline-block group-hover:translate-x-1 transition-transform"></i>
               </router-link>
