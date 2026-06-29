@@ -17,7 +17,8 @@
               <span class="text-gray-600 text-sm">Today's Date:</span>
               <span class="text-gray-800 text-sm font-medium">{{ formattedDate }}</span>
             </div>
-            <button @click="handleRefresh" class="bg-white hover:bg-gray-50 rounded-xl px-4 py-2 shadow-md border border-gray-200 text-gray-700 transition-all hover:shadow-lg">
+            <button @click="handleRefresh"
+              class="bg-white hover:bg-gray-50 rounded-xl px-4 py-2 shadow-md border border-gray-200 text-gray-700 transition-all hover:shadow-lg">
               <i class="ri-refresh-line"></i>
             </button>
           </div>
@@ -26,13 +27,15 @@
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
+        <div
+          class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-gray-500 text-sm font-medium">Today's Visits</p>
               <p class="text-3xl font-bold text-gray-800 mt-1">{{ stats.todayVisits }}</p>
             </div>
-            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+            <div
+              class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
               <i class="ri-calendar-check-line text-2xl text-white"></i>
             </div>
           </div>
@@ -42,13 +45,15 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
+        <div
+          class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-gray-500 text-sm font-medium">Completed</p>
               <p class="text-3xl font-bold text-gray-800 mt-1">{{ stats.completed }}</p>
             </div>
-            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
+            <div
+              class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg">
               <i class="ri-checkbox-circle-line text-2xl text-white"></i>
             </div>
           </div>
@@ -58,13 +63,15 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
+        <div
+          class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-gray-500 text-sm font-medium">Pending</p>
               <p class="text-3xl font-bold text-gray-800 mt-1">{{ stats.pending }}</p>
             </div>
-            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
+            <div
+              class="w-14 h-14 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
               <i class="ri-time-line text-2xl text-white"></i>
             </div>
           </div>
@@ -74,13 +81,15 @@
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
+        <div
+          class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all hover:scale-105">
           <div class="flex items-center justify-between">
             <div>
               <p class="text-gray-500 text-sm font-medium">Rating</p>
               <p class="text-3xl font-bold text-gray-800 mt-1">{{ stats.rating }}</p>
             </div>
-            <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center shadow-lg">
+            <div
+              class="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center shadow-lg">
               <i class="ri-star-fill text-2xl text-white"></i>
             </div>
           </div>
@@ -103,10 +112,12 @@
                   <p class="text-gray-500 text-sm mt-1">{{ todayVisits.length }} visits scheduled</p>
                 </div>
                 <div class="flex gap-2">
-                  <button class="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm hover:bg-purple-200 transition-colors">
+                  <button
+                    class="px-3 py-1.5 bg-purple-100 text-purple-700 rounded-lg text-sm hover:bg-purple-200 transition-colors">
                     <i class="ri-list-view"></i> List
                   </button>
-                  <button class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200 transition-colors">
+                  <button
+                    class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200 transition-colors">
                     <i class="ri-calendar-2-line"></i> Calendar
                   </button>
                 </div>
@@ -114,22 +125,21 @@
             </div>
 
             <div class="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
-              <div v-for="visit in todayVisits" :key="visit.id" 
-                   class="p-4 hover:bg-gray-50 transition-colors group">
+              <div v-for="visit in todayVisits" :key="visit.id" class="p-4 hover:bg-gray-50 transition-colors group">
                 <div class="flex items-start gap-4">
                   <!-- Time -->
                   <div class="min-w-[80px]">
                     <span class="text-sm font-semibold text-gray-700">{{ visit.time }}</span>
                   </div>
-                  
+
                   <!-- Status Badge -->
                   <div class="min-w-[100px]">
-                    <span :class="getStatusBadgeClass(visit.status)" 
-                          class="px-3 py-1 rounded-full text-xs font-semibold">
+                    <span :class="getStatusBadgeClass(visit.status)"
+                      class="px-3 py-1 rounded-full text-xs font-semibold">
                       {{ visit.status }}
                     </span>
                   </div>
-                  
+
                   <!-- Content -->
                   <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between">
@@ -137,18 +147,24 @@
                         <p class="text-gray-800 font-semibold">{{ visit.customer }}</p>
                         <p class="text-gray-500 text-sm">{{ visit.address }}</p>
                         <div class="flex items-center gap-3 mt-1 text-xs text-gray-500">
-                          <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded"><i class="ri-home-line mr-1"></i>{{ visit.serviceType }}</span>
+                          <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded"><i class="ri-home-line mr-1"></i>{{
+                            visit.serviceType }}</span>
                           <span><i class="ri-time-line mr-1"></i>{{ visit.duration }}</span>
                         </div>
                       </div>
                       <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button @click="startVisit(visit)" class="p-1.5 hover:bg-green-100 rounded-lg text-green-600 transition-colors" title="Start Visit">
+                        <button @click="startVisit(visit)"
+                          class="p-1.5 hover:bg-green-100 rounded-lg text-green-600 transition-colors"
+                          title="Start Visit">
                           <i class="ri-play-fill text-lg"></i>
                         </button>
-                        <button @click="completeVisit(visit)" class="p-1.5 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors" title="Complete">
+                        <button @click="completeVisit(visit)"
+                          class="p-1.5 hover:bg-blue-100 rounded-lg text-blue-600 transition-colors" title="Complete">
                           <i class="ri-check-double-line text-lg"></i>
                         </button>
-                        <button @click="viewVisitDetails(visit)" class="p-1.5 hover:bg-purple-100 rounded-lg text-purple-600 transition-colors" title="View Details">
+                        <button @click="viewVisitDetails(visit)"
+                          class="p-1.5 hover:bg-purple-100 rounded-lg text-purple-600 transition-colors"
+                          title="View Details">
                           <i class="ri-eye-line text-lg"></i>
                         </button>
                       </div>
@@ -166,19 +182,23 @@
           <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
             <div class="grid grid-cols-2 gap-3">
-              <button class="p-4 bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
+              <button
+                class="p-4 bg-gradient-to-br from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
                 <i class="ri-add-line text-2xl block"></i>
                 <span class="text-xs mt-1 block">New Visit</span>
               </button>
-              <button class="p-4 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
+              <button
+                class="p-4 bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
                 <i class="ri-route-line text-2xl block"></i>
                 <span class="text-xs mt-1 block">Route</span>
               </button>
-              <button class="p-4 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
+              <button
+                class="p-4 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
                 <i class="ri-file-list-line text-2xl block"></i>
                 <span class="text-xs mt-1 block">Reports</span>
               </button>
-              <button class="p-4 bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
+              <button
+                class="p-4 bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl text-white transition-all shadow-lg hover:shadow-xl">
                 <i class="ri-settings-line text-2xl block"></i>
                 <span class="text-xs mt-1 block">Settings</span>
               </button>
@@ -189,10 +209,9 @@
           <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Activity</h3>
             <div class="space-y-4">
-              <div v-for="activity in recentActivities" :key="activity.id" 
-                   class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0" 
-                     :class="getActivityBgClass(activity.type)">
+              <div v-for="activity in recentActivities" :key="activity.id" class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                  :class="getActivityBgClass(activity.type)">
                   <i :class="getActivityIcon(activity.type)" class="text-lg"></i>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -215,7 +234,8 @@
                   <span class="text-white/80 text-sm">Sunny</span>
                 </div>
               </div>
-              <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/30">
+              <div
+                class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center border-2 border-white/30">
                 <i class="ri-map-pin-2-line text-3xl"></i>
               </div>
             </div>
@@ -232,17 +252,17 @@
           </div>
           <div class="flex gap-2">
             <button class="px-4 py-1.5 bg-purple-600 text-white rounded-lg text-sm shadow-md">Week</button>
-            <button class="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200 transition-colors">Month</button>
+            <button
+              class="px-4 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200 transition-colors">Month</button>
           </div>
         </div>
         <div class="h-64 flex items-end gap-4">
-          <div v-for="(day, index) in weeklyData" :key="index" 
-               class="flex-1 flex flex-col items-center gap-2 group">
+          <div v-for="(day, index) in weeklyData" :key="index" class="flex-1 flex flex-col items-center gap-2 group">
             <div class="w-full max-w-[60px] relative">
               <div class="w-full rounded-lg transition-all duration-500 hover:scale-105 cursor-pointer relative"
-                   :style="{ height: `${day.height}%`, minHeight: '20px' }"
-                   :class="getGradientColor(index)">
-                <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
+                :style="{ height: `${day.height}%`, minHeight: '20px' }" :class="getGradientColor(index)">
+                <div
+                  class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
                   {{ day.count }} visits
                 </div>
               </div>
@@ -254,7 +274,9 @@
     </div>
 
     <!-- Visit Details Modal -->
-    <div v-if="showVisitModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click.self="closeModal">
+    <div v-if="showVisitModal"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      @click.self="closeModal">
       <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b border-gray-200 flex items-center justify-between">
           <h3 class="text-xl font-semibold text-gray-800">Visit Details</h3>
@@ -290,10 +312,12 @@
             <p class="text-gray-600 text-sm mt-1">No additional notes for this visit.</p>
           </div>
           <div class="flex gap-3 pt-4 border-t border-gray-200">
-            <button @click="startVisit(selectedVisit)" class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg">
+            <button @click="startVisit(selectedVisit)"
+              class="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg">
               <i class="ri-play-fill mr-2"></i>Start Visit
             </button>
-            <button @click="completeVisit(selectedVisit)" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg">
+            <button @click="completeVisit(selectedVisit)"
+              class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg">
               <i class="ri-check-double-line mr-2"></i>Complete
             </button>
           </div>
@@ -305,10 +329,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useAuthStore } from '../../store/AuthStore.js';
+import { useAuthStore } from '../../../../store/AuthStore.js';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
-import api from '../../services/api.js';
+import api from '../../../../services/api.js';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -417,11 +441,11 @@ const weeklyData = ref([
 // Computed
 const formattedDate = computed(() => {
   const now = new Date();
-  return now.toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
+  return now.toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
 });
 

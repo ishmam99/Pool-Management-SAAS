@@ -201,69 +201,11 @@ const menus = [
         icon: 'ri-calendar-check-line',
 
         links: [
-            { to: '/customer/schedule', icon: 'ri-calendar-event-line', text: 'My Schedule' }
+            { to: '/technician/my-schedules', icon: 'ri-calendar-event-line', text: 'My Schedule' }
 
         ]
     },
-    // {
-    //     id: 'pool',
-    //     title: 'My Pool',
-    //     icon: 'ri-drop-line',
-    
-    //     links: [
-    //         { to: '/customer/pools', icon: 'ri-drop-fill', text: 'My Pools' },
-    //     ]
-    // },
-    // {
-    //     id: 'service-photos',
-    //     title: 'Service Photos',
-    //     icon: 'ri-image-line',
-    //     links: [
-
-    //         { to: '/customer/photos', icon: 'ri-image-2-line', text: 'Service Photos' }
-
-    //     ]
-    // },
-    // {
-    //     id: 'billing',
-    //     title: 'Billing',
-    //     icon: 'ri-bank-card-line',
-
-    //     links: [
-    //         { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Billing' }
-
-    //     ]
-    // },
-    // {
-    //     id: 'agreements',
-    //     title: 'Agreements',
-    //     icon: 'ri-file-text-line',
-
-    //     links: [
-    //         { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Agreements' }
-
-    //     ]
-    // },
-    // {
-    //     id: 'equipment',
-    //     title: 'Equipment',
-    //     icon: 'ri-tools-line',
-
-    //     links: [
-    //         { to: '/customer/equipment', icon: 'ri-tools-fill', text: 'Equipment' }
-
-    //     ]
-    // },
-    // {
-    //     id: 'messages',
-    //     title: 'Messages',
-    //     icon: 'ri-chat-3-line',
-
-    //     links: [
-    //         { to: '/customer/messages', icon: 'ri-chat-3-fill', text: 'Messages' }
-
-    //     ]
-    // },
+   
     {
         id: 'profile',
         title: 'Profile',
@@ -284,16 +226,7 @@ const menus = [
 
         ]
     },
-    // {
-    //     id: 'help',
-    //     title: 'Help',
-    //     icon: 'ri-question-line',
-
-    //     links: [
-    //         { to: '/customer/help', icon: 'ri-question-fill', text: 'Help' }
-
-    //     ]
-    // }
+    
 ]
 </script>
 

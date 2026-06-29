@@ -77,22 +77,22 @@
               <div
                 class="flex items-center justify-between w-full p-2 text-sm rounded-lg cursor-pointer hover:bg-gray-50 transition-all duration-200"
                 :style="{
-                  backgroundColor: openSection === group.key ? getMenuColor( group.title ) : 'white',
-                   color: openSection === group.key ? 'white' : getMenuColor(group.title),
-                  border: `2px solid ${getMenuColor( group.title )}`
+                  backgroundColor: openSection === group.key ? getMenuColor(group.title) : 'white',
+                  color: openSection === group.key ? 'white' : getMenuColor(group.title),
+                  border: `2px solid ${getMenuColor(group.title)}`
                 }" @click="toggleGroup(group.key)">
                 <div class="flex items-center gap-2">
                   <i class="py-1 px-2 rounded-md text-white text-xs" :class="`${group.icon}`" :style="{
-                    backgroundColor: getMenuColor( group.title )
+                    backgroundColor: getMenuColor(group.title)
                   }"></i>
                   <span class="text-sm" :style="{
-                    color: openSection ===  group.key ? 'white' : getMenuColor(group.title)
+                    color: openSection === group.key ? 'white' : getMenuColor(group.title)
                   }">{{ group.title }}</span>
                 </div>
-                
+
                 <i class="ri-arrow-down-s-line transition-transform duration-300 text-xs"
                   :class="{ 'rotate-180': openGroup === group.key }" :style="{
-                    color: openSection ===  group.key  ? 'white' : getMenuColor(group.title)
+                    color: openSection === group.key ? 'white' : getMenuColor(group.title)
                   }"></i>
               </div>
               <!-- Group Sub-items -->
@@ -187,7 +187,7 @@ const menuColors = {
   'Perform Service': '#2563eb',       // Blue
 
   // Reserved (currently unused)
-  'Blank 1': '#a855f7',               // Purple
+  'Invoice': '#a855f7',               // Purple
   'Blank 2': '#f43f5e',               // Rose
   'Blank 3': '#f97316',               // Orange
   'Blank 4': '#0f766e',               // Teal
@@ -279,14 +279,14 @@ const menus = [
     id: 'service-management',
     title: 'Service Management',
     icon: 'ri-calendar-check-line',
-     groups: [
+    groups: [
       {
         key: 'service-management-schedule',
         icon: 'ri-file-text-line',
         title: 'Service Schedule',
         links: [
-       { to: '/provider/services-calendar', icon: 'ri-calendar-2-line', text: 'Service Schedule Calendar View' },
-      { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'Service Schedule List View' },
+          { to: '/provider/services-calendar', icon: 'ri-calendar-2-line', text: 'Service Schedule Calendar View' },
+          { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'Service Schedule List View' },
         ]
       },
       {
@@ -300,7 +300,7 @@ const menus = [
       }
 
     ],
-    
+
   },
   {
     id: 'maintenance-management',
@@ -324,9 +324,8 @@ const menus = [
     icon: 'ri-team-line',
     groups: [],
     links: [
+      { to: '/provider/technicians', icon: 'ri-list-unordered', text: 'Add New Technician' },
       { to: '/provider/technicians', icon: 'ri-list-unordered', text: 'Technician List' },
-      { to: '/provider/technicians/performance', icon: 'ri-bar-chart-line', text: 'Performance' },
-      { to: '/provider/technicians/certifications', icon: 'ri-award-line', text: 'Certifications' }
     ]
   },
   {
@@ -335,7 +334,7 @@ const menus = [
     icon: 'ri-drop-line',
     groups: [],
     links: [
-      { to: '/provider/water-quality/readings', icon: 'ri-file-chart-line', text: 'Readings Log' },
+      { to: '/provider/water-quality/readings', icon: 'ri-file-chart-line', text: 'Chemical Readings Log' },
       { to: '/provider/water-quality/chemicals', icon: 'ri-flask-line', text: 'Chemical Usage' },
       { to: '/provider/water-quality/alerts', icon: 'ri-notification-3-line', text: 'Alerts' },
       { to: '/provider/water-quality/dosing', icon: 'ri-calculator-line', text: 'Dosing Calculator' }
@@ -358,12 +357,26 @@ const menus = [
     id: 'billing',
     title: 'Billing',
     icon: 'ri-bank-card-line',
-    groups: [],
+    groups: [
+      {
+        key: 'billing-invoice',
+        icon: 'ri-file-text-line',
+        title: 'Invoice',
+        links: [
+          { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Create Invoices' },
+          { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Invoice List' },
+        ]
+      },
+
+
+
+    ],
+
     links: [
-      { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Invoices' },
-      { to: '/provider/billing/payments', icon: 'ri-money-dollar-circle-line', text: 'Payments' },
-      { to: '/provider/billing/credit-memos', icon: 'ri-file-reduce-line', text: 'Credit Memos' },
-      { to: '/provider/billing/settings', icon: 'ri-settings-3-line', text: 'Billing Settings' }
+
+      { to: '/provider/billing/payments', icon: 'ri-money-dollar-circle-line', text: 'Payment List' },
+      // { to: '/provider/billing/credit-memos', icon: 'ri-file-reduce-line', text: 'Credit Memos' },
+      // { to: '/provider/billing/settings', icon: 'ri-settings-3-line', text: 'Billing Settings' }
     ]
   },
   {

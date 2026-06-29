@@ -8,7 +8,6 @@ import { useAuthStore } from "../../store/AuthStore.js";
 const router = useRouter();
 const authStore = useAuthStore();
 
-const email = ref("");
 const password = ref("12345678");
 const loading = ref(false);
 const showPassword = ref(false);
@@ -36,7 +35,8 @@ const roleConfig = computed(() => {
       loginEndpoint: "/user-management/login",
       logoutEndpoint: "/user-management/logout",
       dashboard: "/provider/dashboard",
-      userType: "provider"
+      userType: "provider",
+      email: "owner@aquacleanpools.com"
     },
     customer: {
       title: "Customer",
@@ -50,13 +50,14 @@ const roleConfig = computed(() => {
       loginEndpoint: "/customer-portal/login",
       logoutEndpoint: "/customer-portal/logout",
       dashboard: "/customer/dashboard",
-      userType: "customer"
+      userType: "customer",
+      email: "patricia.brown23@example.com"
     },
     technician: {
       title: "Technician",
       color: "from-purple-500 to-teal-500",
-      lightColor: "from-purple-400/20 to-teal-500/20",
-      gradient: "from-purple-500/30 to-teal-500/30",
+      lightColor: "from-purple-700/20 to-teal-800/20",
+      gradient: "from-purple-700/30 to-teal-700/30",
       icon: "ri-tools-fill",
       description: "Manage your service visits",
       subDescription: "Schedule, Routes & Service History",
@@ -64,28 +65,32 @@ const roleConfig = computed(() => {
       loginEndpoint: "/user-management/login",
       logoutEndpoint: "/user-management/logout",
       dashboard: "/technician/dashboard",
-      userType: "technician"
+      userType: "technician",
+      email: "tech1@aquacleanpools.com"
     },
   };
   return configs[activeTab.value] || configs.tenant;
 });
 
+// Create a computed property for email that updates when roleConfig changes
+const email = computed(() => roleConfig.value.email);
+
 const tabs = [
-  { 
-    id: "tenant", 
-    label: "Service Provider", 
+  {
+    id: "tenant",
+    label: "Service Provider",
     icon: "ri-water-flash-fill",
     color: "blue"
   },
-  { 
-    id: "customer", 
-    label: "Customer", 
+  {
+    id: "customer",
+    label: "Customer",
     icon: "ri-user-3-fill",
     color: "emerald"
   },
-  { 
-    id: "technician", 
-    label: "Technician", 
+  {
+    id: "technician",
+    label: "Technician",
     icon: "ri-tools-fill",
     color: "purple"
   },
@@ -243,7 +248,7 @@ const handleLogin = async () => {
     } else if (error.message) {
       message = error.message;
     }
-    
+
     Swal.fire({
       icon: "error",
       title: "Login Failed",
@@ -273,14 +278,21 @@ const handleLogout = async () => {
 </script>
 
 <template>
-  <div class="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900">
-    
+  <div
+    class="relative min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900">
+
     <!-- Animated Background Elements -->
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-teal-500/10 rounded-full blur-3xl animate-spin-slow"></div>
-      
+      <div
+        class="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-full blur-3xl animate-pulse">
+      </div>
+      <div
+        class="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-full blur-3xl animate-pulse delay-1000">
+      </div>
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-purple-500/10 to-teal-500/10 rounded-full blur-3xl animate-spin-slow">
+      </div>
+
       <!-- Floating Particles -->
       <div class="absolute top-1/4 left-1/4 w-1 h-1 bg-white/20 rounded-full animate-float"></div>
       <div class="absolute top-3/4 right-1/3 w-2 h-2 bg-white/10 rounded-full animate-float-delayed"></div>
@@ -289,29 +301,33 @@ const handleLogout = async () => {
 
     <!-- Login Card -->
     <div class="relative z-10 w-full max-w-xl mx-4">
-      <div class="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-3xl">
-        
+      <div
+        class="backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl overflow-hidden transition-all duration-500 hover:shadow-3xl">
+
         <!-- Header with Gradient -->
         <div class="relative p-8 text-center overflow-hidden">
           <div :class="`absolute inset-0 bg-gradient-to-br ${roleConfig.color}`"></div>
           <div :class="`absolute inset-0 bg-gradient-to-t ${roleConfig.lightColor}`"></div>
-          
+
           <div class="relative z-10">
             <!-- Animated Logo -->
             <div class="relative inline-block">
-              <div class="w-20 h-20 mx-auto rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-lg transform transition-transform duration-500 hover:scale-110 hover:rotate-3">
+              <div
+                class="w-20 h-20 mx-auto rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20 shadow-lg transform transition-transform duration-500 hover:scale-110 hover:rotate-3">
                 <span class="text-4xl">{{ roleConfig.emoji }}</span>
               </div>
-              <div class="absolute -inset-2 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
+              <div
+                class="absolute -inset-2 rounded-2xl bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse">
+              </div>
             </div>
 
             <h1 class="mt-4 text-2xl font-bold text-white tracking-tight">
               {{ roleConfig.title }}
             </h1>
-            <p class="mt-1 text-white/70 text-sm font-light tracking-wide">
+            <p class="mt-1 text-white text-sm font-light tracking-wide">
               {{ roleConfig.description }}
             </p>
-            <p class="mt-1 text-white/50 text-xs font-light">
+            <p class="mt-1 text-white text-xs font-light">
               {{ roleConfig.subDescription }}
             </p>
           </div>
@@ -320,23 +336,19 @@ const handleLogout = async () => {
         <!-- Tabs -->
         <div class="px-6 pt-6">
           <div class="grid grid-cols-3 gap-2 bg-white/5 rounded-2xl p-1 border border-white/5">
-            <button
-              v-for="tab in tabs"
-              :key="tab.id"
-              @click="setActiveTab(tab.id)"
+            <button v-for="tab in tabs" :key="tab.id" @click="setActiveTab(tab.id)"
               class="relative py-2.5 px-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center gap-2 group"
-              :class="activeTab === tab.id 
+              :class="activeTab === tab.id
                 ? `bg-gradient-to-r ${activeTab === 'tenant' ? 'from-blue-500 to-cyan-500' : activeTab === 'customer' ? 'from-emerald-500 to-teal-500' : 'from-purple-500 to-teal-500'} text-white shadow-lg scale-105`
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
-              "
-            >
+                : 'text-gray-800 hover:text-white hover:bg-white/5'
+                ">
               <i :class="tab.icon" class="text-base"></i>
               <span class="hidden sm:inline">{{ tab.label }}</span>
               <span class="sm:hidden">{{ tab.label.charAt(0) }}</span>
-              
+
               <!-- Active Indicator -->
-              <div v-if="activeTab === tab.id" 
-                   class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-white/50 rounded-full">
+              <div v-if="activeTab === tab.id"
+                class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-white/50 rounded-full">
               </div>
             </button>
           </div>
@@ -347,48 +359,43 @@ const handleLogout = async () => {
           <form @submit.prevent="handleLogin" class="space-y-4">
             <!-- Email Field -->
             <div class="relative group">
-              <label class="block text-gray-300 mb-1.5 text-sm font-medium tracking-wide">
+              <label class="block text-gray-800 mb-1.5 text-sm font-medium tracking-wide">
                 <i class="ri-mail-line mr-2"></i>Email Address
               </label>
               <div class="relative">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
+                <div
+                  class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
                   <i class="ri-mail-line"></i>
                 </div>
-                <input
-                  v-model="email"
-                  type="email"
-                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300"
-                  placeholder="Enter your email"
-                  @focus="isFocused = true"
-                  @blur="isFocused = false"
-                />
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <input v-model="email"  type="email"
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300"
+                  placeholder="Enter your email" @focus="isFocused = true" @blur="isFocused = false" />
+                <div
+                  class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none">
+                </div>
               </div>
             </div>
 
             <!-- Password Field -->
             <div class="relative group">
-              <label class="block text-gray-300 mb-1.5 text-sm font-medium tracking-wide">
+              <label class="block text-gray-800 mb-1.5 text-sm font-medium tracking-wide">
                 <i class="ri-lock-line mr-2"></i>Password
               </label>
               <div class="relative">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
+                <div
+                  class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-400 transition-colors">
                   <i class="ri-lock-line"></i>
                 </div>
-                <input
-                  v-model="password"
-                  :type="showPassword ? 'text' : 'password'"
-                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300 pr-12"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  @click="showPassword = !showPassword"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                >
+                <input v-model="password" :type="showPassword ? 'text' : 'password'"
+                  class="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-2.5 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300 pr-12"
+                  placeholder="Enter your password" />
+                <button type="button" @click="showPassword = !showPassword"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-800 hover:text-white transition-colors">
                   <i :class="showPassword ? 'ri-eye-off-fill' : 'ri-eye-fill'" class="text-lg"></i>
                 </button>
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                <div
+                  class="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-transparent opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none">
+                </div>
               </div>
             </div>
 
@@ -400,15 +407,15 @@ const handleLogout = async () => {
             </div>
 
             <!-- Login Button -->
-            <button
-              :disabled="loading"
-              type="submit"
-              class="relative w-full overflow-hidden group"
-            >
-              <div :class="`absolute inset-0 bg-gradient-to-r ${roleConfig.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`"></div>
+            <button :disabled="loading" type="submit" class="relative w-full overflow-hidden group">
+              <div
+                :class="`absolute inset-0 bg-gradient-to-r ${roleConfig.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`">
+              </div>
               <div :class="`absolute inset-0 bg-gradient-to-r ${roleConfig.color}`"></div>
-              <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
-              
+              <div
+                class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+              </div>
+
               <span class="relative flex items-center justify-center gap-2 text-white py-2.5 rounded-xl font-semibold">
                 <span v-if="!loading">
                   <i class="ri-login-box-line mr-2"></i>Login
@@ -423,15 +430,15 @@ const handleLogout = async () => {
 
           <!-- Register Links -->
           <div class="mt-5 text-center border-t border-white/5 pt-4">
-            <p class="text-gray-400 text-sm">
-              Don't have an account? 
-              <router-link 
-                :to="activeTab === 'tenant' ? '/poolServiceProviderRegister' : activeTab === 'technician' ? '/technicianRegister' : '/customerRegister'" 
-                class="text-blue-400 hover:text-blue-300 font-medium transition-colors group"
-              >
-                Register as 
+            <p class="text-gray-900 text-sm">
+              Don't have an account?
+              <router-link
+                :to="activeTab === 'tenant' ? '/poolServiceProviderRegister' : activeTab === 'technician' ? '/technicianRegister' : '/customerRegister'"
+                class="text-blue-800 hover:text-blue-300 font-medium transition-colors group">
+                Register as
                 <span class="underline underline-offset-2 group-hover:underline-offset-4 transition-all">
-                  {{ activeTab === 'tenant' ? 'Service Provider' : activeTab === 'technician' ? 'Technician' : 'Customer' }}
+                  {{ activeTab === 'tenant' ? 'Service Provider' : activeTab === 'technician' ? 'Technician' :
+                  'Customer' }}
                 </span>
                 <i class="ri-arrow-right-line inline-block group-hover:translate-x-1 transition-transform"></i>
               </router-link>
@@ -452,23 +459,49 @@ const handleLogout = async () => {
 
 <style scoped>
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-20px) rotate(180deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+  }
 }
 
 @keyframes float-delayed {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(-180deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(-180deg);
+  }
 }
 
 @keyframes float-delayed-2 {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-25px) rotate(90deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-25px) rotate(90deg);
+  }
 }
 
 @keyframes spin-slow {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
 }
 
 .animate-float {
