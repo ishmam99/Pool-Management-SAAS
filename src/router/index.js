@@ -75,16 +75,25 @@ const routes = [
       // Customer Service
       {
         path: '/provider/customer-service-agreements',
-        name: 'provider-customers-agreements',
+        name: 'provider-customers-service-agreements',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementsList.vue')
       },
       {
         path: '/provider/customer-service-agreements-create',
-        name: 'provider-agreements-create',
+        name: 'provider-service-agreements-create',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementCreate.vue')
       },
       // Customer Maintenance
-
+ {
+        path: '/provider/customer-maintenance-agreements',
+        name: 'provider-maintenance-customers-agreements',
+        component: () => import('../views/provider/pages/customer/MaintenanceAgreements/AgreementList.vue')
+      },
+      {
+        path: '/provider/customer-maintenance-agreements-create',
+        name: 'provider-maintenance-agreements-create',
+        component: () => import('../views/provider/pages/customer/MaintenanceAgreements/AgreementCreate.vue')
+      },
 
       // Pool
       {

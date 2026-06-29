@@ -255,8 +255,8 @@ const menus = [
         icon: 'ri-file-text-line',
         title: 'Maintenance Agreements',
         links: [
-          { to: '/provider/agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
-          { to: '/provider/customers-agreements', icon: 'ri-file-text-line', text: 'Maintenance Agreements' },
+          { to: '/provider/customer-maintenance-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
+          { to: '/provider/customer-maintenance-agreements', icon: 'ri-file-text-line', text: 'Maintenance Agreements' },
         ]
       }
 
