@@ -252,7 +252,7 @@
                               {{ formatDate(visit.scheduled_date) }}
                             </td>
                             <td class="px-4 py-3 text-sm text-slate-600 whitespace-nowrap">
-                              {{ formatTimeRange(visit.time_window_start, visit.time_window_end) }}
+                              {{ formatTime(visit.time_window_start) }} -  {{ formatTime(visit.time_window_end) }}
                             </td>
                             <td class="px-4 py-3 text-sm text-slate-700 whitespace-nowrap">
                               {{ visit.technician?.name || '—' }}
@@ -858,6 +858,16 @@ function formatTimeRange(start, end) {
   if (startStr && endStr) return `${startStr} - ${endStr}`
   return startStr || endStr || '—'
 }
+
+const formatTime = (t) => {
+  if (!t) return '—';
+  if (t.includes(':')) {
+    const parts = t.split(':');
+    return `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
+  }
+  return t;
+};
+
 
 function formatCurrency(val) {
   if (val == null) return '—'

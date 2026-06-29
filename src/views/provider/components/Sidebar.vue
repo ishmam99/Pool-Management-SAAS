@@ -19,7 +19,7 @@
       </div>
 
       <!-- Dashboard Link -->
-      <router-link to="/provider" active-class="bg-sky-100 text-sky-700"
+      <router-link to="/provider/dashboard" active-class="bg-sky-100 text-sky-700"
         class="flex items-center justify-center mb-4 bg-white text-sky-600 font-medium py-2.5 px-4 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md">
         <i class="ri-dashboard-line mr-2"></i>
         Dashboard
