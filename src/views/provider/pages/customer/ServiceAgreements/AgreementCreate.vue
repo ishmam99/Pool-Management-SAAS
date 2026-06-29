@@ -497,6 +497,11 @@ const isFormValid = computed(() => {
   )
 })
 
+const serviceIncludesFormatted = form.service_includes.map(item => ({
+  item: item,
+  isChecked: "false"
+}))
+
 // Methods
 const getPoolName = (id) => {
   if (!selectedCustomer.value) return ''
@@ -576,6 +581,14 @@ const createAgreement = async () => {
   try {
     submitting.value = true
 
+    // Format service_includes for API - convert array of strings to array of objects
+    const serviceIncludesArray = form.service_includes.map(item => ({
+      item: item,
+      isChecked: "false"
+    }))
+    
+    const serviceIncludesJson = JSON.stringify(serviceIncludesArray)
+
     const payload = {
       customer_id: form.customer_id,
       frequency: form.frequency,
@@ -587,7 +600,7 @@ const createAgreement = async () => {
       auto_renew: form.auto_renew == true ? 1 : 0,
       pool_ids: form.pool_ids,
       status: "active",
-      service_includes: form.service_includes // Send selected services as array
+      service_includes: serviceIncludesJson
     }
 
     // Step 1: Create the agreement
@@ -595,15 +608,15 @@ const createAgreement = async () => {
     const agreementId = response.data.data.id
 
     // Step 2: Automatically generate visits
-  const visitPayload = {
-  start_time: form.start_time,  
-  end_time: form.end_time || null 
-}
+    const visitPayload = {
+      start_time: form.start_time,  
+      end_time: form.end_time || null 
+    }
 
     try {
       await api().post(
         `/service-agreement-management/${agreementId}/generate-visits`,
-        visitPayload // Send the prepared payload
+        visitPayload
       )
 
       await Swal.fire({
@@ -614,7 +627,6 @@ const createAgreement = async () => {
 
       router.push('/provider/customers-agreements')
     } catch (visitError) {
-      // Agreement created but visit generation failed
       console.error('Failed to generate visits:', visitError)
 
       await Swal.fire({
@@ -624,11 +636,9 @@ const createAgreement = async () => {
         footer: 'Agreement ID: #' + agreementId
       })
 
-      // Still redirect to agreements page
       router.push('/provider/customers-agreements')
     }
   } catch (error) {
-    // Handle Laravel validation errors
     if (error.response?.data?.errors) {
       Object.assign(validationErrors, error.response.data.errors)
       Swal.fire({
