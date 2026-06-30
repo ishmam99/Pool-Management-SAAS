@@ -1108,7 +1108,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
-import api from '../../../../../services/api.js'
+import api from '../../../../services/api.js'
 
 // ─── Icon Imports from Remix Icon ──────────────────────────────────────────
 import {
