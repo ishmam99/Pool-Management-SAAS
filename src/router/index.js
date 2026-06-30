@@ -64,9 +64,9 @@ const routes = [
 
       // Customer
       {
-        path: '/provider/customers',
+        path: '/provider/customers/:id',
         name: 'provider-allcustomers',
-        component: () => import('../views/provider/pages/customer/AllCustomers.vue')
+        component: () => import('../views/provider/pages/customer/AllCustomers/[id].vue')
       },
       {
         path: '/provider/customer-create',
@@ -76,7 +76,12 @@ const routes = [
       {
         path: '/provider/customer-details/:id',
         name: 'provider-customer-details',
-        component: () => import('../views/provider/pages/customer/CustomerDetails.vue')
+        component: () => import('../views/provider/pages/customer/AllCustomers/CustomerDetails.vue')
+      },
+        {
+        path: '/provider/prospective-customer-details/:id',
+        name: 'provider-prospective-customer-details',
+        component: () => import('../views/provider/pages/customer/AllCustomers/ProspectiveCustomerDetails.vue')
       },
       // Customer Service
       {
@@ -89,6 +94,12 @@ const routes = [
         name: 'provider-service-agreements-create',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementCreate.vue')
       },
+       {
+        path: '/provider/customer-service-terms-and-conditions',
+        name: 'provider-service-terms-and-conditions',
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/TermsAndConditions/TermAndConditionsView.vue')
+      },
+    
       // Customer Maintenance
  {
         path: '/provider/customer-maintenance-agreements',

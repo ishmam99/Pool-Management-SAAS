@@ -3,8 +3,8 @@
     <!-- Header Section -->
     <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Customers</h1>
-        <p class="mt-1 text-sm text-gray-500">Manage all pool service customers and agreements.</p>
+        <h1 class="text-3xl font-bold text-gray-900">{{ pageTitle }}</h1>
+        <p class="mt-1 text-sm text-gray-500">{{ pageSubtitle }}</p>
       </div>
       <div class="mt-4 flex flex-col space-y-2 sm:flex-row sm:space-x-3 sm:space-y-0 md:mt-0">
         <router-link to="/provider/customer-create"
@@ -176,7 +176,7 @@
                     class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-sm font-semibold text-blue-700">
                     {{ getAvatarInitial(customer) }}
                   </div>
-                <router-link :to="`/provider/customer-details/${customer.id}`">
+                  <router-link :to="getCustomerDetailsRoute(customer)">
                     <p class="text-sm font-medium text-blue-900">{{ customer.contact_name }}</p>
                     <p class="text-xs text-gray-500">ID: {{ customer.id }}</p>
                   </router-link>
@@ -266,14 +266,14 @@
                   </button>
                   <div v-if="activeDropdown === customer.id"
                     class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-xl bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5">
-                    <button @click="openViewCustomerModal(customer)"
+                    <router-link :to="getCustomerDetailsRoute(customer)"
                       class="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50">
                       <svg class="mr-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
                       View Customer
-                    </button>
+                    </router-link>
                     <button @click="editCustomer(customer)"
                       class="flex w-full items-center px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50">
                       <svg class="mr-3 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -682,12 +682,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import Swal from 'sweetalert2'
-import api from '../../../../services/api.js'
+import api from '../../../../../services/api.js'
 
 const router = useRouter()
+const route = useRoute()
 
 // State
 const loading = ref(false)
@@ -714,6 +715,54 @@ const editForm = ref({
   status: 'active'
 })
 const editingCustomerId = ref(null)
+
+// Customer Type Helpers
+const customerType = computed(() => route.params.id || 'current')
+
+const pageConfigs = {
+  prospective: {
+    title: 'Prospective Customers',
+    subtitle: 'Manage prospective customers, pools, and quotations.'
+  },
+  current: {
+    title: 'Current Customers',
+    subtitle: 'Manage customers with active service agreements.'
+  },
+  previous: {
+    title: 'Previous Customers',
+    subtitle: 'View customers whose service agreements have ended.'
+  }
+}
+
+const pageTitle = computed(() => {
+  return pageConfigs[customerType.value]?.title || 'Customers'
+})
+
+const pageSubtitle = computed(() => {
+  return pageConfigs[customerType.value]?.subtitle || 'Manage all pool service customers and agreements.'
+})
+
+function getCustomerApi() {
+  const type = customerType.value
+  
+  switch (type) {
+    case 'prospective':
+      return 'customer-management/customers-prospective?with=pools,agreements'
+    case 'current':
+      return 'customer-management/customers-active?with=pools,agreements'
+    case 'previous':
+      return 'customer-management/customers-previous?with=pools,agreements'
+    default:
+      return 'customer-management/customers-advance?with=pools,agreements'
+  }
+}
+
+function getCustomerDetailsRoute(customer) {
+  if (customerType.value === 'prospective') {
+    return `/provider/prospective-customer-details/${customer.id}`
+  }
+  return `/provider/customer-details/${customer.id}`
+}
 
 // Options
 const statusOptions = computed(() => {
@@ -868,9 +917,8 @@ const fetchCustomers = async () => {
   loading.value = true
 
   try {
-    const response = await api().get(
-      'customer-management/customers-advance?with=pools,agreements'
-    )
+    const apiUrl = getCustomerApi()
+    const response = await api().get(apiUrl)
 
     customers.value = response.data.data || []
   } catch (error) {
@@ -1137,6 +1185,12 @@ const handleClickOutside = (event) => {
     activeDropdown.value = null
   }
 }
+
+// Watch route changes
+watch(() => route.params.id, () => {
+  currentPage.value = 1
+  fetchCustomers()
+})
 
 // Lifecycle
 onMounted(() => {
