@@ -107,8 +107,8 @@ import api from '../../services/api.js'
 import Swal from 'sweetalert2'
 
 // --- State ---
-const email = ref('')
-const password = ref('')
+const email = ref('superadmin@poolmanagement.com')
+const password = ref('12345678')
 const showPassword = ref(false)
 const loading = ref(false)
 const validationError = ref(false)

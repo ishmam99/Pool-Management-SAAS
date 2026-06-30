@@ -144,7 +144,8 @@ const handleLogin = async () => {
       // Store tenant information
       authStore.companyId = data.tenant.id;
       authStore.companyName = data.tenant.company_name;
-
+      
+      router.push("/provider/dashboard");
       await Swal.fire({
         icon: "success",
         title: "Login Successful",
@@ -156,7 +157,6 @@ const handleLogin = async () => {
         timerProgressBar: true,
       });
 
-      router.push("/provider/dashboard");
     }
 
     // Handle Customer Login
@@ -182,6 +182,7 @@ const handleLogin = async () => {
       authStore.companyId = data.tenant.id;
       authStore.companyName = data.tenant.company_name;
 
+      router.push("/customer/dashboard");
       await Swal.fire({
         icon: "success",
         title: "Login Successful",
@@ -193,7 +194,6 @@ const handleLogin = async () => {
         timerProgressBar: true,
       });
 
-      router.push("/customer/dashboard");
     }
 
     // Handle Technician Login (NEW)
@@ -226,7 +226,8 @@ const handleLogin = async () => {
       // Store tenant information
       authStore.companyId = data.tenant.id;
       authStore.companyName = data.tenant.company_name;
-
+      
+      router.push("/technician/dashboard");
       await Swal.fire({
         icon: "success",
         title: "Login Successful",
@@ -238,7 +239,6 @@ const handleLogin = async () => {
         timerProgressBar: true,
       });
 
-      router.push("/technician/dashboard");
     }
 
   } catch (error) {
