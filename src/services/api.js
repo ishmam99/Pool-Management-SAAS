@@ -27,9 +27,9 @@ const projectURL = import.meta.env.VITE_BASE_URL+'/api'
           title: "Oops...",
           text: "Your session has expired. Please log in again.",
         });
-        // setTimeout(() => {
-        //     authStore.logout()
-        // },3000)
+        setTimeout(() => {
+            authStore.logout()
+        },3000)
       }
       return Promise.reject(error)
     }

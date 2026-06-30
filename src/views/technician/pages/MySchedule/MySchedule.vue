@@ -365,7 +365,7 @@ function performService(workOrder) {
             confirmButtonText: 'OK'
         });
     } else {
-        router.push(`/provider/services-perform-service/${workOrder?.id}`)
+        router.push(`/technician/perform-service/${workOrder?.id}`)
     }
 
 }

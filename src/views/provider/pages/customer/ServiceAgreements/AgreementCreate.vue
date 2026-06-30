@@ -454,7 +454,7 @@ const form = reactive({
   end_date: '',
   auto_renew: true,
   pool_ids: [],
-  service_includes: [] // Array of selected service tasks
+  service_includes: []
 })
 
 // Computed
@@ -599,7 +599,7 @@ const createAgreement = async () => {
       end_date: form.end_date || null,
       auto_renew: form.auto_renew == true ? 1 : 0,
       pool_ids: form.pool_ids,
-      status: "active",
+      // status: "active",
       service_includes: serviceIncludesJson
     }
 

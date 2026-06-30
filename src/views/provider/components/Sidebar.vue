@@ -244,9 +244,9 @@ const menus = [
         icon: 'ri-group-line',
         title: 'All Customers',
         links: [
-          { to: '/provider/customers', icon: 'ri-list-unordered', text: 'Prospective Customers' },
-          { to: '/provider/customers', icon: 'ri-list-unordered', text: 'Current Customers' },
-          { to: '/provider/customers', icon: 'ri-list-unordered', text: 'Previous Customers' },
+          { to: '/provider/customers/prospective', icon: 'ri-list-unordered', text: 'Prospective Customers' },
+          { to: '/provider/customers/current', icon: 'ri-list-unordered', text: 'Current Customers' },
+          { to: '/provider/customers/previous', icon: 'ri-list-unordered', text: 'Previous Customers' },
         ]
       },
       {
@@ -256,7 +256,7 @@ const menus = [
         links: [
           { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Add Service' },
           { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Add Terms and Conditions' },
-          { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Terms and Conditions' },
+          { to: '/provider/customer-service-terms-and-conditions', icon: 'ri-file-add-line', text: 'Create Terms and Conditions' },
           { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
           { to: '/provider/customer-service-agreements', icon: 'ri-file-text-line', text: 'Service Agreements' },
         ]

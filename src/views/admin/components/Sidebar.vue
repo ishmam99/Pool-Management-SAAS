@@ -128,7 +128,7 @@ const isSidebarLoading = ref(false)
 
 // Get customer info from auth store
 const customerName = computed(() => {
-    return authStore?.user?.name || authStore?.user?.full_name || 'Rasik Abdullah'
+    return authStore?.user?.name || authStore?.user?.full_name || 'Admin User'
 })
 
 const customerInitials = computed(() => {
@@ -144,15 +144,9 @@ const customerInitials = computed(() => {
 // Menu Colors Configuration
 const menuColors = {
     'Dashboard': '#0ea5e9',
-    'My Schedule': '#f97316',
-    'My Pool': '#14b8a6',
-    'Service Photos': '#8b5cf6',
-    'Billing': '#06b6d4',
-    'Agreements': '#10b981',
-    'Equipment': '#3b82f6',
-    'Messages': '#ec4899',
-    'Profile': '#6366f1',
-    'Help': '#6b7280',
+    'Admin Management': '#8b5cf6',
+    'Tenant Management': '#14b8a6',
+    'Subscription Management': '#f97316',
 }
 
 // Function to get menu color with fallback
@@ -173,7 +167,7 @@ const setActiveLink = (menuTitle, linkText) => {
 function toggleAccordion(name) {
     if (openSection.value === name) {
         openSection.value = ''
-        openGroup.value = '' // Close any open group when closing section
+        openGroup.value = ''
     } else {
         openSection.value = name
     }
@@ -187,50 +181,81 @@ function toggleGroup(key) {
     }
 }
 
-// Sidebar Menu Configuration - Customer Dashboard (With Groups but Single Links)
+// Updated Sidebar Menu Configuration - Admin Dashboard
 const menus = [
     {
         id: 'dashboard',
         title: 'Dashboard',
         icon: 'ri-dashboard-line',
-        links: [{ to: '/technician/dashboard', icon: 'ri-dashboard-2-line', text: 'Dashboard' }]
-    },
-    {
-        id: 'my-schedule',
-        title: 'My Schedule',
-        icon: 'ri-calendar-check-line',
-
         links: [
-            { to: '/technician/my-schedules', icon: 'ri-calendar-event-line', text: 'My Schedule' }
-
-        ]
-    },
-   
-    {
-        id: 'profile',
-        title: 'Profile',
-        icon: 'ri-user-3-line',
-
-        links: [
-            { to: '/customer/profile', icon: 'ri-user-3-fill', text: 'Profile' }
-
+            { to: '/admin/dashboard', icon: 'ri-dashboard-2-line', text: 'Dashboard' }
         ]
     },
     {
-        id: 'payment',
-        title: 'Payment',
-        icon: 'ri-bank-card-line',
-
+        id: 'admin-management',
+        title: 'Admin Management',
+        icon: 'ri-admin-line',
         links: [
-            { to: '/customer/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' }
-
+            { to: '/admin/admins', icon: 'ri-user-settings-line', text: 'Admin List' },
+            { to: '/admin/admins/create', icon: 'ri-user-add-line', text: 'Create Admin' }
         ]
     },
-    
+    {
+        id: 'tenant-management',
+        title: 'Tenant Management',
+        icon: 'ri-building-line',
+        groups: [
+            {
+                key: 'tenant-basic',
+                title: 'Tenant Management',
+                icon: 'ri-building-4-line',
+                links: [
+                    { to: '/admin/tenants', icon: 'ri-list-check', text: 'Tenant List' },
+                    { to: '/admin/tenants/create', icon: 'ri-building-add-line', text: 'Create Tenant' }
+                ]
+            },
+            {
+                key: 'tenant-domain',
+                title: 'Domain Management',
+                icon: 'ri-global-line',
+                links: [
+                    { to: '/admin/tenants/domains/add', icon: 'ri-add-circle-line', text: 'Add Custom Domain' },
+                    { to: '/admin/tenants/domains/verify', icon: 'ri-check-double-line', text: 'Verify Domain' }
+                ]
+            }
+        ]
+    },
+
+    {
+        id: 'subscription-management',
+        title: 'Subscription Management',
+        icon: 'ri-money-dollar-circle-line',
+        groups: [
+            {
+                key: 'subscription-plans',
+                title: 'Subscription Plans',
+                icon: 'ri-list-settings-line',
+                links: [
+                    { to: '/admin/subscription-plans', icon: 'ri-list-check', text: 'Plan List' },
+                    { to: '/admin/subscription-plans/create', icon: 'ri-add-circle-line', text: 'Create Plan' }
+                ]
+            },
+            {
+                key: 'tenant-subscriptions',
+                title: 'Tenant Subscriptions',
+                icon: 'ri-user-community-line',
+                links: [
+                    { to: '/admin/tenant-subscriptions', icon: 'ri-list-check', text: 'Subscription List' },
+                    { to: '/admin/tenant-subscriptions/create', icon: 'ri-add-circle-line', text: 'Create Subscription' }
+                ]
+            }
+        ]
+    }
 ]
 </script>
 
 <style scoped>
+/* Keep your existing styles */
 .router-link-active {
     background-color: #f0f9ff;
     border-left: 3px solid #0ea5e9 !important;
@@ -239,17 +264,14 @@ const menus = [
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Hover effects for menu items */
 .accordion-group:hover .menu-header {
     transform: translateX(2px);
 }
 
-/* Smooth transitions */
 .accordion-group {
     transition: all 0.2s ease-in-out;
 }
 
-/* Custom scrollbar for dropdown */
 .ml-4 {
     max-height: 300px;
     overflow-y: auto;
@@ -273,13 +295,11 @@ const menus = [
     background: #555;
 }
 
-/* Ensure sidebar content doesn't overflow */
 .overflow-y-auto {
     overflow-y: auto;
     flex: 1;
 }
 
-/* Nested items styling */
 .ml-6 {
     margin-left: 1.5rem;
 }
@@ -289,12 +309,10 @@ const menus = [
     padding-left: 0.5rem;
 }
 
-/* Adjust spacing for nested items */
 .ml-6 .router-link i {
     font-size: 0.75rem;
 }
 
-/* Group header styling */
 .cursor-pointer {
     cursor: pointer;
 }
@@ -303,7 +321,6 @@ const menus = [
     background-color: rgba(0, 0, 0, 0.02);
 }
 
-/* Make sidebar narrower for better fit */
 .w-80 {
     width: 20rem;
 }
