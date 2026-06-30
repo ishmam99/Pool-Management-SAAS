@@ -361,6 +361,12 @@ const routes = [
         component: () => import('../views/technician/pages/MySchedule/MySchedule.vue')
       },
 
+        {
+        path: '/technician/perform-service/:id',
+        name: 'technician-perform-service',
+        component: () => import('../views/technician/pages/MySchedule/PerformService.vue')
+      },
+
     ]
   },
 
