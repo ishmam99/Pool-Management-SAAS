@@ -209,7 +209,13 @@
       </div>
 
    
-    
+    <div>
+      <Price/>
+    </div>
+
+    <div>
+      <Services/>
+    </div>
 
      
 
@@ -221,6 +227,8 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../../../../../services/api.js'
+import Price from './comps/price.vue'
+import Services from './comps/services.vue'
 
 // --- Router ---
 const route = useRoute()
