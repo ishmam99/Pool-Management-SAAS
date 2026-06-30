@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/common/Home.vue'
 import AboutUs from '../views/common/AboutUs.vue'
 import Login from '../views/common/Login.vue'
+import AdminLogin from '../views/common/adminLogin.vue'
 import Blogs from '../views/common/Blogs.vue'
 import Features from '../views/common/Features.vue'
 import JoinUs from '../views/common/JoinUs.vue'
@@ -26,6 +27,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/adminLogin',
+    name: 'AdminLogin',
+    component: AdminLogin,
   },
 
   {
@@ -360,6 +366,26 @@ const routes = [
         name: 'technician-my-schedules',
         component: () => import('../views/technician/pages/MySchedule/MySchedule.vue')
       },
+
+    ]
+  },
+
+  // Admin
+  {
+    path: '/admin',
+    component: () => import('../views/admin/layout/AdminLayout.vue'),
+    children: [
+      {
+        path: '/admin/dashboard',
+        name: 'admin-dashboard',
+        component: () => import('../views/admin/pages/Dashboard/adminDashboard.vue')
+      },
+
+      //  {
+      //   path: '/technician/my-schedules',
+      //   name: 'technician-my-schedules',
+      //   component: () => import('../views/technician/pages/MySchedule/MySchedule.vue')
+      // },
 
     ]
   },

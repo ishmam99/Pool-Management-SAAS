@@ -12,10 +12,10 @@
     </div>
 
     <!-- Main Card -->
-    <div class="min-h-screen flex items-center justify-center p-6">
-      <div class="w-full max-w-md">
+    <div class="min-h-screen flex p-20">
+      <div class="w-full min-w-xl">
         <!-- Glassmorphism Card -->
-        <div class="relative backdrop-blur-xl bg-white/5 bg-opacity-10 border border-white/10 rounded-3xl shadow-2xl p-8 md:p-10 transition-all duration-300 hover:shadow-indigo-500/20 hover:border-indigo-400/30">
+        <div class="relative backdrop-blur-xl bg-white/15 bg-opacity-10 border border-white/10 rounded-3xl shadow-2xl p-8 md:p-10 transition-all duration-300 hover:shadow-indigo-500/20 hover:border-indigo-400/30">
           <!-- Header -->
           <div class="text-center mb-8">
             <div class="flex justify-center mb-4">
@@ -119,16 +119,16 @@ const router = useRouter()
 
 // --- Login Handler ---
 const handleLogin = async () => {
-  // Reset validation
   validationError.value = false
 
   // Client-side validation
-  if (!email.value || !password.value) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!email.value || !password.value || !emailRegex.test(email.value)) {
     validationError.value = true
     await Swal.fire({
       icon: 'warning',
-      title: 'Missing Information',
-      text: 'Please enter email and password.',
+      title: 'Invalid Input',
+      text: 'Please enter a valid email and password.',
       background: '#1e1b2e',
       color: '#e2e8f0',
       confirmButtonColor: '#7c3aed',
@@ -138,35 +138,49 @@ const handleLogin = async () => {
 
   loading.value = true
   try {
-    const response = await api.post('/platform/admin/login', {
+    const response = await api().post('/platform/admin/login', {
       email: email.value,
       password: password.value,
     })
 
-    const { admin, token } = response.data
+    // Handle both wrapped and direct responses
+    const data = response.data.data || response.data
+    const { admin, token } = data
 
-    // Store auth via Pinia (persist handled by plugin)
-    authStore.login(
-      {
-        id: admin.id,
-        name: admin.name,
-        email: admin.email,
-        phone: '',
-        roles: [admin.role],
-      },
-      token,
-      admin.role,
-      'admin'
-    )
-    // Additional platform-specific values
-    authStore.companyName = 'Platform Administration'
-    authStore.companyId = 'platform'
+    if (!admin || !token) {
+      throw new Error('Invalid response from server')
+    }
 
+    // Prepare user object for store
+    const user = {
+      id: admin.id,
+      name: admin.name,
+      email: admin.email,
+      phone: admin.phone || '',
+      avatar: admin.avatar || null,
+      roles: Array.isArray(admin.roles) ? admin.roles : [admin.role || 'admin'],
+      permissions: admin.permissions || [],
+    }
+
+    // Determine primary role (first in array or default)
+    const primaryRole = user.roles[0] || 'admin'
+
+    // Store auth via Pinia (adapt to your store's actual signature)
+    // If your store expects (user, token, role), use:
+    authStore.login(user, token, primaryRole)
+
+    // If your store also stores company info, add it (ensure the store has these properties)
+    if (authStore.companyName !== undefined) {
+      authStore.companyName = 'Platform Administration'
+      authStore.companyId = 'platform'
+    }
+    
+    router.push('/admin/dashboard')
     // Success alert
     await Swal.fire({
       icon: 'success',
       title: 'Welcome Back',
-      text: admin.name,
+      text: admin.name || 'Admin',
       background: '#1e1b2e',
       color: '#e2e8f0',
       confirmButtonColor: '#7c3aed',
@@ -174,10 +188,15 @@ const handleLogin = async () => {
       timerProgressBar: true,
     })
 
-    // Redirect to admin dashboard
-    router.push('/admin/dashboard')
   } catch (error) {
-    const message = error.response?.data?.message || 'Invalid admin credentials.'
+    let message = 'Invalid admin credentials.'
+    if (error.response?.data?.message) {
+      message = error.response.data.message
+    } else if (error.response?.data?.error) {
+      message = error.response.data.error
+    } else if (error.message) {
+      message = error.message
+    }
     await Swal.fire({
       icon: 'error',
       title: 'Login Failed',
@@ -192,7 +211,7 @@ const handleLogin = async () => {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .admin-login-page {
   min-height: 100vh;
   display: flex;
