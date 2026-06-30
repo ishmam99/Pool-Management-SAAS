@@ -129,8 +129,8 @@ const routes = [
         component: () => import('../views/provider/pages/service/Schedule/CalenderView.vue')
       },
       {
-        path: '/provider/services-unassigned',
-        name: 'provider-services-unassigned',
+        path: '/provider/services-list',
+        name: 'provider-services-list',
         component: () => import('../views/provider/pages/service/Schedule/ListView.vue')
       },
       {
@@ -154,8 +154,9 @@ const routes = [
         name: 'services-perform-service-by-pool-Schedules',
         component: () => import('../views/provider/pages/service/PerformService/PerformServicebyPoolSchedules.vue')
       },
-      // Maintenance
 
+
+      // Maintenance
       {
         path: '/provider/schedule-maintenance',
         name: 'provider-schedule-maintenance',
@@ -164,7 +165,18 @@ const routes = [
       {
         path: '/provider/maintenance/:status',
         name: 'provider-view-maintenance',
-        component: () => import('../views/provider/pages/maintenance/[status].vue')
+        component: () => import('../views/provider/pages/maintenance/MaintenanceList/[status].vue')
+      },
+
+       {
+        path: '/provider/maintenance-calendar',
+        name: 'provider-maintenance-calendar',
+        component: () => import('../views/provider/pages/maintenance/MaintenanceSchedule/CalenderView.vue')
+      },
+      {
+        path: '/provider/maintenance-list',
+        name: 'provider-maintenance-list',
+        component: () => import('../views/provider/pages/maintenance/MaintenanceSchedule/ListView.vue')
       },
 
 

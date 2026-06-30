@@ -179,7 +179,7 @@ const menuColors = {
   'Settings': '#6b7280',
 
   // Agreements
-  'Service Agreements': '#50BEC8',
+  'Services & Agreements': '#50BEC8',
   'Maintenance Agreements': '#8E790D',
 
   // Service Management
@@ -188,9 +188,9 @@ const menuColors = {
 
   // Reserved (currently unused)
   'Invoice': '#a855f7',               // Purple
-  'Blank 2': '#f43f5e',               // Rose
-  'Blank 3': '#f97316',               // Orange
-  'Blank 4': '#0f766e',               // Teal
+  'Maintenace List': '#f43f5e',               // Rose
+  'Maintenace Schedule': '#f97316',               // Orange
+  'All Customer': '#0f766e',               // Teal
   'Blank 5': '#7c3aed',               // Indigo
   'Blank 6': '#ca8a04',               // Yellow
 }
@@ -235,17 +235,28 @@ const menus = [
     icon: 'ri-user-community-line',
 
     links: [
-      { to: '/provider/customers', icon: 'ri-list-unordered', text: 'All Customers' },
-      { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add Customer' },
+          { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add New Customer' },
 
     ],
-
     groups: [
+      {
+        key: 'customer-all-customer',
+        icon: 'ri-group-line',
+        title: 'All Customers',
+        links: [
+          { to: '/provider/customers', icon: 'ri-list-unordered', text: 'Prospective Customers' },
+          { to: '/provider/customers', icon: 'ri-list-unordered', text: 'Current Customers' },
+          { to: '/provider/customers', icon: 'ri-list-unordered', text: 'Previous Customers' },
+        ]
+      },
       {
         key: 'customer-service-agreement',
         icon: 'ri-file-text-line',
-        title: 'Service Agreements',
+        title: 'Services & Agreements',
         links: [
+          { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Add Service' },
+          { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Add Terms and Conditions' },
+          { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Terms and Conditions' },
           { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
           { to: '/provider/customer-service-agreements', icon: 'ri-file-text-line', text: 'Service Agreements' },
         ]
@@ -286,7 +297,7 @@ const menus = [
         title: 'Service Schedule',
         links: [
           { to: '/provider/services-calendar', icon: 'ri-calendar-2-line', text: 'Service Schedule Calendar View' },
-          { to: '/provider/services-unassigned', icon: 'ri-user-unfollow-line', text: 'Service Schedule List View' },
+          { to: '/provider/services-list', icon: 'ri-user-unfollow-line', text: 'Service Schedule List View' },
         ]
       },
       {
@@ -309,14 +320,31 @@ const menus = [
 
     links: [
       { to: '/provider/schedule-maintenance', icon: 'ri-check-double-line', text: 'Create Schedule Maintenance' },
-      // { to: '/provider/issues-repairs', icon: 'ri-alert-line', text: 'Issues & Repairs' },
-      // { to: '/provider/maintenance/create', icon: 'ri-add-circle-line', text: 'Create Maintenance' },
-      { to: '/provider/maintenance/repair', icon: 'ri-error-warning-line', text: 'Repair Maintenance' },
-      { to: '/provider/maintenance/installation', icon: 'ri-error-warning-line', text: 'Installation Maintenance' },
-      { to: '/provider/maintenance/requested', icon: 'ri-mail-send-line', text: 'Requested Maintenance' }, // inspection
-      { to: '/provider/maintenance/recommended', icon: 'ri-lightbulb-line', text: 'Recommended Maintenance' }, // one time
-      { to: '/provider/maintenance/emergency', icon: 'ri-alarm-warning-line', text: 'Emergency Maintenance' } // emergency
-    ]
+    ],
+    groups: [
+      {
+        key: 'maintenance-management-schedule',
+        icon: 'ri-file-text-line',
+        title: 'Maintenace Schedule',
+        links: [
+          { to: '/provider/maintenance-calendar', icon: 'ri-calendar-2-line', text: 'Maintenace Schedule Calendar View' },
+          { to: '/provider/maintenance-unassigned', icon: 'ri-user-unfollow-line', text: 'Maintenace Schedule List View' },
+        ]
+      },
+      {
+        key: 'maintenance-management-list',
+        icon: 'ri-file-text-line',
+        title: 'Maintenace List',
+        links: [
+          { to: '/provider/maintenance/repair', icon: 'ri-error-warning-line', text: 'Repair Maintenance' },
+          { to: '/provider/maintenance/installation', icon: 'ri-error-warning-line', text: 'Installation Maintenance' },
+          { to: '/provider/maintenance/requested', icon: 'ri-mail-send-line', text: 'Requested Maintenance' }, // inspection
+          { to: '/provider/maintenance/recommended', icon: 'ri-lightbulb-line', text: 'Recommended Maintenance' }, // one time
+          { to: '/provider/maintenance/emergency', icon: 'ri-alarm-warning-line', text: 'Emergency Maintenance' } // emergency
+        ]
+      }
+
+    ],
   },
   {
     id: 'technicians',

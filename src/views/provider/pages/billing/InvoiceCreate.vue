@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-slate-50 p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
+    <div class="">
       <div class="mb-8">
         <router-link to="/provider/billing/invoices" class="inline-flex items-center gap-2 text-sky-600 hover:text-sky-700 text-sm font-medium mb-4">
           <i class="ri-arrow-left-line"></i>

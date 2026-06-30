@@ -170,7 +170,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
-import api from '../../../../services/api.js';
+import api from '../../../../../services/api.js';
 
 const route = useRoute();
 const router = useRouter();
