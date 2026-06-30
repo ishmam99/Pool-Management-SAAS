@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-6  px-2">
+  <div class="space-y-6 p-2">
     <!-- 1. Dashboard Header -->
     <section class="relative overflow-hidden bg-gradient-to-r from-[#0284C7] to-[#06B6D4] rounded-2xl p-8 text-white shadow-lg">
       <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3"></div>
