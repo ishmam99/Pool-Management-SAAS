@@ -46,6 +46,12 @@ export const statusBadgeClass = (status) => {
     missed: 'bg-amber-100 text-amber-700',
     rescheduled: 'bg-orange-100 text-orange-700',
     in_progress: 'bg-blue-100 text-blue-700',
+    trial: 'bg-sky-100 text-sky-700',
+    past_due: 'bg-red-100 text-red-700',
+    suspended: 'bg-amber-100 text-amber-700',
+    failed: 'bg-red-100 text-red-700',
+    sent: 'bg-sky-100 text-sky-700',
+    void: 'bg-gray-100 text-gray-500',
   }
   return map[key] || 'bg-gray-100 text-gray-700'
 }
