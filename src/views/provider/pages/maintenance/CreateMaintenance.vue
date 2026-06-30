@@ -10,18 +10,30 @@
           </h1>
           <p class="text-gray-500 text-sm">Create a new work order for pool maintenance</p>
         </div>
-        <!-- <router-link
-          to="/work-order-management/work-orders"
-          class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
-        >
-          <i class="ri-arrow-left-line mr-2"></i> Back to Work Orders
-        </router-link> -->
       </div>
 
       <!-- Form Card -->
       <div class="bg-white rounded-xl shadow-md border border-gray-200 p-6 md:p-8">
         <form @submit.prevent="handleSubmit">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Customer -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Customer <span class="text-red-500">*</span>
+              </label>
+              <select
+                v-model="form.customer_id"
+                @change="onCustomerChange"
+                required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="" selected disabled>Select a customer</option>
+                <option v-for="customer in customers" :key="customer.id" :value="customer.id">
+                  {{ customer.contact_name || `Customer #${customer.id}` }}
+                </option>
+              </select>
+            </div>
+
             <!-- Pool -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -30,28 +42,12 @@
               <select
                 v-model="form.pool_id"
                 required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                :disabled="!form.customer_id"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               >
                 <option value="" selected disabled>Select a pool</option>
-                <option v-for="pool in pools" :key="pool.id" :value="pool.id">
-                  {{ pool.label || `Pool #${pool.id}` }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Customer -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                Customer <span class="text-red-500">*</span>
-              </label>
-              <select
-                v-model="form.customer_id"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="" selected disabled>Select a customer</option>
-                <option v-for="customer in customers" :key="customer.id" :value="customer.id">
-                  {{ customer.contact_name || `Customer #${customer.id}` }}
+                <option v-for="pool in availablePools" :key="pool.id" :value="pool.id">
+                  {{ pool.label || pool.name || `Pool #${pool.id}` }}
                 </option>
               </select>
             </div>
@@ -83,7 +79,7 @@
                 required
                 class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
-                <option value="" selected disabled >Select type</option>
+                <option value="" selected disabled>Select type</option>
                 <option value="routine">Routine – Regular maintenance</option>
                 <option value="one_time">One‑time – One‑time service</option>
                 <option value="repair">Repair – Equipment repair</option>
@@ -125,6 +121,49 @@
                 required
                 class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               />
+            </div>
+
+            <!-- Time Window Start -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Time Window Start <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model="form.time_window_start"
+                type="time"
+                required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+
+            <!-- Time Window End -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Time Window End <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model="form.time_window_end"
+                type="time"
+                required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+
+            <!-- Priority -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Priority <span class="text-red-500">*</span>
+              </label>
+              <select
+                v-model="form.priority"
+                required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="" selected disabled>Select priority</option>
+                <option value="normal">Normal</option>
+                <option value="high">High</option>
+                <option value="emergency">Emergency</option>
+              </select>
             </div>
           </div>
 
@@ -198,7 +237,7 @@
             >
               <i v-if="loading" class="ri-loader-4-line animate-spin"></i>
               <i v-else class="ri-save-line"></i>
-              {{ loading ? 'Saving...' : 'Create Work Order' }}
+              {{ loading ? 'Creating...' : 'Create Work Order' }}
             </button>
           </div>
         </form>
@@ -208,7 +247,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Swal from 'sweetalert2';
 import api from '../../../../services/api.js';
@@ -223,30 +262,30 @@ const form = reactive({
   type: '',
   status: '',
   scheduled_date: '',
-  checklist: [],   // array of strings (UI)
+  time_window_start: '',
+  time_window_end: '',
+  priority: 'normal',
+  checklist: [],
   notes: '',
 });
 
 // UI state
 const loading = ref(false);
-const pools = ref([]);
 const customers = ref([]);
 const technicians = ref([]);
 const newChecklistItem = ref('');
 
-// Fetch dropdown data
-const fetchPools = async () => {
-  try {
-    const res = await api().get('/pool-management/pools');
-    pools.value = res.data.data || [];
-  } catch (error) {
-    console.error('Failed to fetch pools:', error);
-  }
-};
+// Computed property for available pools based on selected customer
+const availablePools = computed(() => {
+  if (!form.customer_id) return [];
+  const selectedCustomer = customers.value.find(c => c.id === form.customer_id);
+  return selectedCustomer?.pools || [];
+});
 
+// Fetch customers with nested pools
 const fetchCustomers = async () => {
   try {
-    const res = await api().get('/customer-management/customers');
+    const res = await api().get('/customer-management/customers-advance?with=pools');
     customers.value = res.data.data || [];
   } catch (error) {
     console.error('Failed to fetch customers:', error);
@@ -260,6 +299,11 @@ const fetchTechnicians = async () => {
   } catch (error) {
     console.error('Failed to fetch technicians:', error);
   }
+};
+
+// Handle customer change - clear pool selection
+const onCustomerChange = () => {
+  form.pool_id = '';
 };
 
 // Checklist methods
@@ -278,7 +322,9 @@ const removeChecklistItem = (index) => {
 // Submit
 const handleSubmit = async () => {
   // Basic validation
-  if (!form.pool_id || !form.customer_id || !form.technician_id || !form.type || !form.status || !form.scheduled_date) {
+  if (!form.customer_id || !form.pool_id || !form.technician_id || 
+      !form.type || !form.status || !form.scheduled_date ||
+      !form.time_window_start || !form.time_window_end || !form.priority) {
     await Swal.fire({
       icon: 'warning',
       title: 'Incomplete Form',
@@ -289,14 +335,28 @@ const handleSubmit = async () => {
   }
 
   loading.value = true;
+  
   try {
-    // Transform checklist: array of strings → array of { item, isChecked }
+    // Step 1: Create Schedule Visit
+    const scheduleVisitPayload = {
+      pool_id: form.pool_id,
+      technician_id: form.technician_id,
+      scheduled_date: form.scheduled_date,
+      time_window_start: form.time_window_start,
+      time_window_end: form.time_window_end,
+      priority: form.priority,
+    };
+
+    const scheduleVisitResponse = await api().post('/schedule-visit-management/visits', scheduleVisitPayload);
+    const scheduleVisitId = scheduleVisitResponse.data.data.id;
+
+    // Step 2: Create Work Order with schedule_visit_id
     const checklistPayload = form.checklist.map(item => ({
       item: item,
       isChecked: false,
     }));
 
-    const payload = {
+    const workOrderPayload = {
       pool_id: form.pool_id,
       customer_id: form.customer_id,
       technician_id: form.technician_id,
@@ -305,9 +365,10 @@ const handleSubmit = async () => {
       scheduled_date: form.scheduled_date,
       checklist: checklistPayload,
       notes: form.notes,
+      schedule_visit_id: scheduleVisitId,
     };
 
-    const response = await api().post('/work-order-management/work-orders', payload);
+    await api().post('/work-order-management/work-orders', workOrderPayload);
 
     await Swal.fire({
       icon: 'success',
@@ -316,8 +377,9 @@ const handleSubmit = async () => {
       confirmButtonColor: '#4f46e5',
     });
 
-    // Optionally reset the form or redirect
-    // router.push('/work-order-management/work-orders');
+    // Redirect to list page
+    router.push('/work-order-management/work-orders');
+    
   } catch (error) {
     console.error('Create work order error:', error);
     let message = 'Failed to create work order. Please try again.';
@@ -337,7 +399,6 @@ const handleSubmit = async () => {
 
 // Load data on mount
 onMounted(() => {
-  fetchPools();
   fetchCustomers();
   fetchTechnicians();
 });
