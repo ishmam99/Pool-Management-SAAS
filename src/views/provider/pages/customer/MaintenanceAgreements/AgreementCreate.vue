@@ -600,7 +600,8 @@ const createAgreement = async () => {
             service_includes: form.service_includes
         }
 
-        const response = await api.post('/maintenance-agreements', payload)
+        // ✅ FIXED: call api() to get the axios instance
+        const response = await api().post('/maintenance-agreements', payload)
         alert('Maintenance agreement created successfully!')
         // Reset form or redirect as needed
         console.log('Agreement created:', response.data)
@@ -617,4 +618,3 @@ onMounted(() => {
     fetchCustomers()
 })
 </script>
-
