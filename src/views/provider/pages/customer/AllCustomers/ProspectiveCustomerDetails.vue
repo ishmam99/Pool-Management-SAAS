@@ -210,15 +210,27 @@
 
    
     <div>
-      <Price/>
+      <Price :customer="customer" @refresh="loadAllData" />
     </div>
 
     <div>
-      <Services/>
+      <Services :customer="customer" @refresh="loadAllData" />
     </div>
 
-     
+    <div>
+      <Terms :customer="customer" @refresh="loadAllData" />
+    </div>
 
+    <div>
+      <button
+        @click="activateAgreement"
+        :disabled="hasActiveAgreement || submittingAgreement"
+        class="bg-green-600 hover:bg-green-700 text-base font-semibold text-white p-2 rounded-lg w-1/3 flex items-center justify-center mx-auto disabled:opacity-50 disabled:cursor-not-allowed transition"
+      >
+        <i v-if="submittingAgreement" class="ri-loader-4-line animate-spin mr-2"></i>
+        {{ agreementButtonLabel }}
+      </button>
+    </div>
     </div>
   </div>
 </template>
@@ -229,6 +241,7 @@ import { useRoute, useRouter } from 'vue-router'
 import api from '../../../../../services/api.js'
 import Price from './comps/price.vue'
 import Services from './comps/services.vue'
+import Terms from './comps/terms.vue'
 
 // --- Router ---
 const route = useRoute()
@@ -460,7 +473,7 @@ async function loadCustomer() {
   loading.value.customer = true
   try {
     const response = await api().get(
-      `/customer-management/customers/${route.params.id}?with=pools,agreements,invoices,payments,message_threads`
+      `/customer-management/customers/${route.params.id}?with=pools,agreements,invoices,payments,message_threads&agreement_status=active`
     )
     const data = response.data?.data ?? response.data
     customer.value = data
@@ -540,6 +553,66 @@ const vClickOutside = {
   unmounted(el) {
     document.removeEventListener('click', el._clickOutsideHandler)
   },
+}
+
+const submittingAgreement = ref(false)
+
+// --- Computed for Agreement Button ---
+const hasActiveAgreement = computed(() => {
+  return customer.value?.agreements?.some(a => a.status === 'active') ?? false
+})
+
+const agreementButtonLabel = computed(() => {
+  return hasActiveAgreement.value ? 'Already Created' : 'Create Agreement'
+})
+
+// --- Activate Agreement ---
+const activateAgreement = async () => {
+  // If already active, do nothing
+  if (hasActiveAgreement.value) return
+
+  // Get the first agreement ID (assuming there is at least one)
+  const agreement = customer.value?.agreements?.[0]
+  if (!agreement) {
+    await Swal.fire({
+      icon: 'warning',
+      title: 'No Agreement Found',
+      text: 'Please create a Price agreement first.',
+      confirmButtonColor: '#4f46e5'
+    })
+    return
+  }
+
+  submittingAgreement.value = true
+  try {
+    const payload = {
+      status: 'active',
+      _method: 'PUT'
+    }
+    await api().post(`/service-agreement-management/agreements/${agreement.id}`, payload)
+
+    await Swal.fire({
+      icon: 'success',
+      title: 'Activated',
+      text: 'Agreement has been activated successfully.',
+      timer: 2000,
+      timerProgressBar: true,
+      showConfirmButton: false
+    })
+
+    // Refresh customer data to reflect the updated status
+    await loadAllData()
+  } catch (error) {
+    console.error('Failed to activate agreement:', error)
+    await Swal.fire({
+      icon: 'error',
+      title: 'Activation Failed',
+      text: error.response?.data?.message || 'Something went wrong.',
+      confirmButtonColor: '#4f46e5'
+    })
+  } finally {
+    submittingAgreement.value = false
+  }
 }
 
 // --- Watch for route changes ---
