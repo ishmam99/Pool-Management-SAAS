@@ -587,12 +587,7 @@ const createWorkOrder = async (visit) => {
     customer_id: visit.service_agreement?.customer_id,
     technician_id: visit.technician_id,
     type: "routine",
-    checklist: [
-      "Check chlorine levels",
-      "Clean skimmer basket",
-      "Inspect pump",
-      "Test pH levels"
-    ],
+    checklist: visit.service_agreement?.service_includes,
     notes: "Regular routine visit"
   };
 
