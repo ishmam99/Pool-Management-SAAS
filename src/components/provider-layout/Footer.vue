@@ -32,8 +32,8 @@
         <!-- Brand Area -->
         <div class="lg:col-span-1">
           <div class="flex items-center gap-2 mb-4">
-            <img src="/src/assets/logo.png" alt="PoolSync" class="w-10 h-10 rounded-lg" />
-            <span class="text-2xl font-bold text-white">PoolSync</span>
+            <img src="/src/assets/logo.png" alt="Aqua Clean Pool " class="w-10 h-10 rounded-lg" />
+            <span class="text-2xl font-bold text-white">Aqua Clean Pool </span>
           </div>
           <p class="text-slate-400 text-sm leading-relaxed mb-3">
             Smart pool management software helping service providers and pool owners manage maintenance, services, and operations efficiently.
@@ -87,7 +87,7 @@
         <div>
           <h4 class="text-white font-semibold mb-4">Contact Us</h4>
           <ul class="space-y-2.5 text-slate-400 text-sm">
-            <li class="font-medium text-white">PoolSync Headquarters</li>
+            <li class="font-medium text-white">Aqua Clean Pool  Headquarters</li>
             <li>420 Business Avenue</li>
             <li>Texas, USA</li>
             <li class="pt-1">
@@ -96,7 +96,7 @@
             </li>
             <li>
               <span class="text-white font-medium">Email:</span><br />
-              <a href="mailto:hello@poolsync.com" class="hover:text-ocean-blue transition-colors">hello@poolsync.com</a>
+              <a href="mailto:hello@AquaCleanPool.com" class="hover:text-ocean-blue transition-colors">hello@AquaCleanPool.com</a>
             </li>
           </ul>
         </div>
@@ -105,7 +105,7 @@
       <!-- Social Media & Bottom Footer -->
       <div class="border-t border-slate-800 mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <p class="text-slate-400 text-sm">
-          &copy; 2026 PoolSync. All rights reserved.
+          &copy; 2026 Aqua CLean Pool. All rights reserved.
         </p>
 
         <!-- Social Media Icons -->

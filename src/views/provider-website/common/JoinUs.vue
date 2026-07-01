@@ -1,376 +1,729 @@
 <template>
-  <main class="join-us-page">
-    <!-- Hero Section -->
-    <section class="py-20 md:py-24 bg-gradient-to-br from-slate-50 to-sky-50 relative overflow-hidden">
-      <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-sky-500/5 to-cyan-500/5 rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
-      <div class="container mx-auto px-4 md:px-6 max-w-7xl relative z-10">
+  <div class="min-h-screen bg-white">
+    <!-- ============================================================ -->
+    <!-- HERO SECTION                                                  -->
+    <!-- ============================================================ -->
+    <section class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-sky-900 py-20 lg:py-28">
+      <!-- Background image -->
+      <div class="absolute inset-0 opacity-30">
+        <img
+        src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1920&h=800&fit=crop&crop=center&auto=format"
+        alt="Luxury swimming pool"
+        class="w-full h-full object-cover"
+        />
+      </div>
+
+      <!-- Decorative blobs -->
+      <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute -top-20 -right-20 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"></div>
+      </div>
+
+      <div class="relative z-10 container mx-auto px-4">
         <div class="max-w-3xl">
-          <span class="inline-block bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-xs font-semibold uppercase tracking-wider px-4 py-1.5 rounded-full mb-6">
-            Join Pool Management SaaS
+          <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full mb-6 border border-white/10">
+            Book Professional Pool Service
           </span>
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight mb-4">
-            Grow Your Pool Business With Smart Management Tools
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
+            Let's Make Your Pool <span class="text-sky-300">Crystal Clear</span>
           </h1>
-          <p class="text-lg md:text-xl text-slate-600 leading-relaxed mb-8 max-w-2xl">
-            Whether you manage multiple swimming pools or own a private pool, our platform helps
-            you simplify maintenance, scheduling, communication, and service management.
+          <p class="text-lg md:text-xl text-white/80 leading-relaxed max-w-xl mb-8">
+            Whether you need weekly maintenance, water balancing, equipment repairs, or a one-time cleaning, Aqua Clean Pools is here to help.
           </p>
           <div class="flex flex-wrap gap-4">
-            <a href="#join-form" class="inline-flex items-center px-8 py-3.5 bg-gradient-to-r from-sky-600 to-cyan-500 text-white font-semibold rounded-full shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all duration-300">
-              Request To Join
-            </a>
-            <a href="#why-join" class="inline-flex items-center px-8 py-3.5 bg-white text-sky-600 font-semibold rounded-full border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
-              Learn More
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Join Request Form Section -->
-    <section id="join-form" class="py-16 md:py-20 bg-slate-50">
-      <div class="container mx-auto px-4 md:px-6 max-w-7xl">
-        <div class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-6 md:p-10 lg:p-12">
-          <div class="text-center mb-8">
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-2">Request Access</h2>
-            <p class="text-slate-600">Tell us about yourself and we will contact you shortly.</p>
-          </div>
-
-          <form @submit.prevent="submitForm" class="space-y-5">
-            <!-- Account Type -->
-            <div>
-              <label for="accountType" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Account Type <span class="text-red-500">*</span>
-              </label>
-              <select
-                id="accountType"
-                v-model="form.accountType"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 appearance-none"
-                required
-              >
-                <option value="" disabled>Select account type</option>
-                <option
-                  v-for="type in accountTypes"
-                  :key="type.value"
-                  :value="type.value"
-                >
-                  {{ type.label }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Full Name -->
-            <div>
-              <label for="fullName" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Full Name <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="fullName"
-                v-model="form.fullName"
-                type="text"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400"
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
-
-            <!-- Business / Company Name (Provider only) -->
-            <div v-if="form.accountType === 'provider'">
-              <label for="companyName" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Business / Company Name <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="companyName"
-                v-model="form.companyName"
-                type="text"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400"
-                placeholder="Enter company name"
-                required
-              />
-            </div>
-
-            <!-- Email -->
-            <div>
-              <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Email Address <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-
-            <!-- Phone -->
-            <div>
-              <label for="phone" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Phone Number <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="phone"
-                v-model="form.phone"
-                type="tel"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400"
-                placeholder="Enter your phone number"
-                required
-              />
-            </div>
-
-            <!-- Location -->
-            <div>
-              <label for="location" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Location <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="location"
-                v-model="form.location"
-                type="text"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400"
-                placeholder="Enter your service location"
-                required
-              />
-            </div>
-
-            <!-- Number of Pools (Provider only) -->
-            <div v-if="form.accountType === 'provider'">
-              <label for="poolCount" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Number of Pools <span class="text-red-500">*</span>
-              </label>
-              <input
-                id="poolCount"
-                v-model="form.poolCount"
-                type="number"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400"
-                placeholder="How many pools do you manage?"
-                min="0"
-                required
-              />
-            </div>
-
-            <!-- Message -->
-            <div>
-              <label for="message" class="block text-sm font-medium text-slate-700 mb-1.5">
-                Message
-              </label>
-              <textarea
-                id="message"
-                v-model="form.message"
-                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400 resize-y min-h-[100px]"
-                rows="4"
-                placeholder="Tell us more about your requirements"
-              ></textarea>
-            </div>
-
-            <button
-              type="submit"
-              class="w-full py-3.5 bg-gradient-to-r from-sky-600 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all duration-300"
+            <a
+            href="#estimate-form"
+            class="group inline-flex items-center px-8 py-3.5 bg-gradient-to-r from-sky-500 to-cyan-400 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all duration-300"
             >
-              Submit Request
-            </button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <!-- Why Join Us Section -->
-    <section id="why-join" class="py-16 md:py-20 bg-white">
-      <div class="container mx-auto px-4 md:px-6 max-w-7xl">
-        <div class="text-center max-w-3xl mx-auto mb-12">
-          <span class="inline-block bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-xs font-semibold uppercase tracking-wider px-4 py-1.5 rounded-full mb-4">
-            Why Join Us
-          </span>
-          <h2 class="text-3xl md:text-4xl font-bold text-slate-900">Designed For Pool Professionals &amp; Owners</h2>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6 md:gap-8">
-          <div class="group text-center p-8 bg-slate-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-sky-600 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:shadow-xl group-hover:shadow-sky-500/30 transition-all duration-300">
-              <i class="ri-building-line text-2xl text-white"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-slate-900 mb-3">For Pool Service Providers</h3>
-            <p class="text-slate-600 leading-relaxed">
-              Manage customers, technicians, maintenance schedules, invoices, and daily
-              operations from one dashboard.
-            </p>
-          </div>
-
-          <div class="group text-center p-8 bg-slate-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-sky-600 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:shadow-xl group-hover:shadow-sky-500/30 transition-all duration-300">
-              <i class="ri-home-heart-line text-2xl text-white"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-slate-900 mb-3">For Pool Owners</h3>
-            <p class="text-slate-600 leading-relaxed">
-              Find trusted pool professionals and easily manage your pool services and
-              maintenance needs.
-            </p>
-          </div>
-
-          <div class="group text-center p-8 bg-slate-50 rounded-2xl hover:bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-            <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-sky-600 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-500/20 group-hover:shadow-xl group-hover:shadow-sky-500/30 transition-all duration-300">
-              <i class="ri-bar-chart-line text-2xl text-white"></i>
-            </div>
-            <h3 class="text-xl font-semibold text-slate-900 mb-3">Grow Your Business</h3>
-            <p class="text-slate-600 leading-relaxed">
-              Use analytics and smart tools to improve efficiency, customer satisfaction, and
-              business performance.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- David Image / Trust Section -->
-    <section class="py-16 md:py-20 bg-slate-50">
-      <div class="container mx-auto px-4 md:px-6 max-w-7xl">
-        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-6 md:p-10 lg:p-12">
-          <!-- Image -->
-          <div class="flex justify-center lg:justify-start">
-            <div class="relative">
-              <div class="absolute inset-0 bg-gradient-to-br from-sky-600 to-cyan-500 rounded-full opacity-20 blur-2xl scale-110"></div>
-              <img
-                src="/src/assets/david.jpg"
-                alt="David - Pool Management Expert"
-                class="relative w-48 h-48 md:w-56 md:h-56 rounded-full object-cover border-4 border-sky-100 shadow-xl"
-              />
-            </div>
-          </div>
-
-          <!-- Content -->
-          <div class="text-center lg:text-left">
-            <span class="inline-block bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-xs font-semibold uppercase tracking-wider px-4 py-1.5 rounded-full mb-4">
-              Trusted Pool Management Platform
-            </span>
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Meet David</h2>
-            <p class="text-slate-600 leading-relaxed mb-6 max-w-lg mx-auto lg:mx-0">
-              David helps pool professionals transform their operations using modern technology
-              and efficient management solutions.
-            </p>
-            <div class="flex flex-wrap gap-8 justify-center lg:justify-start">
-              <div>
-                <div class="text-2xl font-bold text-sky-600">500+</div>
-                <div class="text-sm text-slate-600">Pool Professionals</div>
-              </div>
-              <div>
-                <div class="text-2xl font-bold text-sky-600">98%</div>
-                <div class="text-sm text-slate-600">Customer Satisfaction</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Bottom CTA -->
-    <section class="py-16 md:py-20">
-      <div class="container mx-auto px-4 md:px-6 max-w-7xl">
-        <div class="bg-gradient-to-r from-sky-600 to-cyan-500 rounded-2xl shadow-2xl shadow-sky-500/20 p-8 md:p-12 lg:p-16 text-center">
-          <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3">
-            Ready To Transform Your Pool Management?
-          </h2>
-          <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-            Join our growing community of pool professionals and customers today.
-          </p>
-          <a
-            href="#join-form"
-            class="inline-flex items-center px-8 py-3.5 bg-white text-sky-600 font-semibold rounded-full shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
-          >
-            Get Started
+            Book Free Inspection
+            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
           </a>
+          <a
+          href="tel:+15551234567"
+          class="inline-flex items-center px-8 py-3.5 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-300"
+          >
+          Call Now
+        </a>
+      </div>
+
+      <!-- Floating trust badges -->
+      <div class="flex flex-wrap gap-3 mt-8">
+        <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-white/90 border border-white/10">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          Licensed & Insured
+        </span>
+        <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-white/90 border border-white/10">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          Certified Technicians
+        </span>
+        <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-white/90 border border-white/10">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          Same-Day Service Available
+        </span>
+        <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm text-white/90 border border-white/10">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+          </svg>
+          100% Satisfaction Guaranteed
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- REQUEST A FREE ESTIMATE FORM                                  -->
+<!-- ============================================================ -->
+<section id="estimate-form" class="py-20 bg-slate-50">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-10">
+        <span class="inline-block bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full mb-4 shadow-lg shadow-sky-500/25">
+          Get Started
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Request a Free Estimate</h2>
+        <p class="text-slate-600 text-lg">Fill out the form below and our team will contact you with a customized quote.</p>
+      </div>
+
+      <!-- Form Card -->
+      <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/50 p-6 md:p-10 lg:p-12 border border-slate-100">
+        <form @submit.prevent="submitForm" class="space-y-6">
+          <!-- Full Name -->
+          <div>
+            <label for="fullName" class="block text-sm font-semibold text-slate-700 mb-1.5">
+              Full Name <span class="text-red-500">*</span>
+            </label>
+            <input
+            id="fullName"
+            v-model="form.fullName"
+            type="text"
+            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400 text-slate-800"
+            placeholder="Enter your full name"
+            required
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-semibold text-slate-700 mb-1.5">
+              Email Address <span class="text-red-500">*</span>
+            </label>
+            <input
+            id="email"
+            v-model="form.email"
+            type="email"
+            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400 text-slate-800"
+            placeholder="Enter your email"
+            required
+            />
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label for="phone" class="block text-sm font-semibold text-slate-700 mb-1.5">
+              Phone Number <span class="text-red-500">*</span>
+            </label>
+            <input
+            id="phone"
+            v-model="form.phone"
+            type="tel"
+            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400 text-slate-800"
+            placeholder="Enter your phone number"
+            required
+            />
+          </div>
+
+          <!-- Service Address -->
+          <div>
+            <label for="address" class="block text-sm font-semibold text-slate-700 mb-1.5">
+              Service Address <span class="text-red-500">*</span>
+            </label>
+            <input
+            id="address"
+            v-model="form.address"
+            type="text"
+            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400 text-slate-800"
+            placeholder="Enter your service address"
+            required
+            />
+          </div>
+
+          <!-- Property Type -->
+          <div>
+            <label for="propertyType" class="block text-sm font-semibold text-slate-700 mb-1.5">
+              Property Type <span class="text-red-500">*</span>
+            </label>
+            <select
+            id="propertyType"
+            v-model="form.propertyType"
+            class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 appearance-none text-slate-800"
+            required
+            >
+            <option value="" disabled>Select property type</option>
+            <option v-for="type in propertyTypes" :key="type" :value="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <!-- Service Needed -->
+        <div>
+          <label for="serviceNeeded" class="block text-sm font-semibold text-slate-700 mb-1.5">
+            Service Needed <span class="text-red-500">*</span>
+          </label>
+          <select
+          id="serviceNeeded"
+          v-model="form.serviceNeeded"
+          class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 appearance-none text-slate-800"
+          required
+          >
+          <option value="" disabled>Select service</option>
+          <option v-for="service in services" :key="service" :value="service">{{ service }}</option>
+        </select>
+      </div>
+
+      <!-- Pool Type -->
+      <div>
+        <label for="poolType" class="block text-sm font-semibold text-slate-700 mb-1.5">
+          Pool Type <span class="text-red-500">*</span>
+        </label>
+        <select
+        id="poolType"
+        v-model="form.poolType"
+        class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 appearance-none text-slate-800"
+        required
+        >
+        <option value="" disabled>Select pool type</option>
+        <option v-for="type in poolTypes" :key="type" :value="type">{{ type }}</option>
+      </select>
+    </div>
+
+    <!-- Preferred Service Date -->
+    <div>
+      <label for="serviceDate" class="block text-sm font-semibold text-slate-700 mb-1.5">
+        Preferred Service Date
+      </label>
+      <input
+      id="serviceDate"
+      v-model="form.serviceDate"
+      type="date"
+      class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 text-slate-800"
+      />
+    </div>
+
+    <!-- Preferred Contact Method -->
+    <div>
+      <label class="block text-sm font-semibold text-slate-700 mb-2">
+        Preferred Contact Method <span class="text-red-500">*</span>
+      </label>
+      <div class="flex flex-wrap gap-4">
+        <label v-for="method in contactMethods" :key="method" class="flex items-center gap-2.5 cursor-pointer">
+          <input
+          type="radio"
+          :value="method"
+          v-model="form.contactMethod"
+          class="w-4 h-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+          required
+          />
+          <span class="text-sm text-slate-700">{{ method }}</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div>
+      <label for="message" class="block text-sm font-semibold text-slate-700 mb-1.5">
+        Message
+      </label>
+      <textarea
+      id="message"
+      v-model="form.message"
+      class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 focus:bg-white transition-all duration-200 placeholder:text-slate-400 text-slate-800 resize-y min-h-[110px]"
+      rows="4"
+      placeholder="Tell us about your pool, any issues you're experiencing, or the services you're looking for."
+      ></textarea>
+    </div>
+
+    <!-- Submit -->
+    <button
+    type="submit"
+    class="w-full py-4 bg-gradient-to-r from-sky-600 to-cyan-500 text-white font-bold rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all duration-300 text-lg"
+    >
+    Request My Free Estimate
+  </button>
+</form>
+</div>
+</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- WHY HOMEOWNERS CHOOSE AQUA CLEAN POOLS                        -->
+<!-- ============================================================ -->
+<section class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <span class="inline-block bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full mb-4 shadow-lg shadow-sky-500/25">
+        Why Choose Us
+      </span>
+      <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Why Homeowners Choose Aqua Clean Pools</h2>
+      <p class="text-slate-600 text-lg">Professional pool care you can trust, delivered with excellence.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div v-for="reason in reasons" :key="reason.title"
+      class="group bg-slate-50 rounded-2xl p-8 text-center hover:bg-white hover:shadow-xl hover:-translate-y-2 transition-all duration-500 border border-slate-100 hover:border-sky-200/50">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-100 to-cyan-100 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+        <i :class="reason.icon" class="text-2xl text-sky-600"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-900 mb-2">{{ reason.title }}</h3>
+      <p class="text-sm text-slate-600 leading-relaxed">{{ reason.description }}</p>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- OUR COMMITMENT TO QUALITY                                     -->
+<!-- ============================================================ -->
+<section class="py-20 bg-slate-50">
+  <div class="container mx-auto px-4">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <!-- Image -->
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-sky-500/10">
+        <img
+        src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=800&h=600&fit=crop&crop=center&auto=format"
+        alt="Professional pool technician cleaning a luxury pool"
+        class="w-full h-[400px] object-cover hover:scale-105 transition-transform duration-700"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent"></div>
+        <!-- Floating badge -->
+        <div class="absolute bottom-5 left-5 bg-white/90 backdrop-blur-md rounded-2xl px-5 py-3 shadow-xl border border-white/50">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500">Satisfaction</p>
+              <p class="text-sm font-bold text-slate-900">100% Guaranteed</p>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- Success Modal -->
-    <div v-if="showSuccess" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-in fade-in duration-300">
-      <div class="bg-white rounded-2xl p-8 md:p-10 max-w-md w-full text-center shadow-2xl animate-in slide-in-from-bottom-8 duration-400">
-        <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-emerald-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30">
-          <i class="ri-check-line text-4xl text-white"></i>
+      <!-- Content -->
+      <div class="space-y-6">
+        <span class="inline-block bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full shadow-lg shadow-sky-500/25">
+          Our Commitment
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+          Professional Pool Care You Can <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">Rely On</span>
+        </h2>
+        <p class="text-lg text-slate-600 leading-relaxed">
+          Every pool is different, which is why we provide customized maintenance plans, professional water testing, equipment inspections, and dependable service that gives homeowners complete peace of mind.
+        </p>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4">
+          <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+            <p class="text-2xl font-extrabold text-sky-600">1000+</p>
+            <p class="text-xs text-slate-500 font-medium">Pools Serviced</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+            <p class="text-2xl font-extrabold text-cyan-600">15+</p>
+            <p class="text-xs text-slate-500 font-medium">Years Experience</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+            <p class="text-2xl font-extrabold text-emerald-600">4.9★</p>
+            <p class="text-xs text-slate-500 font-medium">Customer Rating</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-slate-100">
+            <p class="text-2xl font-extrabold text-blue-600">24/7</p>
+            <p class="text-xs text-slate-500 font-medium">Emergency Support</p>
+          </div>
         </div>
-        <h3 class="text-2xl font-bold text-slate-900 mb-2">Request Submitted Successfully!</h3>
-        <p class="text-slate-600 mb-6">Thank you for your interest. Our team will contact you soon.</p>
-        <button
-          @click="closeModal"
-          class="px-8 py-3 bg-gradient-to-r from-sky-600 to-cyan-500 text-white font-semibold rounded-full shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all duration-300"
-        >
-          Close
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- OUR SERVICE AREAS                                             -->
+<!-- ============================================================ -->
+<section class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+      <!-- Left: Map Illustration -->
+      <div class="relative rounded-3xl overflow-hidden shadow-xl border border-slate-100">
+        <img
+        src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&h=500&fit=crop&crop=center&auto=format"
+        alt="Service area map"
+        class="w-full h-[340px] object-cover hover:scale-105 transition-transform duration-700"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent"></div>
+        <!-- Map pin -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div class="w-14 h-14 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center shadow-xl border border-white/50 animate-pulse">
+            <svg class="w-7 h-7 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Content -->
+      <div class="space-y-6">
+        <span class="inline-block bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full shadow-lg shadow-sky-500/25">
+          Service Areas
+        </span>
+        <h2 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
+          Proudly Serving Our <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-cyan-500">Local Community</span>
+        </h2>
+        <p class="text-lg text-slate-600 leading-relaxed">
+          We proudly serve homeowners and businesses throughout the surrounding communities with professional pool care.
+        </p>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <div v-for="area in serviceAreas" :key="area" class="flex items-center gap-2.5">
+            <div class="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <span class="text-sm text-slate-700">{{ area }}</span>
+          </div>
+        </div>
+
+        <button class="px-8 py-3.5 bg-gradient-to-r from-sky-600 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-xl hover:shadow-sky-500/35 hover:-translate-y-0.5 transition-all duration-300">
+          See Service Area
         </button>
       </div>
     </div>
-  </main>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- WHAT HAPPENS NEXT?                                            -->
+<!-- ============================================================ -->
+<section class="py-20 bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950">
+  <div class="container mx-auto px-4">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <span class="inline-block bg-white/20 backdrop-blur-sm text-white text-xs font-bold uppercase tracking-widest px-5 py-2 rounded-full mb-4 border border-white/10">
+        Simple Process
+      </span>
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">What Happens Next?</h2>
+      <p class="text-slate-300 text-lg">Four simple steps to a crystal clear pool.</p>
+    </div>
+
+    <div class="grid md:grid-cols-4 gap-6 relative">
+      <!-- Connector lines (desktop) -->
+      <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-sky-500/30 via-cyan-500/30 to-sky-500/30 -translate-y-1/2"></div>
+
+      <div v-for="(step, index) in steps" :key="index"
+      class="relative group z-10">
+      <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-2">
+        <div class="text-4xl font-extrabold text-white/10 mb-4 group-hover:text-white/20 transition-colors">{{ step.number }}</div>
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500/30 to-cyan-500/30 flex items-center justify-center mx-auto mb-5 group-hover:scale-110 transition-transform duration-300">
+          <i :class="step.icon" class="text-2xl text-white"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">{{ step.title }}</h3>
+        <p class="text-slate-300 text-sm leading-relaxed">{{ step.description }}</p>
+      </div>
+      <!-- Arrow -->
+      <div v-if="index < steps.length - 1"
+      class="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-sky-500/30 to-cyan-500/30 group-hover:from-sky-400 group-hover:to-cyan-400 transition-all duration-300">
+    </div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EMERGENCY POOL SERVICE                                        -->
+<!-- ============================================================ -->
+<section class="py-16 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="relative bg-gradient-to-r from-rose-600 to-rose-500 rounded-3xl overflow-hidden shadow-2xl shadow-rose-500/20">
+      <div class="absolute inset-0 opacity-10">
+        <svg class="absolute top-0 right-0 w-64 h-64" viewBox="0 0 200 200" fill="white">
+          <circle cx="100" cy="100" r="80"/>
+        </svg>
+        <svg class="absolute bottom-0 left-0 w-48 h-48" viewBox="0 0 200 200" fill="white">
+          <circle cx="100" cy="100" r="80"/>
+        </svg>
+      </div>
+
+      <div class="relative z-10 p-8 md:p-12 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-6">
+          <div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+            <i class="ri-alarm-warning-line text-3xl text-white"></i>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-white">Emergency Pool Service</h3>
+            <p class="text-rose-100">Need urgent pool repairs or algae treatment? Call our emergency response team today.</p>
+          </div>
+        </div>
+        <a
+        href="tel:+15551234567"
+        class="flex-shrink-0 px-8 py-3.5 bg-white text-rose-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+        >
+        Call Now
+      </a>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- BOTTOM CTA                                                    -->
+<!-- ============================================================ -->
+<section class="py-20 relative overflow-hidden bg-gradient-to-br from-sky-700 via-blue-700 to-cyan-600">
+  <!-- Wave decorations -->
+  <div class="absolute inset-0 opacity-10 pointer-events-none">
+    <svg class="absolute bottom-0 left-0 w-full h-40" viewBox="0 0 1440 200" preserveAspectRatio="none">
+      <path d="M0,100 C360,200 720,0 1080,100 L1440,0 L1440,200 L0,200 Z" fill="white"/>
+    </svg>
+    <svg class="absolute top-0 left-0 w-full h-32 rotate-180" viewBox="0 0 1440 200" preserveAspectRatio="none">
+      <path d="M0,100 C360,200 720,0 1080,100 L1440,0 L1440,200 L0,200 Z" fill="white"/>
+    </svg>
+  </div>
+
+  <!-- Floating blobs -->
+  <div class="absolute -top-40 -right-40 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="relative z-10 container mx-auto px-4 text-center max-w-3xl">
+    <!-- Glassmorphism card -->
+    <div class="bg-white/10 backdrop-blur-md rounded-3xl p-8 md:p-12 border border-white/20 shadow-2xl">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 leading-tight">
+        Ready To Enjoy A Cleaner, <span class="text-sky-200">Healthier Pool?</span>
+      </h2>
+      <p class="text-slate-100 text-lg leading-relaxed mb-8">
+        Our experienced team is ready to keep your swimming pool sparkling clean and worry-free all year long.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+        href="#estimate-form"
+        class="group inline-flex items-center px-10 py-4 bg-white text-sky-700 font-bold rounded-xl shadow-lg hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300"
+        >
+        Book Service
+        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+      <a
+      href="#estimate-form"
+      class="px-10 py-4 bg-white/20 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl hover:bg-white/30 hover:-translate-y-0.5 transition-all duration-300"
+      >
+      Request Free Estimate
+    </a>
+  </div>
+  <div class="flex flex-wrap justify-center gap-6 mt-6 pt-6 border-t border-white/20">
+    <span class="inline-flex items-center gap-2 text-sm text-white/80">
+      <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+      </svg>
+      Certified Technicians
+    </span>
+    <span class="inline-flex items-center gap-2 text-sm text-white/80">
+      <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+      </svg>
+      Licensed & Insured
+    </span>
+    <span class="inline-flex items-center gap-2 text-sm text-white/80">
+      <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+      </svg>
+      Satisfaction Guaranteed
+    </span>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ============================================================ -->
+<!-- SUCCESS MODAL                                                 -->
+<!-- ============================================================ -->
+<div v-if="showSuccess" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4 animate-in fade-in duration-300">
+  <div class="bg-white rounded-3xl p-8 md:p-10 max-w-md w-full text-center shadow-2xl animate-in slide-in-from-bottom-8 duration-400">
+    <div class="w-20 h-20 mx-auto mb-5 bg-gradient-to-br from-emerald-500 to-emerald-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30">
+      <i class="ri-check-line text-4xl text-white"></i>
+    </div>
+    <h3 class="text-2xl font-bold text-slate-900 mb-3">Thank You!</h3>
+    <p class="text-slate-600 leading-relaxed mb-6">
+      We've received your request. One of our pool care specialists will contact you shortly to discuss your service needs.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <button
+      @click="closeModal"
+      class="px-8 py-3 bg-gradient-to-r from-sky-600 to-cyan-500 text-white font-semibold rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all duration-300"
+      >
+      Return Home
+    </button>
+    <button
+    @click="closeModal"
+    class="px-8 py-3 border-2 border-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all duration-300"
+    >
+    Book Another Service
+  </button>
+</div>
+</div>
+</div>
+</div>
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
-const accountTypes = [
-  { label: 'Pool Service Provider', value: 'provider' },
-  { label: 'Pool Owner', value: 'customer' },
-]
-
+// ─── Form Data ──────────────────────────────────────────────────────
 const form = ref({
-  accountType: '',
   fullName: '',
-  companyName: '',
   email: '',
   phone: '',
-  location: '',
-  poolCount: '',
+  address: '',
+  propertyType: '',
+  serviceNeeded: '',
+  poolType: '',
+  serviceDate: '',
+  contactMethod: '',
   message: '',
 })
 
 const showSuccess = ref(false)
 
-// Reset company name and pool count when account type changes
-watch(
-  () => form.value.accountType,
-  () => {
-    if (form.value.accountType === 'customer') {
-      form.value.companyName = ''
-      form.value.poolCount = ''
-    }
-  }
-)
+// ─── Form Options ──────────────────────────────────────────────────
+const propertyTypes = [
+  'Residential Home',
+  'Apartment Community',
+  'Hotel',
+  'HOA',
+  'Commercial Property',
+  'Vacation Rental',
+  'Other',
+]
 
+const services = [
+  'Weekly Pool Cleaning',
+  'One-Time Cleaning',
+  'Chemical Balancing',
+  'Pool Inspection',
+  'Equipment Repair',
+  'Green Pool Recovery',
+  'Commercial Maintenance',
+  'Emergency Service',
+]
+
+const poolTypes = [
+  'In-Ground',
+  'Above Ground',
+  'Saltwater',
+  'Chlorine',
+  'Not Sure',
+]
+
+const contactMethods = ['Phone', 'Email', 'Text Message']
+
+// ─── Why Choose Us Reasons ──────────────────────────────────────
+const reasons = [
+{
+  icon: 'ri-shield-check-line',
+  title: 'Licensed & Insured',
+  description: 'Professional technicians you can trust with full licensing and insurance coverage.',
+},
+{
+  icon: 'ri-calendar-check-line',
+  title: 'Weekly Maintenance',
+  description: 'Reliable recurring service that keeps your pool clean and healthy year-round.',
+},
+{
+  icon: 'ri-flashlight-line',
+  title: 'Fast Response',
+  description: 'Quick scheduling and prompt arrival for all your pool service needs.',
+},
+{
+  icon: 'ri-emotion-happy-line',
+  title: 'Satisfaction Guaranteed',
+  description: 'We\'re committed to exceptional service and complete customer satisfaction.',
+},
+]
+
+// ─── Service Areas ─────────────────────────────────────────────────
+const serviceAreas = [
+  'Residential Pools',
+  'Hotels',
+  'HOAs',
+  'Apartments',
+  'Commercial Pools',
+  'Luxury Homes',
+]
+
+// ─── Steps ─────────────────────────────────────────────────────────
+const steps = [
+{
+  number: '01',
+  icon: 'ri-file-list-3-line',
+  title: 'Submit Request',
+  description: 'Fill out our quick form and tell us about your pool.',
+},
+{
+  number: '02',
+  icon: 'ri-phone-line',
+  title: 'We Contact You',
+  description: 'Our team will reach out to schedule a convenient time.',
+},
+{
+  number: '03',
+  icon: 'ri-search-eye-line',
+  title: 'Free Pool Inspection',
+  description: 'We assess your pool and provide a customized quote.',
+},
+{
+  number: '04',
+  icon: 'ri-water-flash-line',
+  title: 'Enjoy Your Pool',
+  description: 'Relax while we keep your pool crystal clear and worry-free.',
+},
+]
+
+// ─── Form Submission ─────────────────────────────────────────────
 const submitForm = () => {
-  // Here you would typically send the data to your API
-  // POST /join-request
   console.log('Form submitted:', form.value)
-
-  // Show success modal
   showSuccess.value = true
-
-  // Reset form (optional - uncomment if needed)
-  // form.value = {
-  //   accountType: '',
-  //   fullName: '',
-  //   companyName: '',
-  //   email: '',
-  //   phone: '',
-  //   location: '',
-  //   poolCount: '',
-  //   message: '',
-  // }
+  // Reset form
+  // form.value = { fullName: '', email: '', phone: '', address: '', propertyType: '', serviceNeeded: '', poolType: '', serviceDate: '', contactMethod: '', message: '' }
 }
 
 const closeModal = () => {
   showSuccess.value = false
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 </script>
 
 <style scoped>
-/* Import Remix Icon CDN (if not already imported globally) */
+/* Import Remix Icon CDN */
 @import url('https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css');
 
-/* Tailwind CSS animations are used via Tailwind classes */
-/* Additional smooth scroll behavior */
+.container {
+  max-width: 1280px;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-/* Custom animation classes for modal (fallback if Tailwind animations not configured) */
+/* Animations for modal */
 .animate-in {
   animation-duration: 0.3s;
   animation-fill-mode: both;
@@ -402,5 +755,20 @@ html {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Floating animation for map pin */
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
 }
 </style>

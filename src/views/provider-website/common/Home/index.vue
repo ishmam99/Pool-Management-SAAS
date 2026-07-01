@@ -5,7 +5,7 @@
     <Features />
     <Solutions />
     <HowItWorks />
-    <DashboardPreview />
+    <!-- <DashboardPreview /> -->
     <WhyChoose />
     <Testimonials />
     <CTA />
