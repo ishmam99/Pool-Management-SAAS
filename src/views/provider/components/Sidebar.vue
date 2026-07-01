@@ -257,7 +257,7 @@ const menus = [
           { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Add Service' },
           { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Add Terms and Conditions' },
           { to: '/provider/customer-service-terms-and-conditions', icon: 'ri-file-add-line', text: 'Create Terms and Conditions' },
-          { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
+          // { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
           { to: '/provider/customer-service-agreements', icon: 'ri-file-text-line', text: 'Service Agreements' },
         ]
       },

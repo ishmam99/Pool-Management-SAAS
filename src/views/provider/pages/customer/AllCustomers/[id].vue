@@ -93,32 +93,32 @@
     <!-- Table Section -->
     <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
       <div class="overflow-x-auto">
-        <table class="w-full table-auto">
-          <thead class="bg-gray-50">
+        <table class="w-full table-auto table-zebra">
+          <thead class="bg-sky-50">
             <tr>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Customer</th>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Contact</th>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Address</th>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Pools</th>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Agreement</th>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Monthly Value</th>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Status</th>
               <th
-                class="sticky top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                class="sticky border-e border-gray-300/80 top-0 whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
                 Actions</th>
             </tr>
           </thead>
@@ -170,29 +170,29 @@
             <tr v-else v-for="customer in paginatedCustomers" :key="customer.id"
               class="transition-colors hover:bg-gray-50">
               <!-- Customer -->
-              <td class="whitespace-nowrap px-4 py-3">
+              <td class="whitespace-nowrap border-e border-slate-200 px-4 py-3">
                 <div class="flex items-center space-x-3">
                   <div
                     class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-sm font-semibold text-blue-700">
                     {{ getAvatarInitial(customer) }}
                   </div>
                   <router-link :to="getCustomerDetailsRoute(customer)">
-                    <p class="text-sm font-medium text-blue-900">{{ customer.contact_name }}</p>
+                    <p class="text-sm font-medium text-blue-900 underline underline-offset-2">{{ customer.contact_name }}</p>
                     <p class="text-xs text-gray-500">ID: {{ customer.id }}</p>
                   </router-link>
                 </div>
               </td>
               <!-- Contact -->
-              <td class="whitespace-nowrap px-4 py-3">
+              <td class="whitespace-nowrap border-e border-slate-200 px-4 py-3">
                 <div class="text-sm text-gray-900">{{ customer.email || 'N/A' }}</div>
                 <div class="text-xs text-gray-500">{{ customer.phone || 'N/A' }}</div>
               </td>
               <!-- Address -->
-              <td class="whitespace-nowrap px-4 py-3">
+              <td class="whitespace-nowrap border-e border-slate-200 px-4 py-3">
                 <div class="text-sm text-gray-900">{{ customer.billing_address || 'N/A' }}</div>
               </td>
               <!-- Pools -->
-              <td class="px-4 py-3">
+              <td class="px-4 py-3 border-e border-slate-200">
                 <div class="flex flex-col space-y-1">
                   <div class="flex items-center space-x-2">
                     <span
@@ -219,7 +219,7 @@
                 </div>
               </td>
               <!-- Agreement -->
-              <td class="px-4 py-3">
+              <td class="px-4 py-3 border-e border-slate-200">
                 <div class="flex flex-col space-y-1">
                   <div class="flex items-center space-x-2">
                     <span class="text-sm font-medium text-gray-900">
@@ -241,21 +241,21 @@
                 </div>
               </td>
               <!-- Monthly Value -->
-              <td class="whitespace-nowrap px-4 py-3">
+              <td class="whitespace-nowrap border-e border-slate-200 px-4 py-3">
                 <div class="text-sm font-medium text-gray-900">${{ getMonthlyValue(customer) }}</div>
                 <div class="text-xs text-gray-500">
                   {{ getAgreementFrequency(customer) }}
                 </div>
               </td>
               <!-- Status -->
-              <td class="whitespace-nowrap px-4 py-3">
+              <td class="whitespace-nowrap border-e border-slate-200 px-4 py-3">
                 <span :class="getCustomerStatusClasses(customer.status)"
                   class="inline-block rounded-full px-3 py-1 text-xs font-medium">
                   {{ capitalizeFirstLetter(customer.status) }}
                 </span>
               </td>
               <!-- Actions -->
-              <td class="whitespace-nowrap px-4 py-3">
+              <td class="whitespace-nowrap border-e border-slate-200 px-4 py-3">
                 <div class="relative" @click.stop>
                   <button @click="toggleDropdown(customer.id)"
                     class="rounded-lg p-1.5 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600">
@@ -1204,5 +1204,5 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* No additional styles needed - all styling is done with Tailwind */
+
 </style>
