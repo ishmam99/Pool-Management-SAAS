@@ -397,13 +397,25 @@ const routes = [
         name: 'admin-dashboard',
         component: () => import('../views/admin/pages/Dashboard/adminDashboard.vue')
       },
-
-      //  {
-      //   path: '/technician/my-schedules',
-      //   name: 'technician-my-schedules',
-      //   component: () => import('../views/technician/pages/MySchedule/MySchedule.vue')
-      // },
-
+      // Admins
+      { path: '/admin/admins', name: 'admin-admins', component: () => import('../views/admin/pages/admins/AdminList.vue') },
+      { path: '/admin/admins/create', name: 'admin-admins-create', component: () => import('../views/admin/pages/admins/AdminForm.vue') },
+      { path: '/admin/admins/:id/edit', name: 'admin-admins-edit', component: () => import('../views/admin/pages/admins/AdminForm.vue') },
+      // Tenants
+      { path: '/admin/tenants', name: 'admin-tenants', component: () => import('../views/admin/pages/tenants/TenantList.vue') },
+      { path: '/admin/tenants/create', name: 'admin-tenants-create', component: () => import('../views/admin/pages/tenants/TenantForm.vue') },
+      { path: '/admin/tenants/domains/add', name: 'admin-tenants-domain-add', component: () => import('../views/admin/pages/tenants/AddDomain.vue') },
+      { path: '/admin/tenants/domains/verify', name: 'admin-tenants-domain-verify', component: () => import('../views/admin/pages/tenants/VerifyDomain.vue') },
+      { path: '/admin/tenants/:id/edit', name: 'admin-tenants-edit', component: () => import('../views/admin/pages/tenants/TenantForm.vue') },
+      { path: '/admin/tenants/:id', name: 'admin-tenants-details', component: () => import('../views/admin/pages/tenants/TenantDetails.vue') },
+      // Subscription plans
+      { path: '/admin/subscription-plans', name: 'admin-subscription-plans', component: () => import('../views/admin/pages/subscriptions/PlanList.vue') },
+      { path: '/admin/subscription-plans/create', name: 'admin-subscription-plans-create', component: () => import('../views/admin/pages/subscriptions/PlanForm.vue') },
+      { path: '/admin/subscription-plans/:id/edit', name: 'admin-subscription-plans-edit', component: () => import('../views/admin/pages/subscriptions/PlanForm.vue') },
+      // Tenant subscriptions
+      { path: '/admin/tenant-subscriptions', name: 'admin-tenant-subscriptions', component: () => import('../views/admin/pages/subscriptions/SubscriptionList.vue') },
+      { path: '/admin/tenant-subscriptions/create', name: 'admin-tenant-subscriptions-create', component: () => import('../views/admin/pages/subscriptions/SubscriptionForm.vue') },
+      { path: '/admin/tenant-subscriptions/:id/edit', name: 'admin-tenant-subscriptions-edit', component: () => import('../views/admin/pages/subscriptions/SubscriptionForm.vue') },
     ]
   },
 
