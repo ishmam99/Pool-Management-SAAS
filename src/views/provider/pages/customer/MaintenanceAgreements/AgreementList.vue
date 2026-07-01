@@ -26,18 +26,20 @@
                         v-model="filters.search"
                         type="text"
                         placeholder="Search by title..."
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        :disabled="loading"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition disabled:opacity-50"
                     />
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Customer</label>
                     <select
-                        v-model="filters.customer"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        v-model="filters.customer_id"
+                        :disabled="loading"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition disabled:opacity-50"
                     >
                         <option value="">All Customers</option>
-                        <option v-for="customer in uniqueCustomers" :key="customer" :value="customer">
-                            {{ customer }}
+                        <option v-for="customer in uniqueCustomers" :key="customer.id" :value="customer.id">
+                            {{ customer.contact_name }}
                         </option>
                     </select>
                 </div>
@@ -45,27 +47,29 @@
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <select
                         v-model="filters.status"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        :disabled="loading"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition disabled:opacity-50"
                     >
                         <option value="">All Statuses</option>
-                        <option value="Active">Active</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Pending">Pending</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
                     <input
                         type="date"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                        :disabled="loading"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition disabled:opacity-50"
                         placeholder="Optional"
                     />
                 </div>
                 <div class="flex items-end">
                     <button
                         @click="resetFilters"
-                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition"
+                        :disabled="loading"
+                        class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition disabled:opacity-50"
                     >
                         Reset Filters
                     </button>
@@ -82,65 +86,82 @@
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Phone</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer Email</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Work Order</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pool</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service Address</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technician</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scheduled Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Warranty</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="agreement in filteredAgreements" :key="agreement.id" class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-sm font-medium text-gray-900">#{{ agreement.id }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.title }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.customer }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">#{{ agreement.work_order_id }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.pool }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700 font-medium">${{ agreement.price.toFixed(2) }}</td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ formatDate(agreement.scheduled_date) }}</td>
-                            <td class="px-4 py-3">
-                                <span :class="getStatusBadgeClass(agreement.status)" class="px-3 py-1 text-xs font-semibold rounded-full">
-                                    {{ agreement.status }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-3 text-sm text-gray-700">{{ formatDate(agreement.created_at) }}</td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center gap-2">
-                                    <button
-                                        @click="viewAgreement(agreement)"
-                                        class="text-blue-600 hover:text-blue-800 transition"
-                                        title="View"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        @click="editAgreement(agreement)"
-                                        class="text-yellow-600 hover:text-yellow-800 transition"
-                                        title="Edit"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        @click="deleteAgreement(agreement)"
-                                        class="text-red-600 hover:text-red-800 transition"
-                                        title="Delete"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr v-if="filteredAgreements.length === 0">
-                            <td colspan="10" class="px-4 py-12 text-center">
+                        <!-- Loading Skeletons -->
+                        <template v-if="loading">
+                            <tr v-for="n in 5" :key="'skeleton-' + n">
+                                <td v-for="col in 15" :key="col" class="px-4 py-3">
+                                    <div class="h-4 bg-gray-200 rounded animate-pulse"></div>
+                                </td>
+                            </tr>
+                        </template>
+
+                        <!-- Data Rows -->
+                        <template v-else>
+                            <tr v-for="agreement in filteredAgreements" :key="agreement.id" class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-sm font-medium text-gray-900">#{{ agreement.id }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.title || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.customer?.contact_name || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.customer?.phone || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.customer?.email || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">#{{ agreement.work_order?.id || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.work_order?.pool?.label || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.work_order?.pool?.service_address || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.work_order?.technician?.name || '-' }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700 font-medium">${{ (agreement.price || 0) }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ formatDate(agreement.scheduled_date) }}</td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ agreement.warranty_period || '-' }}</td>
+                                <td class="px-4 py-3">
+                                    <span :class="getStatusBadgeClass(agreement.status)" class="px-3 py-1 text-xs font-semibold rounded-full">
+                                        {{ formatStatus(agreement.status) }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 text-sm text-gray-700">{{ formatDate(agreement.created_at) }}</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <button
+                                            @click="viewAgreement(agreement)"
+                                            class="text-blue-600 hover:text-blue-800 transition"
+                                            title="View"
+                                            :disabled="loading"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            @click="openEditModal(agreement)"
+                                            class="text-yellow-600 hover:text-yellow-800 transition"
+                                            title="Edit"
+                                            :disabled="loading"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+
+                        <!-- Empty State -->
+                        <tr v-if="!loading && filteredAgreements.length === 0">
+                            <td colspan="15" class="px-4 py-12 text-center">
                                 <div class="flex flex-col items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -162,7 +183,7 @@
                 <div class="flex items-center gap-2">
                     <button
                         @click="prevPage"
-                        :disabled="pagination.current_page === 1"
+                        :disabled="pagination.current_page === 1 || loading"
                         class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Previous
@@ -172,7 +193,7 @@
                     </span>
                     <button
                         @click="nextPage"
-                        :disabled="pagination.current_page === pagination.last_page"
+                        :disabled="pagination.current_page === pagination.last_page || loading"
                         class="px-3 py-1 border border-gray-300 rounded-lg text-sm hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Next
@@ -181,166 +202,210 @@
             </div>
         </div>
     </div>
+
+    <!-- View Agreement Modal -->
+    <dialog id="viewAgreementModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box max-w-3xl max-h-[90vh] overflow-y-auto">
+            <h3 class="font-bold text-2xl mb-6 text-gray-800">Agreement Details</h3>
+            
+            <div v-if="selectedAgreement" class="space-y-6">
+                <!-- Agreement Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-700 mb-3">Agreement</h4>
+                        <div class="space-y-2">
+                            <p><span class="font-medium text-gray-600">Title:</span> {{ selectedAgreement.title || '-' }}</p>
+                            <p><span class="font-medium text-gray-600">Price:</span> ${{ (selectedAgreement.price || 0).toFixed(2) }}</p>
+                            <p><span class="font-medium text-gray-600">Status:</span> 
+                                <span :class="getStatusBadgeClass(selectedAgreement.status)" class="px-3 py-1 text-xs font-semibold rounded-full">
+                                    {{ formatStatus(selectedAgreement.status) }}
+                                </span>
+                            </p>
+                            <p><span class="font-medium text-gray-600">Scheduled Date:</span> {{ formatDate(selectedAgreement.scheduled_date) }}</p>
+                            <p><span class="font-medium text-gray-600">Start Time:</span> {{ formatTime(selectedAgreement.start_time) }}</p>
+                            <p><span class="font-medium text-gray-600">End Time:</span> {{ formatTime(selectedAgreement.end_time) }}</p>
+                            <p><span class="font-medium text-gray-600">Warranty:</span> {{ selectedAgreement.warranty_period || '-' }}</p>
+                            <p><span class="font-medium text-gray-600">Notes:</span> {{ selectedAgreement.notes || '-' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Customer Info -->
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-700 mb-3">Customer</h4>
+                        <div class="space-y-2">
+                            <p><span class="font-medium text-gray-600">Name:</span> {{ selectedAgreement.customer?.contact_name || '-' }}</p>
+                            <p><span class="font-medium text-gray-600">Phone:</span> {{ selectedAgreement.customer?.phone || '-' }}</p>
+                            <p><span class="font-medium text-gray-600">Email:</span> {{ selectedAgreement.customer?.email || '-' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Order & Pool -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-700 mb-3">Work Order</h4>
+                        <div class="space-y-2">
+                            <p><span class="font-medium text-gray-600">ID:</span> #{{ selectedAgreement.work_order?.id || '-' }}</p>
+                            <p><span class="font-medium text-gray-600">Type:</span> {{ selectedAgreement.work_order?.type || '-' }}</p>
+                            <p><span class="font-medium text-gray-600">Status:</span> {{ selectedAgreement.work_order?.status || '-' }}</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-700 mb-3">Pool</h4>
+                        <div class="space-y-2">
+                            <p><span class="font-medium text-gray-600">Label:</span> {{ selectedAgreement.work_order?.pool?.label || '-' }}</p>
+                            <p><span class="font-medium text-gray-600">Service Address:</span> {{ selectedAgreement.work_order?.pool?.service_address || '-' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technician -->
+                <div>
+                    <h4 class="font-semibold text-lg text-gray-700 mb-3">Technician</h4>
+                    <div class="space-y-2">
+                        <p><span class="font-medium text-gray-600">Name:</span> {{ selectedAgreement.work_order?.technician?.name || '-' }}</p>
+                        <p><span class="font-medium text-gray-600">Phone:</span> {{ selectedAgreement.work_order?.technician?.phone || '-' }}</p>
+                    </div>
+                </div>
+
+                <!-- Service Includes -->
+                <div>
+                    <h4 class="font-semibold text-lg text-gray-700 mb-3">Service Includes</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span v-for="(item, index) in selectedAgreement.service_includes" :key="index" 
+                              class="badge badge-primary badge-lg px-4 py-2">
+                            {{ item }}
+                        </span>
+                        <span v-if="!selectedAgreement.service_includes?.length" class="text-gray-500 text-sm">
+                            No service items included
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Agreement Terms -->
+                <div>
+                    <h4 class="font-semibold text-lg text-gray-700 mb-3">Agreement Terms</h4>
+                    <ul class="list-disc pl-6 space-y-1">
+                        <li v-for="(term, index) in getTerms(selectedAgreement.term_template?.content)" :key="index" 
+                            class="text-gray-700">
+                            {{ term }}
+                        </li>
+                        <li v-if="!selectedAgreement.term_template?.content" class="text-gray-500 text-sm">
+                            No terms available
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn btn-primary">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
+
+    <!-- Edit Status Modal -->
+    <dialog id="editStatusModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <h3 class="font-bold text-2xl mb-6 text-gray-800">Edit Agreement Status</h3>
+            
+            <div v-if="editingAgreement" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select 
+                        v-model="selectedStatus"
+                        :disabled="updatingStatus"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                    >
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <div v-if="statusError" class="text-red-600 text-sm mt-2">
+                    {{ statusError }}
+                </div>
+            </div>
+
+            <div class="modal-action">
+                <button 
+                    @click="updateStatus"
+                    :disabled="updatingStatus"
+                    class="btn btn-primary"
+                >
+                    <span v-if="updatingStatus" class="loading loading-spinner loading-sm mr-2"></span>
+                    {{ updatingStatus ? 'Updating...' : 'Update Status' }}
+                </button>
+                <form method="dialog">
+                    <button class="btn" :disabled="updatingStatus">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-// import api from '@/services/api'
-
-// Mock Data
-const mockAgreements = [
-    {
-        id: 1,
-        title: 'Pump Motor Replacement',
-        customer: 'John Smith',
-        work_order_id: 94,
-        pool: 'Sunset Pool',
-        price: 450.00,
-        scheduled_date: '2026-07-15',
-        status: 'Active',
-        created_at: '2026-07-10T09:00:00'
-    },
-    {
-        id: 2,
-        title: 'Pool Heater Installation',
-        customer: 'Sarah Johnson',
-        work_order_id: 87,
-        pool: 'Grand Oasis',
-        price: 1200.00,
-        scheduled_date: '2026-07-20',
-        status: 'Pending',
-        created_at: '2026-07-12T14:30:00'
-    },
-    {
-        id: 3,
-        title: 'Plumbing Leak Repair',
-        customer: 'Michael Brown',
-        work_order_id: 102,
-        pool: 'Blue Haven',
-        price: 350.00,
-        scheduled_date: '2026-07-05',
-        status: 'Completed',
-        created_at: '2026-07-01T11:15:00'
-    },
-    {
-        id: 4,
-        title: 'Acid Wash Service',
-        customer: 'Emily Davis',
-        work_order_id: 76,
-        pool: 'Paradise Villa',
-        price: 850.00,
-        scheduled_date: '2026-07-25',
-        status: 'Active',
-        created_at: '2026-07-14T16:45:00'
-    },
-    {
-        id: 5,
-        title: 'Salt Cell Replacement',
-        customer: 'Robert Wilson',
-        work_order_id: 113,
-        pool: 'Aqua Springs',
-        price: 275.00,
-        scheduled_date: '2026-07-18',
-        status: 'Cancelled',
-        created_at: '2026-07-08T10:20:00'
-    },
-    {
-        id: 6,
-        title: 'Filter Sand Replacement',
-        customer: 'Jessica Martinez',
-        work_order_id: 65,
-        pool: 'Crystal Clear',
-        price: 525.00,
-        scheduled_date: '2026-07-28',
-        status: 'Active',
-        created_at: '2026-07-15T08:30:00'
-    },
-    {
-        id: 7,
-        title: 'Pool Light Repair',
-        customer: 'David Anderson',
-        work_order_id: 91,
-        pool: 'Starlight Pools',
-        price: 180.00,
-        scheduled_date: '2026-07-12',
-        status: 'Completed',
-        created_at: '2026-07-09T13:50:00'
-    },
-    {
-        id: 8,
-        title: 'Equipment Inspection',
-        customer: 'Jennifer Taylor',
-        work_order_id: 129,
-        pool: 'Tranquil Waters',
-        price: 95.00,
-        scheduled_date: '2026-08-01',
-        status: 'Pending',
-        created_at: '2026-07-16T09:15:00'
-    },
-    {
-        id: 9,
-        title: 'Automation System Installation',
-        customer: 'Thomas Moore',
-        work_order_id: 58,
-        pool: 'Laguna Bay',
-        price: 2150.00,
-        scheduled_date: '2026-07-30',
-        status: 'Active',
-        created_at: '2026-07-13T14:00:00'
-    },
-    {
-        id: 10,
-        title: 'Tile Cleaning Service',
-        customer: 'Lisa Garcia',
-        work_order_id: 145,
-        pool: 'Mediterranean Oasis',
-        price: 625.00,
-        scheduled_date: '2026-08-05',
-        status: 'Active',
-        created_at: '2026-07-17T10:45:00'
-    }
-]
+import api from '../../../../../services/api'
 
 // State
 const maintenanceAgreements = ref([])
+const allAgreements = ref([])
 const filters = ref({
     search: '',
-    customer: '',
+    customer_id: '',
     status: ''
 })
 const pagination = ref({
     current_page: 1,
-    per_page: 5,
+    per_page: 10,
     total: 0,
     from: 1,
-    to: 5,
+    to: 10,
     last_page: 0
 })
+const loading = ref(false)
+const selectedAgreement = ref(null)
+const editingAgreement = ref(null)
+const selectedStatus = ref('')
+const updatingStatus = ref(false)
+const statusError = ref('')
 
 // Computed
 const uniqueCustomers = computed(() => {
-    const customers = new Set()
-    maintenanceAgreements.value.forEach(item => {
-        customers.add(item.customer)
+    const customerMap = new Map()
+    allAgreements.value.forEach(item => {
+        if (item.customer?.id && item.customer?.contact_name) {
+            customerMap.set(item.customer.id, {
+                id: item.customer.id,
+                contact_name: item.customer.contact_name
+            })
+        }
     })
-    return Array.from(customers)
+    return Array.from(customerMap.values())
 })
 
 const filteredAgreements = computed(() => {
-    let filtered = maintenanceAgreements.value
+    let filtered = allAgreements.value
 
     // Search filter
     if (filters.value.search) {
         const searchTerm = filters.value.search.toLowerCase()
-        filtered = filtered.filter(item =>
-            item.title.toLowerCase().includes(searchTerm)
+        filtered = filtered.filter(item => 
+            (item.title || '').toLowerCase().includes(searchTerm) ||
+            (item.customer?.contact_name || '').toLowerCase().includes(searchTerm) ||
+            (item.work_order?.pool?.label || '').toLowerCase().includes(searchTerm) ||
+            (item.work_order?.technician?.name || '').toLowerCase().includes(searchTerm)
         )
     }
 
     // Customer filter
-    if (filters.value.customer) {
-        filtered = filtered.filter(item =>
-            item.customer === filters.value.customer
+    if (filters.value.customer_id) {
+        filtered = filtered.filter(item => 
+            item.customer?.id === filters.value.customer_id
         )
     }
 
@@ -364,7 +429,9 @@ const filteredAgreements = computed(() => {
 
 // Methods
 const formatDate = (dateString) => {
+    if (!dateString) return '-'
     const date = new Date(dateString)
+    if (isNaN(date.getTime())) return '-'
     return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -372,38 +439,62 @@ const formatDate = (dateString) => {
     })
 }
 
+const formatTime = (timeString) => {
+    if (!timeString) return '-'
+    try {
+        const [hours, minutes] = timeString.split(':')
+        const date = new Date()
+        date.setHours(parseInt(hours), parseInt(minutes))
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        })
+    } catch {
+        return timeString
+    }
+}
+
+const formatStatus = (status) => {
+    if (!status) return '-'
+    return status.charAt(0).toUpperCase() + status.slice(1)
+}
+
 const getStatusBadgeClass = (status) => {
     const classes = {
-        'Active': 'bg-green-100 text-green-700',
-        'Completed': 'bg-blue-100 text-blue-700',
-        'Cancelled': 'bg-red-100 text-red-700',
-        'Pending': 'bg-yellow-100 text-yellow-700'
+        'active': 'bg-green-100 text-green-700',
+        'completed': 'bg-blue-100 text-blue-700',
+        'cancelled': 'bg-red-100 text-red-700'
     }
     return classes[status] || 'bg-gray-100 text-gray-700'
 }
 
-const loadMaintenanceAgreements = async () => {
-    // TODO: Enable when backend is ready
+const getTerms = (content) => {
+    if (!content) return []
+    if (Array.isArray(content)) return content
+    if (typeof content === 'string') {
+        return content.split('\n').filter(line => line.trim())
+    }
+    return []
+}
 
-    /*
+const loadMaintenanceAgreements = async () => {
+    loading.value = true
     try {
         const response = await api().get('/maintenance-agreement-management/agreements')
-        maintenanceAgreements.value = response.data.data
+        allAgreements.value = response.data.data || []
+        maintenanceAgreements.value = allAgreements.value
     } catch (error) {
-        console.error(error)
+        console.error('Error loading agreements:', error)
+        // Show error toast here
+    } finally {
+        loading.value = false
     }
-    */
-
-    // Mock data for now
-    maintenanceAgreements.value = mockAgreements
-    pagination.value.total = mockAgreements.length
-    pagination.value.last_page = Math.ceil(pagination.value.total / pagination.value.per_page)
 }
 
 const resetFilters = () => {
     filters.value = {
         search: '',
-        customer: '',
+        customer_id: '',
         status: ''
     }
     pagination.value.current_page = 1
@@ -415,23 +506,51 @@ const createAgreement = () => {
 }
 
 const viewAgreement = (agreement) => {
-    console.log('View agreement:', agreement)
+    selectedAgreement.value = agreement
+    document.getElementById('viewAgreementModal').showModal()
 }
 
-const editAgreement = (agreement) => {
-    console.log('Edit agreement:', agreement)
+const openEditModal = (agreement) => {
+    editingAgreement.value = agreement
+    selectedStatus.value = agreement.status
+    statusError.value = ''
+    document.getElementById('editStatusModal').showModal()
 }
 
-const deleteAgreement = (agreement) => {
-    // SweetAlert confirmation would go here
-    if (confirm(`Are you sure you want to delete agreement #${agreement.id}?`)) {
-        console.log('Delete agreement:', agreement)
-        // Remove from list
-        maintenanceAgreements.value = maintenanceAgreements.value.filter(
-            item => item.id !== agreement.id
+const updateStatus = async () => {
+    if (!editingAgreement.value || !selectedStatus.value) return
+    
+    updatingStatus.value = true
+    statusError.value = ''
+    
+    try {
+        const formData = new FormData()
+        formData.append('_method', 'PUT')
+        formData.append('status', selectedStatus.value)
+        
+        await api().post(
+            `/maintenance-agreement-management/agreements/${editingAgreement.value.id}`,
+            formData
         )
-        pagination.value.total = maintenanceAgreements.value.length
-        pagination.value.last_page = Math.ceil(pagination.value.total / pagination.value.per_page)
+        
+        // Close modal
+        document.getElementById('editStatusModal').close()
+        
+        // Show success toast (implement your toast system)
+        console.log('Status updated successfully')
+        
+        // Reload agreements
+        await loadMaintenanceAgreements()
+        
+        // Reset edit state
+        editingAgreement.value = null
+        selectedStatus.value = ''
+        
+    } catch (error) {
+        console.error('Error updating status:', error)
+        statusError.value = error.response?.data?.message || 'Failed to update status'
+    } finally {
+        updatingStatus.value = false
     }
 }
 
@@ -452,4 +571,3 @@ onMounted(() => {
     loadMaintenanceAgreements()
 })
 </script>
-

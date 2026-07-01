@@ -55,7 +55,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Customer Type</p>
-                                <p class="font-medium">{{ selectedCustomer.customer_type || 'N/A' }}</p>
+                                <p class="font-medium">{{ selectedCustomer.type || 'N/A' }}</p>
                             </div>
                             <div class="md:col-span-2">
                                 <p class="text-sm text-gray-500">Billing Address</p>
@@ -92,7 +92,7 @@
                                 :key="wo.id"
                                 :value="wo.id"
                             >
-                                #{{ wo.id }} • {{ wo.type }} • {{ wo.pool_name || 'No Pool' }} • {{ wo.status }}
+                                ID: {{ wo.id }} • {{ wo.type.toUpperCase() }} • {{ wo.pool.label || 'No Pool' }} • {{ wo.status }}
                             </option>
                         </select>
                         <div v-if="loading.workOrders" class="text-sm text-gray-500 mt-1">
@@ -122,7 +122,7 @@
                             </div>
                             <div>
                                 <p class="text-sm text-gray-500">Pool Name</p>
-                                <p class="font-medium">{{ selectedWorkOrder.pool_name || 'N/A' }}</p>
+                                <p class="font-medium">{{ selectedWorkOrder.pool.label || 'N/A' }}</p>
                             </div>
                             <div class="md:col-span-2">
                                 <p class="text-sm text-gray-500">Customer</p>
@@ -222,6 +222,55 @@
                                 <option value="6 Months">6 Months</option>
                                 <option value="1 Year">1 Year</option>
                             </select>
+                        </div>
+
+                        <!-- Terms & Conditions Template -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Terms &amp; Conditions Template <span class="text-red-500">*</span>
+                            </label>
+                            <select
+                                v-model="form.term_template_id"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                                :disabled="loading.termTemplates"
+                            >
+                                <option value="">Select a template...</option>
+                                <option
+                                    v-for="template in termTemplates"
+                                    :key="template.id"
+                                    :value="template.id"
+                                >
+                                    {{ template.name }}
+                                </option>
+                            </select>
+                            <div v-if="loading.termTemplates" class="text-sm text-gray-500 mt-1">
+                                <span class="inline-block animate-pulse">Loading templates...</span>
+                            </div>
+                        </div>
+
+                        <!-- Template Preview Card -->
+                        <div v-if="selectedTemplate && !loading.termTemplates" class="md:col-span-2">
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 mt-2">
+                                <h4 class="text-sm font-semibold text-blue-600 mb-2">Terms &amp; Conditions Preview</h4>
+                                <h5 class="font-medium text-gray-800">{{ selectedTemplate.name }}</h5>
+                                <p class="text-sm text-gray-600 mt-1">{{ selectedTemplate.description || 'No description available.' }}</p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <span class="font-medium">{{ selectedTemplate.terms_count || 0 }}</span> Terms Included
+                                </p>
+                                
+                                <!-- Terms List -->
+                                <div v-if="selectedTemplate.terms && selectedTemplate.terms.length > 0" 
+                                     class="mt-3 max-h-60 overflow-y-auto border-t border-gray-200 pt-3">
+                                    <div 
+                                        v-for="(term, index) in selectedTemplate.terms" 
+                                        :key="index"
+                                        class="flex items-start gap-2 py-1.5 text-sm text-gray-700 border-b border-gray-100 last:border-0"
+                                    >
+                                        <span class="text-green-600 mt-0.5">✓</span>
+                                        <span>{{ term }}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="md:col-span-2">
@@ -392,6 +441,10 @@
                                 <p class="font-medium">{{ form.warranty_period || 'Not set' }}</p>
                             </div>
                             <div>
+                                <p class="text-sm text-gray-500">Terms Template</p>
+                                <p class="font-medium">{{ selectedTemplate?.name || 'Not selected' }}</p>
+                            </div>
+                            <div>
                                 <p class="text-sm text-gray-500">Maintenance Services</p>
                                 <p class="font-medium">{{ form.service_includes.length }} selected</p>
                                 <ul class="mt-1 text-sm text-gray-600 space-y-1">
@@ -424,19 +477,22 @@ const form = reactive({
     warranty_period: '',
     status: 'active',
     notes: '',
-    service_includes: []
+    service_includes: [],
+    term_template_id: '' // Added for Terms & Conditions Template
 })
 
 // Loading states
 const loading = reactive({
     customers: false,
     workOrders: false,
-    submit: false
+    submit: false,
+    termTemplates: false // Added for template loading
 })
 
 // Data stores
 const customers = ref([])
 const workOrders = ref([])
+const termTemplates = ref([]) // Added for templates
 
 // Service categories
 const serviceCategories = {
@@ -499,6 +555,13 @@ const selectedWorkOrder = computed(() => {
     return workOrders.value.find(wo => wo.id === Number(form.work_order_id))
 })
 
+// Computed for selected template
+const selectedTemplate = computed(() => {
+    return termTemplates.value.find(
+        item => item.id === Number(form.term_template_id)
+    )
+})
+
 // Methods
 const formatDate = (dateString) => {
     if (!dateString) return 'N/A'
@@ -545,6 +608,29 @@ const fetchWorkOrders = async () => {
     }
 }
 
+// Fetch term templates
+const fetchTermTemplates = async () => {
+    loading.termTemplates = true
+
+    try {
+        const response = await api().get('/term-templates/templates')
+        termTemplates.value = response.data?.data || []
+
+        // Automatically select default template
+        const defaultTemplate = termTemplates.value.find(
+            item => item.is_default == 1
+        )
+
+        if (defaultTemplate) {
+            form.term_template_id = defaultTemplate.id
+        }
+    } catch (error) {
+        console.error('Error fetching term templates:', error)
+    } finally {
+        loading.termTemplates = false
+    }
+}
+
 const onCustomerChange = () => {
     form.work_order_id = ''
     workOrders.value = []
@@ -583,6 +669,11 @@ const createAgreement = async () => {
         alert('Please select a scheduled start time.')
         return
     }
+    // Validate Terms & Conditions Template
+    if (!form.term_template_id) {
+        alert('Please select a Terms & Conditions Template.')
+        return
+    }
 
     loading.submit = true
     try {
@@ -596,11 +687,12 @@ const createAgreement = async () => {
             end_time: form.end_time || null,
             warranty_period: form.warranty_period || null,
             status: form.status,
+            term_template_id: Number(form.term_template_id), // Added term_template_id
             notes: form.notes || null,
             service_includes: form.service_includes
         }
 
-        const response = await api.post('/maintenance-agreements', payload)
+        const response = await api().post('/maintenance-agreement-management/agreements', payload)
         alert('Maintenance agreement created successfully!')
         // Reset form or redirect as needed
         console.log('Agreement created:', response.data)
@@ -615,6 +707,6 @@ const createAgreement = async () => {
 // Lifecycle
 onMounted(() => {
     fetchCustomers()
+    fetchTermTemplates() // Added to fetch templates on mount
 })
 </script>
-

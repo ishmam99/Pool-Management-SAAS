@@ -80,7 +80,6 @@
                 class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
                 <option value="" selected disabled>Select type</option>
-                <option value="routine">Routine – Regular maintenance</option>
                 <option value="one_time">One‑time – One‑time service</option>
                 <option value="repair">Repair – Equipment repair</option>
                 <option value="inspection">Inspection – Safety/equipment inspection</option>
@@ -161,8 +160,8 @@
               >
                 <option value="" selected disabled>Select priority</option>
                 <option value="normal">Normal</option>
-                <option value="high">High</option>
-                <option value="emergency">Emergency</option>
+                <option value="urgent">Urgent</option>
+                <option value="first_visit">First Visit</option>
               </select>
             </div>
           </div>
