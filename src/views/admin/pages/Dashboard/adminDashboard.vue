@@ -1,26 +1,27 @@
 <template>
   <div class="min-h-screen bg-slate-50 p-4 md:p-8">
-    <div class="max-w-screen-2xl mx-auto w-full">
+    <div class="w-full">
       <!-- Header -->
-      <div class="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div class="mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-gradient-to-r from-slate-900 via-violet-900 to-sky-900 rounded-[2rem] p-6 shadow-2xl text-white">
         <div>
-          <h1 class="text-3xl font-bold text-slate-900">Platform Dashboard</h1>
-          <p class="text-slate-500 mt-1">Overview of tenants, admins, subscriptions, and revenue.</p>
+          <p class="text-sm uppercase tracking-[0.3em] text-slate-300">Admin Control Center</p>
+          <h1 class="text-4xl font-extrabold tracking-tight mt-3">Platform Dashboard</h1>
+          <p class="text-slate-200 mt-2 max-w-2xl">A high-level view of tenants, admins, subscriptions, and revenue across your platform.</p>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <router-link to="/admin/admins/create" class="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-700 transition">
+        <div class="flex flex-wrap gap-3">
+          <router-link to="/admin/admins/create" class="inline-flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/25 transition shadow-sm">
             <i class="ri-user-add-line"></i> Create Admin
           </router-link>
-          <router-link to="/admin/tenants/create" class="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-700 transition">
+          <router-link to="/admin/tenants/create" class="inline-flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/25 transition shadow-sm">
             <i class="ri-building-add-line"></i> Create Tenant
           </router-link>
-          <router-link to="/admin/tenant-subscriptions/create" class="inline-flex items-center gap-2 rounded-xl bg-orange-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-700 transition">
+          <router-link to="/admin/tenant-subscriptions/create" class="inline-flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/25 transition shadow-sm">
             <i class="ri-add-circle-line"></i> Create Subscription
           </router-link>
-          <router-link to="/admin/subscription-plans/create" class="inline-flex items-center gap-2 rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-700 transition">
+          <router-link to="/admin/subscription-plans/create" class="inline-flex items-center gap-2 rounded-2xl bg-white/15 px-4 py-3 text-sm font-semibold text-white hover:bg-white/25 transition shadow-sm">
             <i class="ri-list-settings-line"></i> Create Plan
           </router-link>
-          <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50" @click="loadDashboard">
+          <button type="button" class="inline-flex items-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm font-semibold text-white hover:bg-white/20 transition shadow-sm" @click="loadDashboard">
             <i class="ri-refresh-line"></i> Refresh
           </button>
         </div>
@@ -37,60 +38,69 @@
         <section class="mb-8">
           <h2 class="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">Tenant Statistics</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            <AdminStatCard label="Total Tenants" :value="tenantStats.total" />
-            <AdminStatCard label="Active" :value="tenantStats.active" value-class="text-emerald-700" />
-            <AdminStatCard label="Trial" :value="tenantStats.trial" value-class="text-sky-700" />
-            <AdminStatCard label="Suspended" :value="tenantStats.suspended" value-class="text-amber-700" />
-            <AdminStatCard label="Cancelled" :value="tenantStats.cancelled" value-class="text-slate-600" />
-            <AdminStatCard label="Past Due" :value="tenantStats.past_due" value-class="text-red-700" />
+            <AdminStatCard label="Total Tenants" :value="tenantStats.total" card-class="bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+            <AdminStatCard label="Active" :value="tenantStats.active" card-class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+            <AdminStatCard label="Trial" :value="tenantStats.trial" card-class="bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+            <AdminStatCard label="Suspended" :value="tenantStats.suspended" card-class="bg-gradient-to-br from-amber-400 to-orange-500 text-slate-900 shadow-lg" label-class="text-slate-900/80" value-class="text-slate-900" />
+            <AdminStatCard label="Cancelled" :value="tenantStats.cancelled" card-class="bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+            <AdminStatCard label="Past Due" :value="tenantStats.past_due" card-class="bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
           </div>
         </section>
 
         <!-- Admin + Subscription + Revenue -->
         <section class="mb-8 grid grid-cols-1 xl:grid-cols-3 gap-6">
-          <div>
+          <div class="bg-white/80 ring-1 ring-slate-200 rounded-3xl p-5 shadow-sm">
             <h2 class="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">Admin Statistics</h2>
             <div class="grid grid-cols-2 gap-3">
-              <AdminStatCard label="Total Admins" :value="adminStats.total" />
-              <AdminStatCard label="Super Admins" :value="adminStats.super_admin" value-class="text-violet-700" />
-              <AdminStatCard label="Admins" :value="adminStats.admin" value-class="text-indigo-700" />
-              <AdminStatCard label="Support Staff" :value="adminStats.support" value-class="text-sky-700" />
+              <AdminStatCard label="Total Admins" :value="adminStats.total" card-class="bg-gradient-to-br from-violet-500 to-fuchsia-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+              <AdminStatCard label="Super Admins" :value="adminStats.super_admin" card-class="bg-gradient-to-br from-purple-500 to-indigo-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+              <AdminStatCard label="Admins" :value="adminStats.admin" card-class="bg-gradient-to-br from-sky-500 to-cyan-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+              <AdminStatCard label="Support Staff" :value="adminStats.support" card-class="bg-gradient-to-br from-teal-500 to-emerald-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
             </div>
           </div>
-          <div>
+          <div class="bg-white/80 ring-1 ring-slate-200 rounded-3xl p-5 shadow-sm">
             <h2 class="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">Subscription Statistics</h2>
             <div class="grid grid-cols-2 gap-3">
-              <AdminStatCard label="Total" :value="subStats.total" />
-              <AdminStatCard label="Active" :value="subStats.active" value-class="text-emerald-700" />
-              <AdminStatCard label="Failed" :value="subStats.failed" value-class="text-red-700" />
-              <AdminStatCard label="Cancelled" :value="subStats.cancelled" value-class="text-slate-600" />
+              <AdminStatCard label="Total" :value="subStats.total" card-class="bg-gradient-to-br from-slate-500 to-slate-700 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+              <AdminStatCard label="Active" :value="subStats.active" card-class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+              <AdminStatCard label="Failed" :value="subStats.failed" card-class="bg-gradient-to-br from-red-500 to-rose-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+              <AdminStatCard label="Cancelled" :value="subStats.cancelled" card-class="bg-gradient-to-br from-slate-500 to-zinc-700 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
             </div>
           </div>
-          <div>
+          <div class="bg-white/80 ring-1 ring-slate-200 rounded-3xl p-5 shadow-sm">
             <h2 class="text-sm font-bold uppercase tracking-wide text-slate-500 mb-3">Revenue</h2>
             <div class="grid grid-cols-1 gap-3">
-              <AdminStatCard label="Total Monthly Revenue" :value="formatCurrency(revenue.monthly)" value-class="text-emerald-700" />
-              <AdminStatCard label="Active Subscription Value" :value="formatCurrency(revenue.activeValue)" value-class="text-sky-700" />
+              <AdminStatCard label="Total Monthly Revenue" :value="formatCurrency(revenue.monthly)" card-class="bg-gradient-to-br from-emerald-500 to-sky-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
+              <AdminStatCard label="Active Subscription Value" :value="formatCurrency(revenue.activeValue)" card-class="bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-lg" label-class="text-white/80" value-class="text-white" />
             </div>
           </div>
         </section>
 
         <!-- Charts -->
         <section class="mb-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
-            <h3 class="text-lg font-semibold text-slate-900 mb-4">Tenant Status</h3>
+          <div class="rounded-[2rem] bg-gradient-to-br from-cyan-500 to-slate-900 text-white p-6 shadow-2xl ring-1 ring-white/10">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold">Tenant Status</h3>
+              <span class="rounded-full bg-white/20 px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/80">Live</span>
+            </div>
             <div class="h-64 flex items-center justify-center">
               <canvas ref="tenantChartRef"></canvas>
             </div>
           </div>
-          <div class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
-            <h3 class="text-lg font-semibold text-slate-900 mb-4">Subscription Status</h3>
+          <div class="rounded-[2rem] bg-gradient-to-br from-violet-500 via-fuchsia-500 to-indigo-700 text-white p-6 shadow-2xl ring-1 ring-white/10">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold">Subscription Status</h3>
+              <span class="rounded-full bg-white/20 px-3 py-1 text-xs uppercase tracking-[0.2em] text-white/80">Trends</span>
+            </div>
             <div class="h-64 flex items-center justify-center">
               <canvas ref="subscriptionChartRef"></canvas>
             </div>
           </div>
-          <div class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
-            <h3 class="text-lg font-semibold text-slate-900 mb-4">Revenue by Plan</h3>
+          <div class="rounded-[2rem] bg-gradient-to-br from-amber-400 via-orange-500 to-rose-500 text-slate-900 p-6 shadow-2xl ring-1 ring-white/20">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-lg font-semibold">Revenue by Plan</h3>
+              <span class="rounded-full bg-slate-900/10 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-900/70">Insights</span>
+            </div>
             <div class="h-64">
               <canvas ref="revenueChartRef"></canvas>
             </div>
