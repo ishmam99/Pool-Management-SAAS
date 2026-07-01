@@ -253,7 +253,16 @@ const buildCharts = () => {
           backgroundColor: ['#10b981', '#0ea5e9', '#f59e0b', '#ef4444', '#94a3b8'],
         }],
       },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#f8fafc', boxWidth: 12, boxHeight: 12 }
+          }
+        },
+      },
     }))
   }
 
@@ -265,7 +274,18 @@ const buildCharts = () => {
         labels: ['Active', 'Failed', 'Cancelled'],
         datasets: [{ label: 'Subscriptions', data: [sc.active || 0, sc.failed || 0, sc.cancelled || 0], backgroundColor: ['#10b981', '#ef4444', '#94a3b8'] }],
       },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { bodyColor: '#f8fafc', titleColor: '#ffffff', backgroundColor: '#0f172a' }
+        },
+        scales: {
+          x: { ticks: { color: '#f8fafc' }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { stepSize: 1, color: '#f8fafc' }, grid: { color: 'rgba(248, 250, 252, 0.12)' } }
+        }
+      },
     }))
   }
 
@@ -279,7 +299,18 @@ const buildCharts = () => {
     charts.push(new Chart(revenueChartRef.value, {
       type: 'bar',
       data: { labels, datasets: [{ label: 'Revenue', data: labels.map((l) => planRevenue[l]), backgroundColor: '#6366f1' }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { bodyColor: '#0f172a', titleColor: '#0f172a', backgroundColor: '#f8fafc' }
+        },
+        scales: {
+          x: { ticks: { color: '#0f172a' }, grid: { display: false } },
+          y: { beginAtZero: true, ticks: { color: '#0f172a' }, grid: { color: 'rgba(15, 23, 42, 0.08)' } }
+        }
+      },
     }))
   }
 }
