@@ -445,6 +445,53 @@ const routes = [
     ]
   },
 
+//provider website
+    {
+    path: '/provider-website',
+    component: () => import('../views/provider-website/layout/provider-websiteLayout.vue'),
+    children: [
+  // Common
+  {
+    path: '',
+    name: 'provider-website-home',
+    component: () => import('../views/provider-website/common/Home/index.vue'),
+  },
+  {
+    path: '/provider-website/about',
+    name: 'Provider Website About',
+    component: () => import('../views/provider-website/common/AboutUs.vue'),
+  },
+  {
+    path: '/provider-website/login',
+    name: 'Provider Website Login',
+    component: () => import('../views/provider-website/common/Login.vue')
+  },
+  {
+    path: '/provider-website/adminLogin',
+    name: 'Provider Website AdminLogin',
+    component: () => import('../views/provider-website/common/adminLogin.vue')
+  },
+
+  {
+    path: '/provider-website/features',
+    name: 'Provider Website Features',
+    component: () => import('../views/provider-website/common/Features.vue'),
+  },
+  {
+    path: '/provider-website/blogs',
+    name: 'Provider Website Blogs',
+    component: () => import('../views/provider-website/common/Blogs.vue'),
+  },
+  {
+    path: '/provider-website/join-us',
+    name: 'Provider Website Join Us',
+    component: () => import('../views/provider-website/common/JoinUs.vue'),
+  },
+
+    ]
+  },
+
+
 
 ]
 
