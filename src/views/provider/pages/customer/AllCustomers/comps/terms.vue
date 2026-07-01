@@ -3,8 +3,8 @@
     <div class="bg-cyan-50/50 rounded-xl shadow-sm border border-gray-200 p-6">
       <!-- Header -->
       <div class="flex items-center gap-3 mb-6">
-        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">5</span>
-        <h2 class="text-lg font-semibold text-gray-900">Terms &amp; Condition</h2>
+        <!-- <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">5</span> -->
+        <!-- <h2 class="text-lg font-semibold text-gray-900">Terms &amp; Condition</h2> -->
         <span v-if="hasAgreement" class="ml-auto text-xs text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
           Agreement #{{ existingAgreement?.id }}
         </span>

@@ -584,12 +584,13 @@ const createWorkOrder = async (visit) => {
   const payload = {
     scheduled_visit_id: visit.id,
     pool_id: visit.pool_id,
-    customer_id: visit.service_agreement?.customer_id,
+    customer_id: visit.pool?.customer_id,
     technician_id: visit.technician_id,
     type: "routine",
     checklist: visit.service_agreement?.service_includes,
-    notes: "Regular routine visit"
+    notes: "Regular routine visitss",
   };
+
 
   return await api().post("/work-order-management/work-orders", payload);
 };

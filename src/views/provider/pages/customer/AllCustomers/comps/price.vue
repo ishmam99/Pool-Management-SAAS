@@ -2,8 +2,7 @@
   <div class="bg-gray-50 p-4">
     <div class="bg-green-50 rounded-xl shadow-sm border border-gray-200 p-4">
       <div class="flex items-center gap-3 mb-4">
-        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">3</span>
-        <h2 class="text-lg font-semibold text-gray-900">Price</h2>
+        <!-- <h2 class="text-lg font-semibold text-gray-900">Price</h2> -->
         <span v-if="hasAgreement" class="ml-auto text-xs text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
           Active Agreement
         </span>
