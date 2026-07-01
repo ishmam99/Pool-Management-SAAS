@@ -18,9 +18,9 @@
         <!-- Hero Content -->
         <div class="flex-1 space-y-8 text-center lg:text-left text-white">
           <h1 class="text-4xl font-bold leading-tight sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-            Smart Pool Management
+            <!-- Aqua Clean Pools -->
             <span class="block text-transparent bg-gradient-to-r from-amber-300 via-rose-300 to-pink-300 bg-clip-text">
-              Made Simple
+              Aqua Clean Pools
             </span>
           </h1>
           <p class="max-w-xl mx-auto text-lg text-white/90 lg:mx-0 lg:text-xl">

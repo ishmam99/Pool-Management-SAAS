@@ -13,8 +13,8 @@
               >
             </div>
             <div class="flex flex-col leading-tight">
-              <span class="text-xl font-extrabold text-red-600 tracking-tight">Pool Management </span>
-              <span class="text-[0.65rem] font-semibold text-gray-500 tracking-wider uppercase">SaaS</span>
+              <span class="text-xl font-extrabold text-red-600 tracking-tight">Aqua Clean Pool </span>
+              <!-- <span class="text-[0.65rem] font-semibold text-gray-500 tracking-wider uppercase">SaaS</span> -->
             </div>
           </div>
         </router-link>
