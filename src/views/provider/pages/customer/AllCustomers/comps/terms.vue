@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-50 p-4 rounded">
+  <div class="bg-gray-50 p-1 rounded">
     <div class="bg-cyan-50/50 rounded-xl shadow-sm border border-gray-200 p-6">
       <!-- Header -->
       <div class="flex items-center gap-3 mb-6">

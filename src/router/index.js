@@ -99,6 +99,27 @@ const routes = [
         name: 'provider-service-terms-and-conditions',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/TermsAndConditions/TermAndConditionsView.vue')
       },
+       {
+        path: '/provider/customer-add-serivice-customer',
+        name: 'provider-service-add-serivice-customer',
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/AddService/AddServiceCustomers.vue')
+      },
+      {
+        path: '/provider/customer-add-serivice/:id',
+        name: 'provider-service-add-serivice',
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/AddService/AddService.vue')
+      },
+
+       {
+        path: '/provider/customer-add-terms-customer',
+        name: 'provider-service-add-terms-customer',
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/AddTermsAndConditions/AddTermsAndConditionsCustomers.vue')
+      },
+      {
+        path: '/provider/customer-add-terms/:id',
+        name: 'provider-service-add-terms',
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/AddTermsAndConditions/AddTermsAndConditions.vue')
+      },
     
       // Customer Maintenance
  {
