@@ -393,13 +393,20 @@
                   </div>
 
                   <!-- Discount -->
-                  <div v-if="discountPercentage > 0" class="flex justify-between items-center text-emerald-600">
-                    <span class="text-sm">Discount ({{ discountPercentage }}%)</span>
-                    <span class="text-sm font-medium">-${{ discountAmount.toFixed(2) }}</span>
-                  </div>
-                  <div v-else class="flex justify-between items-center text-gray-400">
-                    <span class="text-sm">Discount</span>
-                    <span class="text-sm font-medium">$0.00</span>
+                  <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm text-gray-600">Discount</span>
+                      <select v-model="selectedDiscount"
+                        class="text-sm border border-gray-300 rounded-md px-2 py-1 bg-white focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <option v-for="percent in [0, 5, 10, 15, 20, 25]" :key="percent" :value="percent">
+                          {{ percent }}%
+                        </option>
+                      </select>
+                    </div>
+                    <span class="text-sm font-medium"
+                      :class="selectedDiscount > 0 ? 'text-emerald-600' : 'text-gray-400'">
+                      -${{ discountAmount.toFixed(2) }}
+                    </span>
                   </div>
 
                   <!-- Grand Total -->
@@ -421,8 +428,8 @@
                 <select v-model="form.agreement_term"
                   class="w-full rounded-lg border border-gray-300 bg-white py-3 px-4 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 appearance-none">
                   <option value="6_months">6 Months</option>
-                  <option value="1_year">1 Year</option>
-                  <option value="2_years">2 Years</option>
+                  <option value="1_year">12 Months</option>
+                  <option value="2_years">24 Months</option>
                 </select>
               </div>
 
@@ -644,6 +651,8 @@ import { useRoute, useRouter } from 'vue-router'
 import api from '../../../../../services/api.js'
 import Swal from 'sweetalert2'
 
+
+
 // ─── Router ──────────────────────────────────────────────────
 const route = useRoute()
 const router = useRouter()
@@ -836,13 +845,9 @@ const agreementTerm = computed(() => {
   return form.agreement_term || '1_year'
 })
 
-const discountPercentage = computed(() => {
-  const termMap = { '6_months': 0, '1_year': 0, '2_years': 10 }
-  return termMap[agreementTerm.value] || 0
-})
-
+const selectedDiscount = ref(0)
 const discountAmount = computed(() => {
-  return (subtotal.value * discountPercentage.value) / 100
+  return (subtotal.value * selectedDiscount.value) / 100
 })
 
 const grandTotal = computed(() => {
@@ -852,8 +857,8 @@ const grandTotal = computed(() => {
 function formatAgreementTerm(term) {
   const map = {
     '6_months': '6 Months',
-    '1_year': '1 Year',
-    '2_years': '2 Years (10% off)'
+    '1_year': '12 Months',
+    '2_years': '24 Months'
   }
   return map[term] || term
 }
@@ -1300,26 +1305,26 @@ function addPool() { router.push(`/provider/pools-create`) }
 function editPool(id) { }
 
 // ─── Watchers ──────────────────────────────────────────────────
-// Watch for when services finish loading to populate agreement services
 watch(() => loading.value.services, (newVal, oldVal) => {
-  // When services loading completes and we have services data
   if (!newVal && services.value.length > 0 && agreement.value) {
     populateServicesFromAgreement()
   }
 })
 
-// Also watch for when customer loads and services are already loaded
 watch(() => customer.value, (newVal, oldVal) => {
   if (newVal && agreement.value && !loading.value.services && services.value.length > 0) {
     populateServicesFromAgreement()
   }
 })
+watch(() => agreement.value, (newVal) => {
+  if (newVal) {
+    selectedDiscount.value = 0
+  }
+})
 
 // ─── Init ──────────────────────────────────────────────────
 async function loadAllData() {
-  // Load customer first
   await loadCustomer()
-  // Then load services - this will trigger the watch and populate services
   await loadServices()
 }
 

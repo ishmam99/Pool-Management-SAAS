@@ -364,7 +364,7 @@ const handleSubmit = async () => {
       scheduled_date: form.scheduled_date,
       checklist: checklistPayload,
       notes: form.notes,
-      schedule_visit_id: scheduleVisitId,
+      scheduled_visit_id: scheduleVisitId,
     };
 
     await api().post('/work-order-management/work-orders', workOrderPayload);
@@ -377,7 +377,7 @@ const handleSubmit = async () => {
     });
 
     // Redirect to list page
-    router.push('/work-order-management/work-orders');
+    // router.push('/work-order-management/work-orders');
     
   } catch (error) {
     console.error('Create work order error:', error);
