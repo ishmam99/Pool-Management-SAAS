@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-slate-50 p-4 md:p-8">
-    <div class="max-w-3xl mx-auto w-full">
+    <div class="max-w-7xl mx-auto w-full">
       <router-link to="/admin/admins" class="inline-flex items-center gap-2 text-violet-600 text-sm font-medium mb-4"><i class="ri-arrow-left-line"></i> Back</router-link>
       <h1 class="text-3xl font-bold text-slate-900 mb-6">{{ isEdit ? 'Edit Admin' : 'Create Admin' }}</h1>
 

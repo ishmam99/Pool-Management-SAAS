@@ -34,7 +34,7 @@ export const adminApi = {
   restoreTenant: (id) => api().post(`tenant/tenants/${id}/restore`).then(unwrap),
   addTenantDomain: (tenantId, payload) => api().post(`tenant/${tenantId}/domains`, payload).then(unwrap),
   verifyTenantDomain: (tenantId, domain) =>
-    api().get(`tenant/${tenantId}/domains/${encodeURIComponent(domain)}/verify`).then(unwrap),
+    api().get(`tenant/domains/${tenantId}/${encodeURIComponent(domain)}/verify`).then(unwrap),
 
   // Admins
   getAdmins: (params) => api().get('platform/admins', { params }).then(paginated),

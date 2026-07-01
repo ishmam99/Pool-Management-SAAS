@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-slate-50 p-4 md:p-8">
-    <div class="max-w-3xl mx-auto w-full">
+    <div class="max-w-7xl mx-auto w-full">
       <router-link to="/admin/subscription-plans" class="inline-flex items-center gap-2 text-orange-600 text-sm font-medium mb-4"><i class="ri-arrow-left-line"></i> Back</router-link>
       <h1 class="text-3xl font-bold text-slate-900 mb-6">{{ isEdit ? 'Edit Plan' : 'Create Plan' }}</h1>
       <form class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4 w-full" @submit.prevent="submit">

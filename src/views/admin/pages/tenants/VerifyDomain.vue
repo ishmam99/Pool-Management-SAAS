@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-slate-50 p-4 md:p-8">
-    <div class="max-w-3xl mx-auto w-full">
+    <div class="max-w-7xl mx-auto w-full">
       <h1 class="text-3xl font-bold text-slate-900 mb-6">Verify Domain</h1>
 
       <form class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4 w-full mb-6" @submit.prevent="verify">
@@ -22,11 +22,7 @@
         <h2 class="text-lg font-semibold">Verification Result</h2>
         <p class="text-sm"><span class="text-slate-500">Status:</span> <span class="font-semibold capitalize">{{ result.verification_status || result.status || '—' }}</span></p>
         <p v-if="result.ssl_status" class="text-sm"><span class="text-slate-500">SSL:</span> {{ result.ssl_status }}</p>
-        <div v-if="Array.isArray(result) && result.length" class="text-sm">
-          <p class="font-medium mb-2">Result Payload</p>
-          <pre class="bg-slate-50 p-4 rounded-xl overflow-x-auto text-xs">{{ JSON.stringify(result, null, 2) }}</pre>
-        </div>
-        <div v-else-if="result.dns_records?.length" class="text-sm">
+        <div v-if="result.dns_records?.length" class="text-sm">
           <p class="font-medium mb-2">DNS Records</p>
           <pre class="bg-slate-50 p-4 rounded-xl overflow-x-auto text-xs">{{ JSON.stringify(result.dns_records, null, 2) }}</pre>
         </div>

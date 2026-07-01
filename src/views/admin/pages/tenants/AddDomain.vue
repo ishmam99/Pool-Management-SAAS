@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-slate-50 p-4 md:p-8">
-    <div class="max-w-3xl mx-auto w-full">
+    <div class="max-w-7xl mx-auto w-full">
       <h1 class="text-3xl font-bold text-slate-900 mb-6">Add Custom Domain</h1>
       <form class="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm space-y-4 w-full" @submit.prevent="submit">
         <div class="w-full">
