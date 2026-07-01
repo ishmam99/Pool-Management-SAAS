@@ -10,7 +10,7 @@
       }"
     >
       <div class="absolute inset-0 bg-black/40"></div>
-      <div class="absolute inset-0 bg-gradient-to-r from-violet-900/60 via-indigo-900/40 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-sky-900/60 via-blue-900/40 to-transparent"></div>
     </div>
 
     <div class="container relative px-4 mx-auto">
