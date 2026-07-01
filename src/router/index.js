@@ -100,6 +100,11 @@ const routes = [
         component: () => import('../views/provider/pages/customer/ServiceAgreements/TermsAndConditions/TermAndConditionsView.vue')
       },
        {
+        path: '/provider/customer-service',
+        name: 'provider-customer-service',
+        component: () => import('../views/provider/pages/customer/ServiceAgreements/Service/Service.vue')
+      },
+       {
         path: '/provider/customer-add-serivice-customer',
         name: 'provider-service-add-serivice-customer',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AddService/AddServiceCustomers.vue')
