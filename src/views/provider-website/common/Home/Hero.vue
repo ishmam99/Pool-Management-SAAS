@@ -27,9 +27,9 @@
             Manage pools, customers, maintenance schedules, and services from one powerful platform designed for modern pool businesses.
           </p>
           <div class="flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
-            <button class="px-10 py-4 text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 hover:shadow-xl hover:scale-105 hover:shadow-amber-500/40">
+            <router-link to="/provider-website/qoute" class="px-10 py-4 text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 hover:shadow-xl hover:scale-105 hover:shadow-amber-500/40">
               Request Quote
-            </button>
+            </router-link>
           </div>
         </div>
 

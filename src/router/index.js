@@ -462,17 +462,6 @@ const routes = [
     component: () => import('../views/provider-website/common/AboutUs.vue'),
   },
   {
-    path: '/provider-website/login',
-    name: 'Provider Website Login',
-    component: () => import('../views/provider-website/common/Login.vue')
-  },
-  {
-    path: '/provider-website/adminLogin',
-    name: 'Provider Website AdminLogin',
-    component: () => import('../views/provider-website/common/adminLogin.vue')
-  },
-
-  {
     path: '/provider-website/features',
     name: 'Provider Website Features',
     component: () => import('../views/provider-website/common/Features.vue'),
@@ -487,7 +476,11 @@ const routes = [
     name: 'Provider Website Join Us',
     component: () => import('../views/provider-website/common/JoinUs.vue'),
   },
-
+{
+    path: '/provider-website/qoute',
+    name: 'Provider Website Quote',
+    component: () => import('../views/provider-website/pages/Qoute.vue'),
+  },
     ]
   },
 
