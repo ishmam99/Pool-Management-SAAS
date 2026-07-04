@@ -226,6 +226,7 @@ const handleLogin = async () => {
       // Store tenant information
       authStore.companyId = data.tenant.id;
       authStore.companyName = data.tenant.company_name;
+      authStore.currentDashboard = "/technician/dashboard"
       
       router.push("/technician/dashboard");
       await Swal.fire({
