@@ -31,12 +31,12 @@
       </div>
       </div>
     </div>
-    <div class="flex ">
+    <div class="flex">
       <transition enter-active-class="transition-all duration-500 ease-in-out"
         enter-from-class="opacity-0 translate-x-10" enter-to-class="opacity-100 translate-x-0"
         leave-active-class="transition-all duration-500 ease-in-out" leave-from-class="opacity-100 translate-x-0"
         leave-to-class="opacity-0 translate-x-10">
-         <span v-if="authStore.layout === 'customer'"><CustomerSidebar  /></span>
+         <span v-if="authStore.layout === 'customer' "><CustomerSidebar    class="w-[360px]" /></span>
          <!-- <span v-if="authStore.layout === 'customer'"><Sidebar  /></span> -->
         
       </transition>
@@ -45,7 +45,7 @@
         leave-active-class="transition-all duration-500 ease-in-out" leave-from-class="opacity-100 translate-x-0"
         leave-to-class="opacity-0 translate-x-10">
          <!-- <span v-if="authStore.layout === 'general'"><CustomerSidebar  /></span> -->
-         <span v-if="authStore.layout === 'general'"><Sidebar  /></span>
+         <span v-if="authStore.layout === 'general'"><Sidebar  class="w-[360px]" /></span>
         
       </transition>
     
@@ -61,7 +61,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
 import CustomerSidebar from '../components/CustomerSidebar.vue'
 import { useProviderStore } from '../store/providerStore.js'
-import { useAuthStore } from '../../../store/authStore.js'
+import { useAuthStore } from '../../../store/AuthStore.js'
 const store = useProviderStore()
 const authStore = useAuthStore()
 const tabs = [

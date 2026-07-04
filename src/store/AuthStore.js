@@ -9,10 +9,10 @@ export const useAuthStore = defineStore('authStore', {
     role: null,
     currentDashboard: null,
     companyId: null,
-    layout: null,          // 'general' or 'customer'
+    layout: 'general',          //  or 'customer'
     customerId: null,      // selected customer ID
     companyName: null,
-    sidebarOpen: true,
+    sidebarOpenr: true,
     user: {
       id: '',
       name: '',
@@ -39,6 +39,8 @@ export const useAuthStore = defineStore('authStore', {
         this.currentDashboard = '/provider/dashboard'
       } else if (authType === 'customer') {
         this.currentDashboard = '/customer/dashboard'
+      } else if (authType === 'technician') {
+        this.currentDashboard = '/technician/dashboard'
       }
     },
 
@@ -50,7 +52,7 @@ export const useAuthStore = defineStore('authStore', {
       this.currentDashboard = null
       this.companyId = null
       this.companyName = null
-      this.layout = null          // reset layout
+      this.layout = 'general'          // reset layout
       this.customerId = null      // reset customer
       this.sidebarOpen = true
       this.user = {

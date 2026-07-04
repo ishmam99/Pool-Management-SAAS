@@ -59,7 +59,7 @@
         <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
             <!-- Summary Cards -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <!-- <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <template v-if="loading">
                     <div v-for="i in 4" :key="i"
                         class="rounded-2xl bg-white border border-slate-200/60 shadow-sm p-4 sm:p-5 animate-pulse">
@@ -178,7 +178,7 @@
                         </div>
                     </div>
                 </template>
-            </div>
+            </div> -->
 
             <!-- Loading Skeleton -->
             <div v-if="loading" class="flex gap-4 overflow-x-auto pb-4">

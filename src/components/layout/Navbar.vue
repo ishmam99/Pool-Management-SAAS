@@ -183,7 +183,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../../store/authStore';
+import { useAuthStore } from '../../store/AuthStore.js';
 import api from '../../services/api.js';
 
 const router = useRouter();
@@ -193,7 +193,7 @@ const isMobileOpen = ref(false);
 const isMobileDropdownOpen = ref(false);
 
 // Layout state – initialize from store if available
-const selectedLayout = ref(authStore.layout || 'general');
+const selectedLayout = ref(authStore.layout );
 const isCustomerDropdownOpen = ref(false);
 const customers = ref([]);
 const customerLoading = ref(false);
@@ -218,9 +218,8 @@ const closeMobileMenu = () => {
 // Layout toggle – saves to store
 const setLayout = (layout) => {
   selectedLayout.value = layout;
-  authStore.layout = layout;   // persist to store
+  authStore.layout = layout;   
   if (layout === 'general') {
-    // Clear selected customer when switching to general
     authStore.customerId = null;
     isCustomerDropdownOpen.value = false;
   }
@@ -272,6 +271,8 @@ const handleLogout = async () => {
 
 // On mount, if there is a stored customerId, we could optionally pre‑fetch the customer name or navigate – not required.
 onMounted(() => {
+
+  authStore.layout = authStore.layout ?? 'general';  
   // The selectedLayout is already set from authStore.layout (or default 'general')
   // If we want to restore dropdown state, we can check if layout === 'customer' and maybe set isCustomerDropdownOpen to false by default.
   // No extra action needed.
