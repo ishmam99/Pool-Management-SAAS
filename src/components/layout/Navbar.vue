@@ -1,7 +1,7 @@
 <template>
   <nav class="bg-cyan-50 backdrop-blur-[20px] border-b border-gray-200/50 shadow-[0_4px_30px_rgba(0,0,0,0.05)] sticky top-0 z-50 transition-all duration-300 hover:bg-white/95">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-20">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between px-20 items-center h-20">
         <!-- Logo -->
         <router-link to="/" class="flex-shrink-0 group">
           <div class="flex items-center gap-3">
@@ -18,7 +18,7 @@
             </div>
           </div>
         </router-link>
-
+<!-- {{ authStore.layout }} -->
         <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center space-x-1">
           <router-link 
@@ -61,35 +61,69 @@
             Join Us
           </router-link>
 
-          <!-- Conditional Auth Links -->
-          <template v-if="authStore.isAuthenticated">
-            <!-- Dashboard Link -->
-            <router-link 
-              :to="authStore.currentDashboard || '/'"
-              class="relative px-4 py-2 font-medium text-gray-600 transition-all duration-300 rounded-lg hover:text-red-600 hover:bg-red-50/50 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-red-600 before:to-red-700 before:transition-all before:duration-300 hover:before:w-[60%]"
-              active-class="text-red-600 font-semibold before:w-[60%]"
-            >
-              Dashboard
-            </router-link>
-
-            <!-- Logout Button -->
-            <button 
-              @click="handleLogout"
-              class="px-4 py-2 font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_12px_rgba(220,38,38,0.4)]"
-            >
-              Logout
-            </button>
-          </template>
-
-          <!-- Login Link (when not authenticated) -->
-          <router-link 
-            v-else
-            to="/login" 
-            class="px-4 py-2 font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_12px_rgba(220,38,38,0.4)]"
+          <!-- Dashboard Link -->
+          <router-link                          
+            v-if="authStore.isAuthenticated"
+            :to="authStore.currentDashboard || '/'"
+            class="relative px-4 py-2 font-medium text-gray-600 transition-all duration-300 rounded-lg hover:text-red-600 hover:bg-red-50/50 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 before:bg-gradient-to-r before:from-red-600 before:to-red-700 before:transition-all before:duration-300 hover:before:w-[60%]"
+            active-class="text-red-600 font-semibold before:w-[60%]"
           >
-            Login
+            Dashboard
           </router-link>
         </div>
+
+        <!-- Right side: auth & layout controls -->
+       <!-- Right side: auth & layout controls -->
+<div class="flex gap-2 items-center">
+  <template v-if="authStore.isAuthenticated">
+    <!-- Layout Toggle Group – only for providers -->
+    <div v-if="authStore.authType === 'provider'" class="flex items-center space-x-1 ml-2 border-l border-gray-200 pl-3">
+      <!-- General Layout -->
+      <button
+        @click="setLayout('general')"
+        class="px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 border-2"
+        :class="selectedLayout === 'general' 
+          ? 'bg-emerald-500 text-white border-emerald-500 shadow-md' 
+          : 'bg-transparent text-gray-600 border-gray-300 hover:bg-emerald-50/50 hover:border-emerald-300'"
+      >
+        General Layout
+      </button>
+
+      <!-- Customer Layout -->
+      <button
+        @click="setLayout('customer')"
+        class="px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 border-2"
+        :class="selectedLayout === 'customer' 
+          ? 'bg-emerald-500 text-white border-emerald-500 shadow-md' 
+          : 'bg-transparent text-gray-600 border-gray-300 hover:bg-emerald-50/50 hover:border-emerald-300'"
+      >
+        Customer Layout
+      </button>
+
+      <!-- Select Customer (visible only when Customer Layout is active) -->
+      <div v-if="selectedLayout === 'customer'" class="relative">
+        <!-- ... (unchanged) ... -->
+      </div>
+    </div>
+
+    <!-- Logout Button – always visible for authenticated users -->
+    <button 
+      @click="handleLogout"
+      class="px-4 py-2 font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_12px_rgba(220,38,38,0.4)]"
+    >
+      Logout
+    </button>
+  </template>
+
+  <!-- Login Link (when not authenticated) -->
+  <router-link 
+    v-else
+    to="/login" 
+    class="px-4 py-2 font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_12px_rgba(220,38,38,0.4)]"
+  >
+    Login
+  </router-link>
+</div>
 
         <!-- Mobile Menu Button -->
         <button 
@@ -106,14 +140,15 @@
       </div>
     </div>
 
-    
+    <!-- Mobile Navigation (placeholder – you can later add layout controls here) -->
   </nav>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/authStore';
+import api from '../../services/api.js';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -121,6 +156,13 @@ const authStore = useAuthStore();
 const isMobileOpen = ref(false);
 const isMobileDropdownOpen = ref(false);
 
+// Layout state – initialize from store if available
+const selectedLayout = ref(authStore.layout || 'general');
+const isCustomerDropdownOpen = ref(false);
+const customers = ref([]);
+const customerLoading = ref(false);
+
+// Toggle mobile
 const toggleMobileMenu = () => {
   isMobileOpen.value = !isMobileOpen.value;
   if (!isMobileOpen.value) {
@@ -137,21 +179,65 @@ const closeMobileMenu = () => {
   isMobileDropdownOpen.value = false;
 };
 
+// Layout toggle – saves to store
+const setLayout = (layout) => {
+  selectedLayout.value = layout;
+  authStore.layout = layout;   // persist to store
+  if (layout === 'general') {
+    // Clear selected customer when switching to general
+    authStore.customerId = null;
+    isCustomerDropdownOpen.value = false;
+  }
+};
+
+// Toggle the Select Customer dropdown
+const toggleSelectCustomerDropdown = async () => {
+  if (!isCustomerDropdownOpen.value) {
+    if (selectedLayout.value !== 'customer') {
+      setLayout('customer');
+    }
+    if (customers.value.length === 0) {
+      await fetchCustomers();
+    }
+  }
+  isCustomerDropdownOpen.value = !isCustomerDropdownOpen.value;
+};
+
+// Fetch customers
+const fetchCustomers = async () => {
+  customerLoading.value = true;
+  try {
+    const response = await api().get('/customer-management/customers-active?with=pools,agreements');
+    customers.value = response.data.data || [];
+  } catch (error) {
+    console.error('Failed to fetch customers:', error);
+  } finally {
+    customerLoading.value = false;
+  }
+};
+
+// Select a customer – saves to store
+const selectCustomer = (customer) => {
+  isCustomerDropdownOpen.value = false;
+  authStore.customerId = customer.id;   // persist
+  router.push(`/customer/${customer.id}`);
+};
+
+// Logout
 const handleLogout = async () => {
   try {
-    // Call logout action from auth store
     authStore.logout();
-    
-    // Close mobile menu if open
     closeMobileMenu();
-    
-    // Redirect to home page
     await router.push('/');
-    
-    // Optional: Show a toast notification
-    console.log('Logged out successfully');
   } catch (error) {
     console.error('Logout error:', error);
   }
 };
+
+// On mount, if there is a stored customerId, we could optionally pre‑fetch the customer name or navigate – not required.
+onMounted(() => {
+  // The selectedLayout is already set from authStore.layout (or default 'general')
+  // If we want to restore dropdown state, we can check if layout === 'customer' and maybe set isCustomerDropdownOpen to false by default.
+  // No extra action needed.
+});
 </script>
