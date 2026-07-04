@@ -72,7 +72,6 @@
           </router-link>
         </div>
 
-        <!-- Right side: auth & layout controls -->
        <!-- Right side: auth & layout controls -->
 <div class="flex gap-2 items-center">
   <template v-if="authStore.isAuthenticated">
@@ -101,9 +100,46 @@
       </button>
 
       <!-- Select Customer (visible only when Customer Layout is active) -->
-      <div v-if="selectedLayout === 'customer'" class="relative">
-        <!-- ... (unchanged) ... -->
-      </div>
+  <div v-if="selectedLayout === 'customer'" class="relative">
+                <button
+                  @click="toggleSelectCustomerDropdown"
+                  class="px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-1 bg-white border-2 border-emerald-400 text-emerald-600 hover:bg-emerald-50 hover:border-emerald-500"
+                >
+                  Select Customer
+                  <svg 
+                    class="w-3 h-3 transition-transform duration-200" 
+                    :class="{ 'rotate-180': isCustomerDropdownOpen }"
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                <!-- Dropdown -->
+                <div 
+                  v-if="isCustomerDropdownOpen"
+                  class="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden z-50"
+                >
+                  <div class="p-2 max-h-80 overflow-y-auto">
+                    <div v-if="customerLoading" class="text-center py-4 text-gray-500 text-sm">Loading customers...</div>
+                    <div v-else-if="customers.length === 0" class="text-center py-4 text-gray-500 text-sm">No active customers</div>
+                    <button
+                      v-for="customer in customers"
+                      :key="customer.id"
+                      @click="selectCustomer(customer)"
+                      class="w-full text-left px-4 py-3 rounded-lg hover:bg-emerald-50/50 transition-colors duration-150 flex items-center justify-between group"
+                    >
+                      <div>
+                        <div class="font-medium text-gray-800">{{ customer.contact_name }}</div>
+                       
+                      </div>
+                   
+                    </button>
+                  </div>
+                </div>
+              </div>
     </div>
 
     <!-- Logout Button – always visible for authenticated users -->
