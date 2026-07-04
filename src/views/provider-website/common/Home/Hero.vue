@@ -27,9 +27,12 @@
             Manage pools, customers, maintenance schedules, and services from one powerful platform designed for modern pool businesses.
           </p>
           <div class="flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
-            <router-link to="/provider-website/qoute" class="px-10 py-4 text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 hover:shadow-xl hover:scale-105 hover:shadow-amber-500/40">
+             <button
+              @click="handleQuoteRequest"
+              class="px-10 py-4 text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500 hover:shadow-xl hover:scale-105 hover:shadow-sky-500/40"
+            >
               Request Quote
-            </router-link>
+            </button>
           </div>
         </div>
 
@@ -62,7 +65,7 @@
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
-        </button>
+        </button>z`
       </div>
     </div>
   </section>
@@ -70,7 +73,8 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-
+import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
 // ─── Import images ──────────────────────────────────────────
 import img1 from '../../../../assets/provider/img1.jpg'
 import img2 from '../../../../assets/provider/img2.jpg'
@@ -79,7 +83,7 @@ import img4 from '../../../../assets/provider/img4.jpg'
 import img5 from '../../../../assets/provider/img5.jpg'
 import img6 from '../../../../assets/provider/img6.jpg'
 import img7 from '../../../../assets/provider/img7.jpg'
-
+const router = useRouter()
 const slides = [
   { image: img1 },
   { image: img2 },
@@ -99,6 +103,47 @@ const nextSlide = () => {
 
 const prevSlide = () => {
   currentSlide.value = (currentSlide.value - 1 + slides.length) % slides.length
+}
+
+// ─── Handle Quote Request with SweetAlert2 ──────────────────
+const handleQuoteRequest = async () => {
+  const result = await Swal.fire({
+    title: 'Request a Quote',
+    // text: 'Would you like to schedule a free, no-obligation pool service quote?',
+    icon: 'question',
+    iconColor: '#0EA5E9',
+    showCancelButton: true,
+    confirmButtonColor: '#0EA5E9',
+    cancelButtonColor: '#64748B',
+    confirmButtonText: 'Create an Account',
+    cancelButtonText: 'Login Now',
+    reverseButtons: true,
+    background: '#ffffff',
+    backdrop: 'rgba(0, 0, 0, 0.5)',
+    customClass: {
+      popup: 'rounded-2xl shadow-2xl',
+      confirmButton: 'px-6 py-3 text-base font-semibold rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-xl hover:shadow-sky-500/40 transition-all duration-300',
+      cancelButton: 'px-6 py-3 text-base font-semibold rounded-xl border border-slate-200 hover:bg-slate-50 transition-all duration-300',
+    },
+    buttonsStyling: true,
+  })
+
+  if (result.isConfirmed) {
+    // Show a brief success toast before navigating
+    await Swal.fire({
+      icon: 'success',
+      title: 'Great!',
+      text: 'Redirecting you to our registration form...',
+      timer: 1200,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      background: '#ffffff',
+      customClass: {
+        popup: 'rounded-2xl',
+      },
+    })
+    router.push('/provider-website/qoute')
+  }
 }
 
 onMounted(() => {
