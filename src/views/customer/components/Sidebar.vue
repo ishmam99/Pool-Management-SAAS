@@ -214,13 +214,25 @@ const menus = [
             { to: '/customer/pools', icon: 'ri-drop-fill', text: 'My Pools' },
         ]
     },
-    {
-        id: 'service-photos',
-        title: 'Service Photos',
-        icon: 'ri-image-line',
-        links: [
+    // {
+    //     id: 'service-photos',
+    //     title: 'Service Photos',
+    //     icon: 'ri-image-line',
+    //     links: [
 
-            { to: '/customer/photos', icon: 'ri-image-2-line', text: 'Service Photos' }
+    //         { to: '/customer/photos', icon: 'ri-image-2-line', text: 'Service Photos' }
+
+    //     ]
+    // },
+
+     {
+        id: 'agreements',
+        title: 'Agreements',
+        icon: 'ri-file-text-line',
+
+        links: [
+            { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' },
+            { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Maintenance Agreements' }
 
         ]
     },
@@ -230,20 +242,12 @@ const menus = [
         icon: 'ri-bank-card-line',
 
         links: [
-            { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Billing' }
+            { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Invoices' },
+            { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Payments' }
 
         ]
     },
-    {
-        id: 'agreements',
-        title: 'Agreements',
-        icon: 'ri-file-text-line',
-
-        links: [
-            { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Agreements' }
-
-        ]
-    },
+   
     // {
     //     id: 'equipment',
     //     title: 'Equipment',
