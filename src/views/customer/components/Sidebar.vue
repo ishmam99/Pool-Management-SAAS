@@ -231,8 +231,8 @@ const menus = [
         icon: 'ri-file-text-line',
 
         links: [
-            { to: '/customer/service-agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' },
-            { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Maintenance Agreements' }
+            { to: '/customer/maintenance-agreements', icon: 'ri-file-text-fill', text: 'Maintenance Agreements' },
+            { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' }
 
         ]
     },
