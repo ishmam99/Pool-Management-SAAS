@@ -275,7 +275,6 @@ const setLayout = (layout) => {
   selectedLayout.value = layout;
   authStore.layout = layout;
   if (layout === 'general') {
-    authStore.customerId = null;
     selectedCustomer.value = null;
     isCustomerDropdownOpen.value = false;
   }

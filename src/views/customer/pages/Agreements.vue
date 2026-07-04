@@ -7,11 +7,12 @@
 
     <div v-else class="mx-auto">
       <header class="mb-8 flex items-center gap-3">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-xl shadow-lg">
+        <div
+          class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-xl shadow-lg">
           <i class="ri-file-text-line"></i>
         </div>
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">My Maintenance Agreements</h1>
+          <h1 class="text-3xl font-bold text-gray-900">My Service Agreements</h1>
           <p class="text-gray-500">Your active service plans and contract details.</p>
         </div>
       </header>
@@ -23,22 +24,21 @@
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <article
-          v-for="agreement in agreements"
-          :key="agreement.id"
-          class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition"
-        >
+        <article v-for="agreement in agreements" :key="agreement.id"
+          class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition">
           <div class="h-1.5 bg-gradient-to-r from-emerald-400 to-green-500"></div>
           <div class="p-6">
             <div class="flex items-start justify-between mb-4">
               <div>
-                <h2 class="text-xl font-bold text-gray-900">{{ agreement.name || agreement.plan_name || `Agreement #${agreement.id}` }}</h2>
+                <h2 class="text-xl font-bold text-gray-900">{{ agreement.name || agreement.plan_name || `Agreement
+                  #${agreement.id}` }}</h2>
                 <p v-if="agreement.frequency || agreement.billing_cycle" class="text-sm text-gray-500 mt-1">
                   <span v-if="agreement.frequency">Frequency: {{ agreement.frequency }}</span>
                   <span v-if="agreement.frequency && agreement.billing_cycle"> • </span>
                   <span v-if="agreement.billing_cycle">Billing: {{ agreement.billing_cycle }}</span>
                 </p>
-                <p v-if="agreement.assigned_technician?.name" class="text-sm text-gray-500 mt-1">Technician: {{ agreement.assigned_technician.name }}</p>
+                <p v-if="agreement.assigned_technician?.name" class="text-sm text-gray-500 mt-1">Technician: {{
+                  agreement.assigned_technician.name }}</p>
               </div>
               <span class="px-3 py-1 rounded-full text-xs font-semibold" :class="statusBadgeClass(agreement.status)">
                 {{ formatStatus(agreement.status || 'active') }}
@@ -48,7 +48,8 @@
             <div class="space-y-3 mb-6">
               <div class="flex items-baseline gap-2">
                 <span class="text-3xl font-bold text-emerald-600">{{ formatCurrency(agreement.price) }}</span>
-                <span class="text-sm text-gray-500">{{ agreement.billing_cycle ? `/ ${agreement.billing_cycle}` : '' }}</span>
+                <span class="text-sm text-gray-500">{{ agreement.billing_cycle ? `/ ${agreement.billing_cycle}` : ''
+                  }}</span>
               </div>
 
               <dl class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
@@ -74,13 +75,15 @@
             <div v-if="agreement.pools?.length" class="space-y-3 mb-6">
               <h3 class="text-sm font-semibold text-gray-900">Pools</h3>
               <div class="space-y-2">
-                <div v-for="pool in agreement.pools" :key="pool.id" class="rounded-2xl border border-gray-100 p-4 bg-gray-50">
+                <div v-for="pool in agreement.pools" :key="pool.id"
+                  class="rounded-2xl border border-gray-100 p-4 bg-gray-50">
                   <div class="flex items-center justify-between gap-3 mb-1">
                     <p class="font-semibold text-gray-900">{{ pool.label || pool.name || 'Pool' }}</p>
                     <span class="text-xs text-gray-500 uppercase">{{ pool.is_active ? 'Active' : 'Inactive' }}</span>
                   </div>
                   <p class="text-sm text-gray-500">{{ pool.service_address }}</p>
-                  <p class="text-sm text-gray-500 mt-1">Volume: {{ pool.volume_gallons ? `${pool.volume_gallons} gal` : 'N/A' }} • Chemical: {{ pool.chemical_type || 'N/A' }}</p>
+                  <p class="text-sm text-gray-500 mt-1">Volume: {{ pool.volume_gallons ? `${pool.volume_gallons} gal` :
+                    'N/A' }} • Chemical: {{ pool.chemical_type || 'N/A' }}</p>
                 </div>
               </div>
             </div>
@@ -107,7 +110,7 @@ const agreements = ref([])
 const fetchAgreements = async () => {
   loading.value = true
   try {
-    const data = await customerPortalApi.getAgreements()
+    const data = await customerPortalApi.getServiceAgreements()
     agreements.value = Array.isArray(data) ? data : data?.agreements || []
   } catch (error) {
     await Swal.fire({ icon: 'error', title: 'Failed to Load Agreements', text: getApiErrorMessage(error) })
