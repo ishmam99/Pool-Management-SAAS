@@ -5,13 +5,13 @@
       <div v-for="i in 2" :key="i" class="h-40 bg-gray-200 rounded-2xl"></div>
     </div>
 
-    <div v-else class="max-w-5xl mx-auto">
+    <div v-else class="mx-auto">
       <header class="mb-8 flex items-center gap-3">
         <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-xl shadow-lg">
           <i class="ri-file-text-line"></i>
         </div>
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">My Agreements</h1>
+          <h1 class="text-3xl font-bold text-gray-900">My Maintenance Agreements</h1>
           <p class="text-gray-500">Your active service plans and contract details.</p>
         </div>
       </header>

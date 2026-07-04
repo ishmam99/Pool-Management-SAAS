@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 via-pink-50/30 to-rose-50/40 p-4 md:p-8">
-    <div class="max-w-5xl mx-auto">
+    <div class=" mx-auto">
       <header class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white text-xl shadow-lg">

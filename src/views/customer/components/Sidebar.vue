@@ -231,7 +231,7 @@ const menus = [
         icon: 'ri-file-text-line',
 
         links: [
-            { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' },
+            { to: '/customer/service-agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' },
             { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Maintenance Agreements' }
 
         ]
@@ -243,7 +243,7 @@ const menus = [
 
         links: [
             { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Invoices' },
-            { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Payments' }
+            { to: '/customer/payments', icon: 'ri-money-dollar-circle-line', text: 'Payments' }
 
         ]
     },

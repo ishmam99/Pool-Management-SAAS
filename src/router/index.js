@@ -355,6 +355,11 @@ const routes = [
         component: () => import('../views/customer/pages/Billing.vue')
       },
       {
+        path: '/customer/payments',
+        name: 'customer-payments',
+        component: () => import('../views/customer/pages/Payments.vue')
+      },
+      {
         path: '/customer/billing/:id',
         name: 'customer-invoice-detail',
         component: () => import('../views/customer/pages/InvoiceDetail.vue')
@@ -363,6 +368,11 @@ const routes = [
         path: '/customer/agreements',
         name: 'customer-agreements',
         component: () => import('../views/customer/pages/Agreements.vue')
+      },
+      {
+        path: '/customer/service-agreements',
+        name: 'customer-service-agreements',
+        component: () => import('../views/customer/pages/ServiceAgreements.vue')
       },
       {
         path: '/customer/messages',
@@ -476,10 +486,15 @@ const routes = [
     name: 'Provider Website Join Us',
     component: () => import('../views/provider-website/common/JoinUs.vue'),
   },
+  {
+    path: '/provider-website/login',
+    name: 'Provider Website login',
+    component: () => import('../views/provider-website/common/csLogin.vue'),
+  },
 {
-    path: '/provider-website/qoute',
-    name: 'Provider Website Quote',
-    component: () => import('../views/provider-website/pages/Qoute.vue'),
+    path: '/provider-website/quote',
+    name: 'Provider Website Quote Page',
+    component: () => import('../views/provider-website/common/quote.vue'),
   },
     ]
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-gray-100 p-4 md:p-8">
-    <div class="max-w-3xl mx-auto">
+    <div class="mx-auto">
       <header class="mb-8 flex items-center gap-3">
         <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-gray-500 to-gray-700 flex items-center justify-center text-white text-xl shadow-lg">
           <i class="ri-question-line"></i>

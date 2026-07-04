@@ -109,12 +109,11 @@ const prevSlide = () => {
 const handleQuoteRequest = async () => {
   const result = await Swal.fire({
     title: 'Request a Quote',
-    // text: 'Would you like to schedule a free, no-obligation pool service quote?',
     icon: 'question',
     iconColor: '#0EA5E9',
     showCancelButton: true,
     confirmButtonColor: '#0EA5E9',
-    cancelButtonColor: '#64748B',
+    cancelButtonColor: '#10B981',
     confirmButtonText: 'Create an Account',
     cancelButtonText: 'Login Now',
     reverseButtons: true,
@@ -129,7 +128,7 @@ const handleQuoteRequest = async () => {
   })
 
   if (result.isConfirmed) {
-    // Show a brief success toast before navigating
+    // Create Account → go to registration
     await Swal.fire({
       icon: 'success',
       title: 'Great!',
@@ -142,7 +141,11 @@ const handleQuoteRequest = async () => {
         popup: 'rounded-2xl',
       },
     })
-    router.push('/provider-website/qoute')
+    router.push('/provider-website/quote')  // or your registration route
+  } 
+  // 👇 Handle "Login Now" (cancel button)
+  else if (result.isDismissed && result.dismiss === Swal.DismissReason.cancel) {
+    router.push('/provider-website/login')
   }
 }
 
