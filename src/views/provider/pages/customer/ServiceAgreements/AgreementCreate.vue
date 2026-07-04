@@ -276,30 +276,52 @@
             </div>
             <p class="text-sm text-gray-600 mb-4 ml-11">Select the services that are included in this agreement.</p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div v-for="task in serviceTasks" :key="task" class="flex items-start space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+            <!-- Loading Skeleton -->
+            <div v-if="loadingServices" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div v-for="i in 8" :key="i" class="flex items-start space-x-3 p-3 rounded-lg animate-pulse">
+                <div class="h-4 w-4 bg-gray-200 rounded mt-1"></div>
+                <div class="flex-1">
+                  <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div class="h-3 bg-gray-200 rounded w-1/2 mt-2"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Services List -->
+            <div v-else-if="services.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div v-for="service in services" :key="service.id" 
+                class="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-white transition-colors">
                 <input 
                   type="checkbox" 
-                  :id="`service-${task.replace(/\s+/g, '-').toLowerCase()}`" 
-                  :value="task" 
+                  :id="`service-${service.id}`" 
+                  :value="service.id" 
                   v-model="form.service_includes"
                   class="mt-1 h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
-                <label :for="`service-${task.replace(/\s+/g, '-').toLowerCase()}`" class="flex-1 cursor-pointer text-sm text-gray-700">
-                  {{ task }}
+                <label :for="`service-${service.id}`" class="flex-1 cursor-pointer">
+                  <div class="flex flex-col">
+                    <span class="font-medium text-gray-900">{{ service.title }}</span>
+                    <span class="text-sm text-gray-600">${{ service.price }}</span>
+                  </div>
                 </label>
               </div>
             </div>
 
+            <!-- Empty State -->
+            <div v-else class="text-center py-8">
+              <p class="text-gray-500">No services available.</p>
+            </div>
+
+            <!-- Selected Services Summary -->
             <div v-if="form.service_includes && form.service_includes.length > 0" class="mt-4 pt-4 border-t border-gray-200">
               <p class="text-sm font-medium text-gray-700 mb-2">Selected Services ({{ form.service_includes.length }})</p>
               <div class="flex flex-wrap gap-2">
                 <span 
-                  v-for="item in form.service_includes" 
-                  :key="item"
+                  v-for="serviceId in form.service_includes" 
+                  :key="serviceId"
                   class="inline-flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full border border-blue-100"
                 >
-                  {{ item }}
+                  {{ getServiceTitle(serviceId) }}
                 </span>
               </div>
             </div>
@@ -390,10 +412,10 @@
                   <p class="text-sm text-gray-500">Service Includes</p>
                   <div class="mt-1 flex flex-wrap gap-1">
                     <span v-if="form.service_includes && form.service_includes.length > 0" 
-                      v-for="item in form.service_includes" 
-                      :key="item"
+                      v-for="serviceId in form.service_includes" 
+                      :key="serviceId"
                       class="inline-flex items-center px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded">
-                      {{ item }}
+                      {{ getServiceTitle(serviceId) }}
                     </span>
                     <span v-else class="text-gray-500 text-sm">No services selected</span>
                   </div>
@@ -416,33 +438,12 @@ import Swal from 'sweetalert2'
 
 const router = useRouter()
 const submitting = ref(false)
+const loadingServices = ref(false)
 
 const customers = ref([])
 const technicians = ref([])
+const services = ref([])
 const validationErrors = reactive({})
-
-// Service tasks checklist
-const serviceTasks = [
-  'Skim Pool Surface',
-  'Brush Pool Walls',
-  'Brush Pool Steps',
-  'Vacuum Pool',
-  'Check Water Level',
-  'Test Water Chemistry',
-  'Balance Chemicals',
-  'Add Chlorine',
-  'Add Acid / pH Adjuster',
-  'Clean Pool Filter',
-  'Backwash Filter (if applicable)',
-  'Inspect Pump & Motor',
-  'Inspect Pool Equipment',
-  'Check Timer Settings',
-  'Inspect Pool Lights',
-  'Clean Tile Line',
-  'Remove Debris',
-  'Inspect for Leaks',
-  'Final Equipment Check'
-]
 
 const form = reactive({
   customer_id: '',
@@ -452,6 +453,8 @@ const form = reactive({
   assigned_technician_id: '',
   start_date: '',
   end_date: '',
+  start_time: '',
+  end_time: '',
   auto_renew: true,
   pool_ids: [],
   service_includes: []
@@ -486,6 +489,11 @@ const getTechnicianName = (technicianId) => {
   return technician ? technician.name : null
 }
 
+const getServiceTitle = (serviceId) => {
+  const service = services.value.find(s => s.id === serviceId)
+  return service ? service.title : 'Unknown Service'
+}
+
 const isFormValid = computed(() => {
   return (
     form.customer_id &&
@@ -493,14 +501,10 @@ const isFormValid = computed(() => {
     form.price > 0 &&
     form.billing_cycle &&
     form.start_date &&
+    form.start_time &&
     form.pool_ids.length > 0
   )
 })
-
-const serviceIncludesFormatted = form.service_includes.map(item => ({
-  item: item,
-  isChecked: "false"
-}))
 
 // Methods
 const getPoolName = (id) => {
@@ -544,6 +548,23 @@ const loadTechnicians = async () => {
   }
 }
 
+const loadServices = async () => {
+  loadingServices.value = true
+  try {
+    const response = await api().get('/tenant-portal/services')
+    services.value = response.data.data || []
+  } catch (error) {
+    console.error('Failed to load services:', error)
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to Load Services',
+      text: 'Unable to load service data. Please refresh the page.'
+    })
+  } finally {
+    loadingServices.value = false
+  }
+}
+
 const createAgreement = async () => {
   // Clear previous validation errors
   Object.keys(validationErrors).forEach(key => delete validationErrors[key])
@@ -569,8 +590,16 @@ const createAgreement = async () => {
     validationErrors.start_date = ['Please select a start date']
     return
   }
+  if (!form.start_time) {
+    validationErrors.start_time = ['Please select a start time']
+    return
+  }
   if (form.end_date && form.end_date <= form.start_date) {
     validationErrors.end_date = ['End date must be after start date']
+    return
+  }
+  if (form.end_time && form.start_time && form.end_time <= form.start_time) {
+    validationErrors.end_time = ['End time must be after start time']
     return
   }
   if (form.pool_ids.length === 0) {
@@ -581,13 +610,19 @@ const createAgreement = async () => {
   try {
     submitting.value = true
 
-    // Format service_includes for API - convert array of strings to array of objects
-    const serviceIncludesArray = form.service_includes.map(item => ({
-      item: item,
-      isChecked: "false"
-    }))
+    // Format service_includes for API - convert array of service IDs to array of objects
+    const serviceIncludesFormatted = form.service_includes.map(serviceId => {
+      const service = services.value.find(s => s.id === serviceId)
+      return {
+        service_id: serviceId,
+        item: service ? service.title : '',
+        isChecked: "false",
+        activities: "",
+        photos: []
+      }
+    })
     
-    const serviceIncludesJson = JSON.stringify(serviceIncludesArray)
+    const serviceIncludesJson = JSON.stringify(serviceIncludesFormatted)
 
     const payload = {
       customer_id: form.customer_id,
@@ -597,10 +632,12 @@ const createAgreement = async () => {
       assigned_technician_id: form.assigned_technician_id || null,
       start_date: form.start_date,
       end_date: form.end_date || null,
+      start_time: form.start_time,
+      end_time: form.end_time || null,
       auto_renew: form.auto_renew == true ? 1 : 0,
       pool_ids: form.pool_ids,
-      // status: "active",
-      service_includes: serviceIncludesJson
+      service_includes: serviceIncludesJson,
+      status: 'active' 
     }
 
     // Step 1: Create the agreement
@@ -671,7 +708,8 @@ watch(() => form.customer_id, () => {
 onMounted(async () => {
   await Promise.all([
     loadCustomers(),
-    loadTechnicians()
+    loadTechnicians(),
+    loadServices()
   ])
 })
 </script>

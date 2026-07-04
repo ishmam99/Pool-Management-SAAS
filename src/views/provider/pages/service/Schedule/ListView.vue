@@ -581,20 +581,49 @@ const changePage = (page) => {
 
 // ----- WORK ORDER FUNCTIONS -----
 const createWorkOrder = async (visit) => {
+  const serviceIncludes = visit.service_agreement?.service_includes;
+  let rawChecklist = [];
+  
+  if (Array.isArray(serviceIncludes)) {
+    rawChecklist = serviceIncludes;
+  } else if (typeof serviceIncludes === 'string') {
+    try {
+      rawChecklist = JSON.parse(serviceIncludes);
+    } catch (e) {
+      rawChecklist = [];
+    }
+  }
+
+  // Transform checklist items
+  const checklist = rawChecklist.map(item => ({
+    service_id: item.service_id || item.id || null,
+    item: item.item || item.name || '',
+    isChecked: "false",
+    activities: '',
+    photos: []
+  }));
+
   const payload = {
     scheduled_visit_id: visit.id,
     pool_id: visit.pool_id,
     customer_id: visit.pool?.customer_id,
     technician_id: visit.technician_id,
     type: "routine",
-    checklist: visit.service_agreement?.service_includes,
-    notes: "Regular routine visitss",
+    checklist: checklist,
+    notes: "Regular routine visits",
   };
 
-
-  return await api().post("/work-order-management/work-orders", payload);
+  // Send as JSON instead of FormData
+  return await api().post(
+    "/work-order-management/work-orders",
+    payload,
+    {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  );
 };
-
 const handleCreateWorkOrder = async (visit) => {
   try {
     const result = await Swal.fire({

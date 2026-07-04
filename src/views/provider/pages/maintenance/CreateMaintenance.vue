@@ -21,12 +21,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Customer <span class="text-red-500">*</span>
               </label>
-              <select
-                v-model="form.customer_id"
-                @change="onCustomerChange"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              >
+              <select v-model="form.customer_id" @change="onCustomerChange" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="" selected disabled>Select a customer</option>
                 <option v-for="customer in customers" :key="customer.id" :value="customer.id">
                   {{ customer.contact_name || `Customer #${customer.id}` }}
@@ -39,12 +35,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Pool <span class="text-red-500">*</span>
               </label>
-              <select
-                v-model="form.pool_id"
-                required
-                :disabled="!form.customer_id"
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              >
+              <select v-model="form.pool_id" required :disabled="!form.customer_id"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed">
                 <option value="" selected disabled>Select a pool</option>
                 <option v-for="pool in availablePools" :key="pool.id" :value="pool.id">
                   {{ pool.label || pool.name || `Pool #${pool.id}` }}
@@ -57,11 +49,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Technician <span class="text-red-500">*</span>
               </label>
-              <select
-                v-model="form.technician_id"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              >
+              <select v-model="form.technician_id" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="" selected disabled>Select a technician</option>
                 <option v-for="tech in technicians" :key="tech.id" :value="tech.id">
                   {{ tech.name || `Technician #${tech.id}` }}
@@ -74,11 +63,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Maintenance Type <span class="text-red-500">*</span>
               </label>
-              <select
-                v-model="form.type"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              >
+              <select v-model="form.type" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="" selected disabled>Select type</option>
                 <option value="one_time">One‑time – One‑time service</option>
                 <option value="repair">Repair – Equipment repair</option>
@@ -93,11 +79,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Status <span class="text-red-500">*</span>
               </label>
-              <select
-                v-model="form.status"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              >
+              <select v-model="form.status" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="" selected disabled>Select status</option>
                 <option value="created">Created</option>
                 <option value="scheduled">Scheduled</option>
@@ -114,12 +97,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Scheduled Date <span class="text-red-500">*</span>
               </label>
-              <input
-                v-model="form.scheduled_date"
-                type="date"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              />
+              <input v-model="form.scheduled_date" type="date" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
 
             <!-- Time Window Start -->
@@ -127,12 +106,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Time Window Start <span class="text-red-500">*</span>
               </label>
-              <input
-                v-model="form.time_window_start"
-                type="time"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              />
+              <input v-model="form.time_window_start" type="time" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
 
             <!-- Time Window End -->
@@ -140,12 +115,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Time Window End <span class="text-red-500">*</span>
               </label>
-              <input
-                v-model="form.time_window_end"
-                type="time"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              />
+              <input v-model="form.time_window_end" type="time" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
             </div>
 
             <!-- Priority -->
@@ -153,11 +124,8 @@
               <label class="block text-sm font-medium text-gray-700 mb-1">
                 Priority <span class="text-red-500">*</span>
               </label>
-              <select
-                v-model="form.priority"
-                required
-                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              >
+              <select v-model="form.priority" required
+                class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                 <option value="" selected disabled>Select priority</option>
                 <option value="normal">Normal</option>
                 <option value="urgent">Urgent</option>
@@ -172,18 +140,11 @@
               Checklist
             </label>
             <div class="flex gap-2 mb-3">
-              <input
-                v-model="newChecklistItem"
-                type="text"
-                placeholder="Add a task..."
+              <input v-model="newChecklistItem" type="text" placeholder="Add a task..."
                 class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                @keyup.enter="addChecklistItem"
-              />
-              <button
-                type="button"
-                @click="addChecklistItem"
-                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium"
-              >
+                @keyup.enter="addChecklistItem" />
+              <button type="button" @click="addChecklistItem"
+                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium">
                 <i class="ri-add-line"></i> Add
               </button>
             </div>
@@ -191,17 +152,11 @@
               No tasks added yet.
             </div>
             <ul class="space-y-2">
-              <li
-                v-for="(item, index) in form.checklist"
-                :key="index"
-                class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2 border border-gray-200"
-              >
+              <li v-for="(item, index) in form.checklist" :key="index"
+                class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-2 border border-gray-200">
                 <span class="text-gray-700">{{ item }}</span>
-                <button
-                  type="button"
-                  @click="removeChecklistItem(index)"
-                  class="text-red-500 hover:text-red-700 transition"
-                >
+                <button type="button" @click="removeChecklistItem(index)"
+                  class="text-red-500 hover:text-red-700 transition">
                   <i class="ri-close-circle-line text-xl"></i>
                 </button>
               </li>
@@ -213,27 +168,18 @@
             <label class="block text-sm font-medium text-gray-700 mb-1">
               Notes
             </label>
-            <textarea
-              v-model="form.notes"
-              rows="4"
-              placeholder="Any additional details..."
-              class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            ></textarea>
+            <textarea v-model="form.notes" rows="4" placeholder="Any additional details..."
+              class="w-full rounded-lg border border-gray-300 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
           </div>
 
           <!-- Submit -->
           <div class="mt-8 flex justify-end gap-3">
-            <router-link
-              to="/work-order-management/work-orders"
-              class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition"
-            >
+            <router-link to="/work-order-management/work-orders"
+              class="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">
               Cancel
             </router-link>
-            <button
-              type="submit"
-              :disabled="loading"
-              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
-            >
+            <button type="submit" :disabled="loading"
+              class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition font-medium disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2">
               <i v-if="loading" class="ri-loader-4-line animate-spin"></i>
               <i v-else class="ri-save-line"></i>
               {{ loading ? 'Creating...' : 'Create Work Order' }}
@@ -321,9 +267,9 @@ const removeChecklistItem = (index) => {
 // Submit
 const handleSubmit = async () => {
   // Basic validation
-  if (!form.customer_id || !form.pool_id || !form.technician_id || 
-      !form.type || !form.status || !form.scheduled_date ||
-      !form.time_window_start || !form.time_window_end || !form.priority) {
+  if (!form.customer_id || !form.pool_id || !form.technician_id ||
+    !form.type || !form.status || !form.scheduled_date ||
+    !form.time_window_start || !form.time_window_end || !form.priority) {
     await Swal.fire({
       icon: 'warning',
       title: 'Incomplete Form',
@@ -334,7 +280,7 @@ const handleSubmit = async () => {
   }
 
   loading.value = true;
-  
+
   try {
     // Step 1: Create Schedule Visit
     const scheduleVisitPayload = {
@@ -349,10 +295,13 @@ const handleSubmit = async () => {
     const scheduleVisitResponse = await api().post('/schedule-visit-management/visits', scheduleVisitPayload);
     const scheduleVisitId = scheduleVisitResponse.data.data.id;
 
-    // Step 2: Create Work Order with schedule_visit_id
-    const checklistPayload = form.checklist.map(item => ({
-      item: item,
+
+    const checklistPayload = form.checklist.map((item, index) => ({
+      service_id: index + 1,
+      item,
       isChecked: false,
+      activities: "",
+      photos: []
     }));
 
     const workOrderPayload = {
@@ -378,7 +327,7 @@ const handleSubmit = async () => {
 
     // Redirect to list page
     // router.push('/work-order-management/work-orders');
-    
+
   } catch (error) {
     console.error('Create work order error:', error);
     let message = 'Failed to create work order. Please try again.';
@@ -408,14 +357,17 @@ onMounted(() => {
 ::-webkit-scrollbar {
   width: 6px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #c4c4c4;
   border-radius: 10px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }

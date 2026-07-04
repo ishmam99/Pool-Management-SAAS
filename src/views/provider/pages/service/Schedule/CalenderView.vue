@@ -206,7 +206,9 @@
                   :class="getStatusColor(visit.status)" @click="openEventModal(visit)">
                   <div class="font-semibold truncate text-gray-800">{{ visit.pool?.label || visit.pool_name || '—' }}
                   </div>
-                  <div class="truncate text-gray-600">{{ visit.pool?.customer?.contact_name || visit.customer_name ||
+                  <div class="truncate text-gray-600">{{ visit.customer?.contact_name || visit.customer_name ||
+                    '—' }}</div>
+                     <div class="truncate text-gray-600">{{ visit.pool?.service_address || visit.customer_name ||
                     '—' }}</div>
                   <div class="truncate text-gray-500 mt-0.5">{{ formatTimeWindow(visit.time_window_start,
                     visit.time_window_end) }}</div>
@@ -326,12 +328,17 @@
           <div class="px-6 py-4 space-y-1 text-sm">
             <div class="flex justify-between py-2.5 border-b border-gray-50">
               <span class="text-gray-500 font-medium">Customer</span>
-              <span class="font-semibold text-gray-900">{{ selectedEvent.pool?.customer?.contact_name ||
+              <span class="font-semibold text-gray-900">{{ selectedEvent.customer?.contact_name ||
                 selectedEvent.customer_name || '—' }}</span>
             </div>
             <div class="flex justify-between py-2.5 border-b border-gray-50">
               <span class="text-gray-500 font-medium">Pool</span>
               <span class="font-semibold text-gray-900">{{ selectedEvent.pool?.label || selectedEvent.pool_name || '—'
+                }}</span>
+            </div>
+             <div class="flex justify-between py-2.5 border-b border-gray-50">
+              <span class="text-gray-500 font-medium">Address</span>
+              <span class="font-semibold text-gray-900">{{ selectedEvent.pool?.service_address  || '—'
                 }}</span>
             </div>
             <div class="flex justify-between py-2.5 border-b border-gray-50">
