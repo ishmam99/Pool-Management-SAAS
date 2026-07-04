@@ -52,8 +52,7 @@ export const useAuthStore = defineStore('authStore', {
       this.currentDashboard = null
       this.companyId = null
       this.companyName = null
-      this.layout = 'general'          // reset layout
-      this.customerId = null      // reset customer
+      this.layout = 'general'   
       this.sidebarOpen = true
       this.user = {
         id: '',

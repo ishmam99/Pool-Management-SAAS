@@ -12,7 +12,7 @@
         </div>
         <div>
           <h1 class="text-3xl font-bold text-gray-900">My Maintenance Agreements</h1>
-          <p class="text-gray-500">Your active maintenance plans and contract details.</p>
+          <p class="text-gray-500">Your active maintenance agreements</p>
         </div>
       </header>
 
@@ -91,6 +91,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Swal from 'sweetalert2'
+import { customerPortalApi, getApiErrorMessage } from '../../../services/customerPortalApi.js'
 import api from '../../../services/api.js'
 
 const loading = ref(true)
@@ -99,7 +100,7 @@ const agreements = ref([])
 const fetchAgreements = async () => {
   loading.value = true
   try {
-    const response = await api().get('/maintenance-agreement-management/agreements')
+    const response = await customerPortalApi.getMaintenanceAgreements()
     // The API returns { success, message, data: [...] }
     agreements.value = response.data.data || []
   } catch (error) {
@@ -163,11 +164,7 @@ const statusBadgeClass = (status) => {
   }
 }
 
-const getApiErrorMessage = (error) => {
-  if (error.response?.data?.message) return error.response.data.message
-  if (error.message) return error.message
-  return 'An unexpected error occurred.'
-}
+
 
 onMounted(() => {
   fetchAgreements()

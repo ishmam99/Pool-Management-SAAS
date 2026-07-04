@@ -4,7 +4,7 @@
             <!-- Header with Customer Info -->
             <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4 mb-4 shadow-sm">
                 <h4 class="font-bold text-center text-sm text-sky-700 mb-3 pb-2 border-b border-sky-100">
-                    Customer Dashboard
+             {{   authStore.authType == 'provider' ? 'Service Provider Dashboard' : 'Customer Dashboard'}}
                 </h4>
                 <div class="flex flex-col items-center gap-2">
                     <div
@@ -13,7 +13,7 @@
                     </div>
                     <div class="text-center">
                         <p class="text-sm font-semibold text-gray-800">{{ customerName }}</p>
-                        <p class="text-xs text-gray-500">Customer Dashboard</p>
+                        <p class="text-xs text-gray-500">  {{   authStore.authType == 'provider' ? 'Service Provider Dashboard' : 'Customer Dashboard'}}</p>
                     </div>
                 </div>
             </div>
