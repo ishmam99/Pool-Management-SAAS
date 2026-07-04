@@ -9,7 +9,7 @@
     </div>
 
     <!-- Content -->
-    <div v-else class="max-w-6xl mx-auto">
+    <div v-else class=" mx-auto">
       <header class="mb-8">
         <div class="flex items-center gap-3 mb-2">
           <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center text-white text-xl shadow-lg shadow-teal-500/30">

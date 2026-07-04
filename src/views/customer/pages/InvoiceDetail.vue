@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-sky-50/40 p-4 md:p-8">
-    <div v-if="loading" class="max-w-3xl mx-auto animate-pulse space-y-6">
+    <div v-if="loading" class=" mx-auto animate-pulse space-y-6">
       <div class="h-8 w-40 bg-gray-200 rounded-lg"></div>
       <div class="h-96 bg-gray-200 rounded-2xl"></div>
     </div>
 
-    <div v-else-if="invoice" class="max-w-3xl mx-auto">
-      <router-link to="/customer/billing" class="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-medium mb-6">
+    <div v-else-if="invoice" class="-auto">
+      <router-link :to="route.query.type == 'payment' ? '/customer/payments' : '/customer/billing'" class="inline-flex items-center gap-2 text-cyan-600 hover:text-cyan-700 font-medium mb-6">
         <i class="ri-arrow-left-line"></i>
-        Back to Billing
+        Back to<span class="capitalize">{{ route.query.type }}</span>
       </router-link>
 
       <div class="bg-white rounded-2xl shadow-sm border overflow-hidden">
@@ -93,12 +93,13 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import { customerPortalApi, getApiErrorMessage } from '../../../services/customerPortalApi.js'
 import { formatCurrency, formatDate, formatStatus } from '../utils/formatters.js'
 
 const route = useRoute()
+const router = useRouter()
 const loading = ref(true)
 const downloading = ref(false)
 const invoice = ref(null)

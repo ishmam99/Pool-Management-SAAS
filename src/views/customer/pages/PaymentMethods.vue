@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-violet-50/40 p-4 md:p-8">
-    <div class="max-w-4xl mx-auto">
+    <div class=" mx-auto">
       <header class="mb-8 flex items-center gap-3">
         <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-xl shadow-lg">
           <i class="ri-bank-card-line"></i>
