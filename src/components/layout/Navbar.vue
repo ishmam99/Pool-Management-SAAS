@@ -234,7 +234,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
+import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/AuthStore.js';
 import api from '../../services/api.js';
@@ -242,18 +242,24 @@ import api from '../../services/api.js';
 const router = useRouter();
 const authStore = useAuthStore();
 
+// Mobile menu states
 const isMobileOpen = ref(false);
 const isMobileDropdownOpen = ref(false);
 
-// Layout state – initialize from store if available
-const selectedLayout = ref(authStore.layout);
+// Layout state
+const selectedLayout = ref(authStore.layout || 'general');
+
+// Customer dropdown states
 const isCustomerDropdownOpen = ref(false);
 const customers = ref([]);
 const customerLoading = ref(false);
 const customerSearch = ref('');
 const selectedCustomer = ref(null);
 
-// Toggle mobile
+// Ref for dropdown container (used for click-outside detection)
+const dropdownWrapper = ref(null);
+
+// Toggle mobile menu
 const toggleMobileMenu = () => {
   isMobileOpen.value = !isMobileOpen.value;
   if (!isMobileOpen.value) {
@@ -274,31 +280,68 @@ const closeMobileMenu = () => {
 const setLayout = (layout) => {
   selectedLayout.value = layout;
   authStore.layout = layout;
+  // If switching to general, clear customer selection
   if (layout === 'general') {
     selectedCustomer.value = null;
+    authStore.customerId = null;
     isCustomerDropdownOpen.value = false;
+    // Optionally navigate back to provider dashboard
+    if (router.currentRoute.value.path.startsWith('/customer')) {
+      router.push('/provider/dashboard');
+    }
+  } else if (layout === 'customer') {
+    // If no customer selected, open dropdown to force selection
+    if (!authStore.customerId && customers.value.length > 0) {
+      // Auto-select first customer? Or open dropdown? We'll open dropdown.
+      // But let's not auto-select, let user choose.
+      // However, we might want to open the dropdown automatically.
+      // We'll open it if we have customers.
+      if (customers.value.length > 0) {
+        isCustomerDropdownOpen.value = true;
+      }
+    }
   }
 };
 
 // Toggle the Select Customer dropdown
 const toggleSelectCustomerDropdown = async () => {
-  if (!isCustomerDropdownOpen.value) {
-    if (selectedLayout.value !== 'customer') {
-      setLayout('customer');
-    }
-    if (customers.value.length === 0) {
-      await fetchCustomers();
+  // If switching to customer layout, set layout first
+  if (selectedLayout.value !== 'customer') {
+    setLayout('customer');
+    // Wait for reactivity
+    await nextTick();
+  }
+  
+  // Fetch customers if not loaded
+  if (customers.value.length === 0) {
+    customerLoading.value = true;
+    try {
+      const response = await api().get('/customer-management/customers-active');
+      customers.value = response.data.data || [];
+      // Auto-select first if no selection and we have customers
+      if (customers.value.length > 0 && !authStore.customerId) {
+        const first = customers.value[0];
+        selectedCustomer.value = first;
+        authStore.customerId = first.id;
+      }
+    } catch (error) {
+      console.error('Failed to fetch customers:', error);
+    } finally {
+      customerLoading.value = false;
     }
   }
+  
+  // Toggle dropdown
   isCustomerDropdownOpen.value = !isCustomerDropdownOpen.value;
   if (isCustomerDropdownOpen.value) {
     customerSearch.value = '';
   }
-  router.push("/customer/dashboard")
+  // Do NOT navigate here – only navigate when a customer is selected
 };
 
-// Fetch customers
+// Fetch customers (separate function, used also on mount)
 const fetchCustomers = async () => {
+  if (authStore.authType !== 'provider') return;
   customerLoading.value = true;
   try {
     const response = await api().get('/customer-management/customers-active');
@@ -318,9 +361,14 @@ const fetchCustomers = async () => {
           authStore.customerId = customers.value[0].id;
         }
       } else {
-        // Select first customer by default
-        selectedCustomer.value = customers.value[0];
-        authStore.customerId = customers.value[0].id;
+        // If no stored ID, select first only if layout is 'customer'? 
+        // We'll leave it unselected to force user to pick.
+        // But to have a valid state, we might select first.
+        // Let's select first only if layout is 'customer'
+        if (authStore.layout === 'customer') {
+          selectedCustomer.value = customers.value[0];
+          authStore.customerId = customers.value[0].id;
+        }
       }
     } else {
       selectedCustomer.value = null;
@@ -333,25 +381,30 @@ const fetchCustomers = async () => {
   }
 };
 
-// Select a customer – saves to store
+// Select a customer – saves to store and navigates
 const selectCustomer = (customer) => {
   selectedCustomer.value = customer;
   authStore.customerId = customer.id;
+  // Ensure layout is customer
+  if (selectedLayout.value !== 'customer') {
+    setLayout('customer');
+  }
   isCustomerDropdownOpen.value = false;
   customerSearch.value = '';
-  router.push("/customer/dashboard")
+  // Navigate to customer dashboard
+  router.push('/customer/dashboard');
 };
 
-// Clear customer selection
+// Clear customer selection – resets to general layout
 const clearCustomerSelection = () => {
   selectedCustomer.value = null;
   authStore.customerId = null;
   isCustomerDropdownOpen.value = false;
   customerSearch.value = '';
-  if (customers.value.length > 0) {
-    // Optionally select first customer again
-    // selectCustomer(customers.value[0]);
-  }
+  // Switch back to general layout
+  setLayout('general');
+  // Navigate to provider dashboard
+  router.push('/provider/dashboard');
 };
 
 // Get initials from name
@@ -376,17 +429,9 @@ const filteredCustomers = computed(() => {
   );
 });
 
-// Close dropdown on escape key
-const handleEscape = (event) => {
-  if (event.key === 'Escape' && isCustomerDropdownOpen.value) {
-    isCustomerDropdownOpen.value = false;
-  }
-};
-
-// Close dropdown on click outside
+// Handle click outside dropdown
 const handleClickOutside = (event) => {
-  const dropdown = event.target.closest('.customer-dropdown-wrapper');
-  if (!dropdown && isCustomerDropdownOpen.value) {
+  if (dropdownWrapper.value && !dropdownWrapper.value.contains(event.target)) {
     isCustomerDropdownOpen.value = false;
   }
 };
@@ -404,26 +449,32 @@ const handleLogout = async () => {
 
 // On mount
 onMounted(() => {
-  authStore.layout = authStore.layout ?? 'general';
-  if (authStore.userType === 'provider') {
+  // Ensure layout is persisted
+  if (authStore.layout) {
+    selectedLayout.value = authStore.layout;
+  } else {
+    authStore.layout = 'general';
+    selectedLayout.value = 'general';
+  }
+  if (authStore.authType === 'provider') {
     fetchCustomers();
   }
   
-  document.addEventListener('keydown', handleEscape);
   document.addEventListener('click', handleClickOutside);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleEscape);
   document.removeEventListener('click', handleClickOutside);
 });
 
-watch(() => authStore.userType, (newType) => {
+// Watch for changes in userType to fetch customers
+watch(() => authStore.authType, (newType) => {
   if (newType === 'provider') {
     fetchCustomers();
   }
 });
 
+// Watch for customerId changes to update selectedCustomer
 watch(() => authStore.customerId, (newId) => {
   if (newId && customers.value.length > 0) {
     const found = customers.value.find(c => c.id === newId);
@@ -433,6 +484,11 @@ watch(() => authStore.customerId, (newId) => {
   } else if (!newId) {
     selectedCustomer.value = null;
   }
+});
+
+// Also watch layout changes from other components (e.g., if set elsewhere)
+watch(() => authStore.layout, (newLayout) => {
+  selectedLayout.value = newLayout;
 });
 </script>
 
