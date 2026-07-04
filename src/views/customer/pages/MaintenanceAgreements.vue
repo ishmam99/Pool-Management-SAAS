@@ -11,15 +11,15 @@
           <i class="ri-file-text-line"></i>
         </div>
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">My Service Agreements</h1>
-          <p class="text-gray-500">Your active service plans and contract details.</p>
+          <h1 class="text-3xl font-bold text-gray-900">My Maintenance Agreements</h1>
+          <p class="text-gray-500">Your active maintenance plans and contract details.</p>
         </div>
       </header>
 
       <div v-if="agreements.length === 0" class="bg-white rounded-2xl shadow-sm border p-12 text-center">
         <div class="text-5xl mb-4">📋</div>
         <h3 class="text-xl font-semibold text-gray-800 mb-2">No agreements found</h3>
-        <p class="text-gray-500">Contact your service provider to set up a service plan.</p>
+        <p class="text-gray-500">Contact your service provider to set up a maintenance plan.</p>
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">

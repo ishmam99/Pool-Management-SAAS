@@ -370,9 +370,9 @@ const routes = [
         component: () => import('../views/customer/pages/Agreements.vue')
       },
       {
-        path: '/customer/service-agreements',
-        name: 'customer-service-agreements',
-        component: () => import('../views/customer/pages/ServiceAgreements.vue')
+        path: '/customer/maintenance-agreements',
+        name: 'customer-maintenance-agreements',
+        component: () => import('../views/customer/pages/MaintenanceAgreements.vue')
       },
       {
         path: '/customer/messages',
