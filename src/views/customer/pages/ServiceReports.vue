@@ -57,15 +57,15 @@
             :key="report.id"
             class="even:bg-slate-50 hover:bg-slate-100 transition"
           >
-            <td class="px-4 py-3 font-medium text-slate-800">#{{ report.id }}</td>
-            <td class="px-4 py-3">{{ report.customer?.contact_name || 'N/A' }}</td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 border-e border-slate-100 font-medium text-slate-800">#{{ report.id }}</td>
+            <td class="px-4 py-3 border-e border-slate-100">{{ report.customer?.contact_name || 'N/A' }}</td>
+            <td class="px-4 py-3 border-e border-slate-100">
               <span class="bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full text-xs font-medium">
                 {{ report.pool?.label || 'N/A' }}
               </span>
             </td>
-            <td class="px-4 py-3">{{ report.technician?.name || 'N/A' }}</td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 border-e border-slate-100">{{ report.technician?.name || 'N/A' }}</td>
+            <td class="px-4 py-3 border-e border-slate-100">
               <span :class="{
                 'bg-blue-100 text-blue-800': report.type === 'routine',
                 'bg-amber-100 text-amber-800': report.type === 'repair',
@@ -75,7 +75,7 @@
                 {{ report.type }}
               </span>
             </td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 border-e border-slate-100">
               <span :class="{
                 'bg-blue-100 text-blue-800': report.status === 'scheduled',
                 'bg-slate-100 text-slate-700': report.status === 'created',
@@ -86,11 +86,11 @@
                 {{ report.status }}
               </span>
             </td>
-            <td class="px-4 py-3 max-w-xs truncate text-slate-600" :title="report.notes || ''">
+            <td class="px-4 py-3 border-e border-slate-100 max-w-xs truncate text-slate-600" :title="report.notes || ''">
               {{ report.notes ? truncate(report.notes, 30) : '—' }}
             </td>
-            <td class="px-4 py-3 text-sm text-slate-500">{{ formatDate(report.created_at) }}</td>
-            <td class="px-4 py-3 text-center">
+            <td class="px-4 py-3 border-e border-slate-100 text-sm text-slate-500">{{ formatDate(report.created_at) }}</td>
+            <td class="px-4 py-3 border-e border-slate-100 text-center">
               <div class="flex items-center justify-center gap-2">
                 <router-link
                   :to="{ name: 'customer-service-reports-details', params: { id: report.id } }"
