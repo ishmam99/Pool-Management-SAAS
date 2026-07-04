@@ -236,6 +236,17 @@ const menus = [
 
         ]
     },
+     {
+        id: 'work-orders',
+        title: 'My Service Reports',
+        icon: 'ri-file-text-line',
+
+        links: [
+            { to: '/customer/service-reports', icon: 'ri-file-text-fill', text: 'My Service Reports' },
+            // { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' }
+
+        ]
+    },
     {
         id: 'billing',
         title: 'Billing',
