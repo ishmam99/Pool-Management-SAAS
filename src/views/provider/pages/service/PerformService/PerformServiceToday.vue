@@ -5,7 +5,7 @@
         <div class="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-5">
             <div class="flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-semibold text-gray-900">Perform Service</h1>
+                    <h1 class="text-2xl font-semibold text-gray-900">Perform Service - Today</h1>
                     <p class="mt-1 text-sm text-gray-500">View scheduled visits grouped by time – scroll horizontally.</p>
                 </div>
                 <button @click="loadVisits" :disabled="loading"
@@ -108,10 +108,11 @@
                                     <span :class="priorityBadge(visit.priority)" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium">
                                         {{ formatPriority(visit.priority) }}
                                     </span>
-                                    <span class="text-xs text-gray-500 truncate max-w-[120px]">
-                                        {{ visit.technician?.name || 'Unassigned' }}
-                                    </span>
+                                    
                                 </div>
+                                <span class="text-xs text-gray-500 truncate max-w-[220px]">
+                                        Technician: {{ visit.technician?.name || 'Unassigned' }}
+                                    </span>
                                 <button @click="performService(visit.work_order)"
                                     class="mt-1 inline-flex items-center justify-center gap-1 px-3 py-1 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors w-full">
                                     <i class="ri-play-circle-line"></i> Perform
