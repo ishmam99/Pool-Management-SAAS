@@ -38,7 +38,7 @@
         leave-active-class="transition-all duration-500 ease-in-out" leave-from-class="opacity-100 translate-x-0"
         leave-to-class="opacity-0 translate-x-10">
          <!-- <span v-if="authStore.layout === 'general'"><CustomerSidebar  /></span> -->
-         <span ><Sidebar  class="w-[360px]" /></span>   
+         <span ><Sidebar  class="w-[360px] h-full" /></span>   
       </transition>
       <RouterView class="w-full" :activeTab="activeTab" @set-tab="(tab) => setTab(tab)" />
       <!-- </transition> -->

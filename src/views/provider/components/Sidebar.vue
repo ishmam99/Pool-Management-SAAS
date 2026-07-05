@@ -423,12 +423,22 @@ const menus = [
   title: 'Website Management',
   icon: 'ri-global-line',
   groups: [
+        {
+      key: 'service-area',
+      icon: 'ri-file-copy-line',
+      title: 'Service Area',
+      links: [
+        { to: '/provider/website/service/create', icon: 'ri-file-list-line', text: 'Create Service Area' },
+        { to: '/provider/website/service/view', icon: 'ri-file-add-line', text: 'View Service Area' },
+        { to: '/provider/website/service/import', icon: 'ri-file-add-line', text: 'Import Service Area' },
+      ]
+    },
     {
       key: 'website-pages',
       icon: 'ri-file-copy-line',
       title: 'Pages',
       links: [
-        { to: '/provider/website/pages', icon: 'ri-file-list-line', text: 'All Pages' },
+        { to: '/provider/website/pages/view', icon: 'ri-file-list-line', text: 'All Pages' },
         { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Page' },
       ]
     },
@@ -437,10 +447,10 @@ const menus = [
       icon: 'ri-edit-2-line',
       title: 'Blog',
       links: [
-        { to: '/provider/website/blog/posts', icon: 'ri-article-line', text: 'Posts' },
-        { to: '/provider/website/blog/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
-        { to: '/provider/website/blog/categories', icon: 'ri-folder-2-line', text: 'Categories' },
-        { to: '/provider/website/blog/tags', icon: 'ri-price-tag-3-line', text: 'Tags' },
+        { to: '/provider/website/category/create', icon: 'ri-folder-2-line', text: 'Categories' },
+        { to: '/provider/website/tags/create', icon: 'ri-price-tag-3-line', text: 'Tags' },
+        { to: '/provider/website/blogs/create', icon: 'ri-article-line', text: 'Blog Posts' },
+        // { to: '/provider/website/blog/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
       ]
     },
     {
@@ -448,8 +458,8 @@ const menus = [
       icon: 'ri-image-line',
       title: 'Media Library',
       links: [
-        { to: '/provider/website/media', icon: 'ri-image-2-line', text: 'All Media' },
-        { to: '/provider/website/media/upload', icon: 'ri-upload-2-line', text: 'Upload New' },
+        { to: '/provider/website/media/list', icon: 'ri-image-2-line', text: 'All Media' },
+        { to: '/provider/website/media/create', icon: 'ri-upload-2-line', text: 'Upload New' },
       ]
     },
     {
@@ -465,7 +475,7 @@ const menus = [
   ],
   links: [
     { to: '/provider/website/settings', icon: 'ri-settings-3-line', text: 'Website Settings' },
-    { to: '/provider/website/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
+    // { to: '/provider/website/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
   ]
 },
   {
