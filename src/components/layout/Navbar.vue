@@ -217,26 +217,30 @@
 
 <script setup>
 import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
+import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/AuthStore.js';
 import api from '../../services/api.js';
-import { 
-  UserIcon, 
-  ChevronDownIcon, 
-  SearchIcon, 
+import {
+  UserIcon,
+  ChevronDownIcon,
+  SearchIcon,
   UsersIcon,
   BuildingIcon,
-  CheckIcon 
+  CheckIcon
 } from 'lucide-vue-next';
 
 const router = useRouter();
 const authStore = useAuthStore();
 
+// Mobile menu states
 const isMobileOpen = ref(false);
 const isMobileDropdownOpen = ref(false);
 
-// Layout state – initialize from store if available
-const selectedLayout = ref(authStore.layout);
+// Layout state
+const selectedLayout = ref(authStore.layout || 'general');
+
+// Customer dropdown states
 const isCustomerDropdownOpen = ref(false);
 const customers = ref([]);
 const customerLoading = ref(false);
@@ -267,8 +271,10 @@ const setLayout = (layout) => {
   console.log('🔄 setLayout called with:', layout);
   selectedLayout.value = layout;
   authStore.layout = layout;
+  // If switching to general, clear customer selection
   if (layout === 'general') {
     selectedCustomer.value = null;
+    authStore.customerId = null;
     isCustomerDropdownOpen.value = false;
     router.push("/provider/dashboard");
   } else {
@@ -306,12 +312,12 @@ const toggleSelectCustomerDropdown = async () => {
   }
 };
 
-// Fetch customers
+// Fetch customers (separate function, used also on mount)
 const fetchCustomers = async () => {
   console.log('🔄 fetchCustomers called');
   console.log('📊 authStore.userType:', authStore.userType);
   console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
-  
+
   isLoadingCustomers.value = true;
   customerLoading.value = true;
   try {
@@ -323,12 +329,12 @@ const fetchCustomers = async () => {
     if (customers.value.length > 0) {
       const storedId = authStore.customerId;
       console.log('📌 storedId from authStore:', storedId);
-      
+
       if (storedId) {
         // Try to find the stored customer
         const found = customers.value.find(c => String(c.id) === String(storedId));
         console.log('🔎 Looking for storedId:', storedId, 'Found:', found ? found.contact_name : 'Not found');
-        
+
         if (found) {
           selectedCustomer.value = found;
           // Make sure authStore has the correct ID
@@ -351,7 +357,7 @@ const fetchCustomers = async () => {
       authStore.customerId = null;
       console.log('⚠️ No customers available');
     }
-    
+
     isDataLoaded.value = true;
   } catch (error) {
     console.error('❌ Failed to fetch customers:', error);
@@ -360,24 +366,28 @@ const fetchCustomers = async () => {
     isLoadingCustomers.value = false;
     console.log('📊 Final state - selectedCustomer:', selectedCustomer.value?.contact_name);
     console.log('📊 Final state - authStore.customerId:', authStore.customerId);
-    
+
     // Force update after data is loaded
     await nextTick();
     console.log('📊 After nextTick - selectedCustomer:', selectedCustomer.value?.contact_name);
   }
 };
 
-// Select a customer – saves to store
+// Select a customer – saves to store and navigates
 const selectCustomer = (customer) => {
   console.log('🔄 selectCustomer called with:', customer.contact_name);
   selectedCustomer.value = customer;
   authStore.customerId = customer.id;
+  // Ensure layout is customer
+  if (selectedLayout.value !== 'customer') {
+    setLayout('customer');
+  }
   isCustomerDropdownOpen.value = false;
   customerSearch.value = '';
   router.push("/customer/dashboard");
 };
 
-// Clear customer selection
+// Clear customer selection – resets to general layout
 const clearCustomerSelection = () => {
   console.log('🔄 clearCustomerSelection called');
   selectedCustomer.value = null;
@@ -416,24 +426,24 @@ const displayCustomerName = computed(() => {
   console.log('📋 customers.value.length:', customers.value.length);
   console.log('📌 isDataLoaded:', isDataLoaded.value);
   console.log('📌 isLoadingCustomers:', isLoadingCustomers.value);
-  
+
   // If customers are still loading, show loading text
   if (isLoadingCustomers.value && customers.value.length === 0) {
     console.log('⏳ Customers are loading...');
     return 'Loading...';
   }
-  
+
   // If data is loaded and we have no customers
   if (isDataLoaded.value && customers.value.length === 0) {
     console.log('ℹ️ No customers available');
     return 'No Customers';
   }
-  
+
   if (selectedCustomer.value) {
     console.log('✅ selectedCustomer found:', selectedCustomer.value.contact_name);
     return selectedCustomer.value.contact_name;
   }
-  
+
   // Try to find by ID if selectedCustomer is null but authStore has ID
   if (authStore.customerId && customers.value.length > 0) {
     console.log('🔎 Searching for customer with ID:', authStore.customerId);
@@ -442,7 +452,7 @@ const displayCustomerName = computed(() => {
       console.log(`   Comparing c.id: ${c.id} (${typeof c.id}) with authStore.customerId: ${authStore.customerId} (${typeof authStore.customerId}) => ${match}`);
       return match;
     });
-    
+
     if (found) {
       console.log('✅ Found customer by ID:', found.contact_name);
       selectedCustomer.value = found; // Update selectedCustomer
@@ -453,7 +463,7 @@ const displayCustomerName = computed(() => {
   } else {
     console.log('⚠️ No authStore.customerId or no customers available');
   }
-  
+
   console.log('❌ Returning "Select Customer"');
   return 'Select Customer';
 });
@@ -467,8 +477,7 @@ const handleEscape = (event) => {
 
 // Close dropdown on click outside
 const handleClickOutside = (event) => {
-  const dropdown = event.target.closest('.customer-dropdown-wrapper');
-  if (!dropdown && isCustomerDropdownOpen.value) {
+  if (dropdownWrapper.value && !dropdownWrapper.value.contains(event.target)) {
     isCustomerDropdownOpen.value = false;
   }
 };
@@ -489,7 +498,7 @@ watch(() => customers.value, (newCustomers, oldCustomers) => {
   console.log('🔄 customers.value changed');
   console.log('   Old length:', oldCustomers?.length || 0);
   console.log('   New length:', newCustomers.length);
-  
+
   if (newCustomers.length > 0 && authStore.customerId) {
     const found = newCustomers.find(c => String(c.id) === String(authStore.customerId));
     if (found) {
@@ -515,7 +524,7 @@ watch(() => authStore.customerId, (newId, oldId) => {
   console.log('   Old ID:', oldId);
   console.log('   New ID:', newId);
   console.log('   customers.value.length:', customers.value.length);
-  
+
   if (newId && customers.value.length > 0) {
     // Use strict equality with type conversion
     const found = customers.value.find(c => {
@@ -523,7 +532,7 @@ watch(() => authStore.customerId, (newId, oldId) => {
       console.log(`   Comparing c.id: ${c.id} (${typeof c.id}) with newId: ${newId} (${typeof newId}) => ${match}`);
       return match;
     });
-    
+
     if (found) {
       console.log('✅ Found customer in watch:', found.contact_name);
       selectedCustomer.value = found;
@@ -546,10 +555,10 @@ onMounted(async () => {
   console.log('📊 authStore.userType:', authStore.userType);
   console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
   console.log('📊 authStore.customerId:', authStore.customerId);
-  
+
   authStore.layout = authStore.layout ?? 'general';
   selectedLayout.value = authStore.layout;
-  
+
   // Always fetch customers if user is authenticated, regardless of userType
   if (authStore.isAuthenticated) {
     console.log('✅ User is authenticated, fetching customers...');
@@ -563,7 +572,6 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleEscape);
   document.removeEventListener('click', handleClickOutside);
 });
 
@@ -577,6 +585,11 @@ watch(() => authStore.userType, (newType) => {
 // Watch for changes in authStore layout
 watch(() => authStore.layout, (newLayout) => {
   console.log('🔄 authStore.layout changed:', newLayout);
+  selectedLayout.value = newLayout;
+});
+
+// Also watch layout changes from other components (e.g., if set elsewhere)
+watch(() => authStore.layout, (newLayout) => {
   selectedLayout.value = newLayout;
 });
 </script>

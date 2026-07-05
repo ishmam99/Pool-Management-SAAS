@@ -394,6 +394,16 @@ const routes = [
         name: 'customer-help',
         component: () => import('../views/customer/pages/Help.vue')
       },
+      {
+        path: '/customer/service-reports',
+        name: 'customer-service-reports',
+        component: () => import('../views/customer/pages/ServiceReports.vue')
+      },
+      {
+        path: '/customer/service-reports/:id',
+        name: 'customer-service-reports-details',
+        component: () => import('../views/customer/pages/ReportDetails.vue')
+      },
     ]
   },
 
