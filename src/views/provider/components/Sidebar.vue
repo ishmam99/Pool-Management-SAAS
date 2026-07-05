@@ -185,14 +185,24 @@ const menuColors = {
   // Service Management
   'Service Schedule': '#16a34a',      // Green
   'Perform Service': '#2563eb',       // Blue
-
-  // Reserved (currently unused)
   'Invoice': '#a855f7',               // Purple
   'Maintenace List': '#f43f5e',               // Rose
   'Maintenace Schedule': '#f97316',               // Orange
   'All Customer': '#0f766e',               // Teal
-  'Blank 5': '#7c3aed',               // Indigo
-  'Blank 6': '#ca8a04',               // Yellow
+  'Blog': '#7c3aed',               // Indigo
+  'Website Management': '#ca8a04',               // Yellow
+
+   // Blank menu items (10 total)
+  'Pages': '#d946ef',               // Fuchsia
+  'Media Library': '#0891b2',               // Cyan
+  'Interactions': '#7c3aed',               // Violet
+  'Blank 4': '#db2777',               // Pink
+  'Blank 5': '#f97316',               // Orange
+  'Blank 6': '#059669',               // Emerald
+  'Blank 7': '#dc2626',               // Red
+  'Blank 8': '#4f46e5',               // Indigo
+  'Blank 9': '#0d9488',               // Teal
+  'Blank 10': '#64748b',              // Slate
 }
 
 // Function to get menu color with fallback
@@ -408,6 +418,56 @@ const menus = [
     ],
     links: []
   },
+  {
+  id: 'website-management',
+  title: 'Website Management',
+  icon: 'ri-global-line',
+  groups: [
+    {
+      key: 'website-pages',
+      icon: 'ri-file-copy-line',
+      title: 'Pages',
+      links: [
+        { to: '/provider/website/pages', icon: 'ri-file-list-line', text: 'All Pages' },
+        { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Page' },
+      ]
+    },
+    {
+      key: 'website-blog',
+      icon: 'ri-edit-2-line',
+      title: 'Blog',
+      links: [
+        { to: '/provider/website/blog/posts', icon: 'ri-article-line', text: 'Posts' },
+        { to: '/provider/website/blog/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
+        { to: '/provider/website/blog/categories', icon: 'ri-folder-2-line', text: 'Categories' },
+        { to: '/provider/website/blog/tags', icon: 'ri-price-tag-3-line', text: 'Tags' },
+      ]
+    },
+    {
+      key: 'website-media',
+      icon: 'ri-image-line',
+      title: 'Media Library',
+      links: [
+        { to: '/provider/website/media', icon: 'ri-image-2-line', text: 'All Media' },
+        { to: '/provider/website/media/upload', icon: 'ri-upload-2-line', text: 'Upload New' },
+      ]
+    },
+    {
+      key: 'website-interactions',
+      icon: 'ri-chat-4-line',
+      title: 'Interactions',
+      links: [
+        { to: '/provider/website/contact-forms', icon: 'ri-mail-send-line', text: 'Contact Forms' },
+        { to: '/provider/website/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
+        { to: '/provider/website/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
+      ]
+    }
+  ],
+  links: [
+    { to: '/provider/website/settings', icon: 'ri-settings-3-line', text: 'Website Settings' },
+    { to: '/provider/website/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
+  ]
+},
   {
     id: 'communication',
     title: 'Communication',
