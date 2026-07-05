@@ -38,7 +38,7 @@
         leave-active-class="transition-all duration-500 ease-in-out" leave-from-class="opacity-100 translate-x-0"
         leave-to-class="opacity-0 translate-x-10">
          <!-- <span v-if="authStore.layout === 'general'"><CustomerSidebar  /></span> -->
-         <span ><Sidebar  class="w-90" /></span>   
+         <span ><Sidebar  class="w-[360px]" /></span>   
       </transition>
       <RouterView class="w-full" :activeTab="activeTab" @set-tab="(tab) => setTab(tab)" />
       <!-- </transition> -->
@@ -50,7 +50,6 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Sidebar from '../components/Sidebar.vue'
-import CustomerSidebar from '../components/CustomerSidebar.vue'
 import { useProviderStore } from '../store/providerStore.js'
 import { useAuthStore } from '../../../store/AuthStore.js'
 const store = useProviderStore()

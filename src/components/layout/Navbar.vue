@@ -233,6 +233,8 @@ import {
 const router = useRouter();
 const authStore = useAuthStore();
 
+const dropdownWrapper = ref(null);
+
 // Mobile menu states
 const isMobileOpen = ref(false);
 const isMobileDropdownOpen = ref(false);
@@ -384,7 +386,6 @@ const selectCustomer = (customer) => {
   }
   isCustomerDropdownOpen.value = false;
   customerSearch.value = '';
-  router.push("/customer/dashboard");
 };
 
 // Clear customer selection – resets to general layout
