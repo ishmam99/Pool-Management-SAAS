@@ -278,6 +278,7 @@ const setLayout = (layout) => {
     selectedCustomer.value = null;
     isCustomerDropdownOpen.value = false;
   }
+  router.push("/provider/dashboard")
 };
 
 // Toggle the Select Customer dropdown
