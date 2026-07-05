@@ -216,7 +216,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
+// import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
 import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/AuthStore.js';
@@ -232,6 +232,8 @@ import {
 
 const router = useRouter();
 const authStore = useAuthStore();
+
+const dropdownWrapper = ref(null);
 
 // Mobile menu states
 const isMobileOpen = ref(false);
@@ -384,7 +386,6 @@ const selectCustomer = (customer) => {
   }
   isCustomerDropdownOpen.value = false;
   customerSearch.value = '';
-  router.push("/customer/dashboard");
 };
 
 // Clear customer selection – resets to general layout

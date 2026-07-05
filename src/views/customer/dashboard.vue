@@ -210,7 +210,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { useAuthStore } from '../../store/AuthStore.js'
 import { customerPortalApi, getApiErrorMessage } from '../../services/customerPortalApi.js'
@@ -270,6 +270,15 @@ const fetchDashboard = async () => {
     loading.value = false
   }
 }
+
+watch(
+  () => authStore.customerId,
+  (newId, oldId) => {
+    if (newId === oldId) return
+
+    fetchDashboard()
+  }
+)
 
 onMounted(fetchDashboard)
 </script>

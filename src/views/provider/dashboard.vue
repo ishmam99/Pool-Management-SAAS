@@ -374,12 +374,15 @@ import { useRouter } from 'vue-router'
 import api from '../../services/api.js'
 import Swal from 'sweetalert2'
 import Chart from 'chart.js/auto'
+import { useAuthStore } from '../../store/AuthStore.js'
 
 const router = useRouter()
 const loading = ref(true)
 const dashboard = ref(null)
 const revenueChart = ref(null)
 let chartInstance = null
+
+const authStore = useAuthStore()
 
 // Columns
 const visitColumns = ['Customer', 'Pool', 'Technician', 'Scheduled Date', 'Time Window', 'Priority', 'Status']
@@ -681,6 +684,16 @@ onBeforeUnmount(() => {
   }
   window.removeEventListener('resize', handleResize)
 })
+
+watch(
+  () => authStore.customerId,
+  (newId, oldId) => {
+    if (newId === oldId) return
+
+    loadDashboard()
+  }
+)
+
 </script>
 
 <style scoped>
