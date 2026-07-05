@@ -466,47 +466,74 @@ const routes = [
   },
 
 //provider website
-    {
+  {
     path: '/provider-website',
     component: () => import('../views/provider-website/layout/provider-websiteLayout.vue'),
     children: [
-  // Common
-  {
-    path: '',
-    name: 'provider-website-home',
-    component: () => import('../views/provider-website/common/Home/index.vue'),
-  },
-  {
-    path: '/provider-website/about',
-    name: 'Provider Website About',
-    component: () => import('../views/provider-website/common/AboutUs.vue'),
-  },
-  {
-    path: '/provider-website/features',
-    name: 'Provider Website Features',
-    component: () => import('../views/provider-website/common/Features.vue'),
-  },
-  {
-    path: '/provider-website/blogs',
-    name: 'Provider Website Blogs',
-    component: () => import('../views/provider-website/common/Blogs.vue'),
-  },
-  {
-    path: '/provider-website/join-us',
-    name: 'Provider Website Join Us',
-    component: () => import('../views/provider-website/common/JoinUs.vue'),
-  },
-  {
-    path: '/provider-website/login',
-    name: 'Provider Website login',
-    component: () => import('../views/provider-website/common/csLogin.vue'),
-  },
-{
-    path: '/provider-website/quote',
-    name: 'Provider Website Quote Page',
-    component: () => import('../views/provider-website/common/quote.vue'),
-  },
-    ]
+      {
+        path: '',
+        name: 'provider-website-home',
+        component: () => import('../views/provider-website/common/Home/index.vue'),
+      },
+      {
+        path: '/provider-website/about',
+        name: 'Provider Website About',
+        meta: { websiteFlag: 'about' },
+        component: () => import('../views/provider-website/common/AboutUs.vue'),
+      },
+      {
+        path: '/provider-website/features',
+        name: 'Provider Website Features',
+        meta: { websiteFlag: 'services' },
+        component: () => import('../views/provider-website/common/Features.vue'),
+      },
+      {
+        path: '/provider-website/pricing',
+        name: 'Provider Website Pricing',
+        meta: { websiteFlag: 'pricing' },
+        component: () => import('../views/provider-website/pages/Pricing.vue'),
+      },
+      {
+        path: '/provider-website/testimonials',
+        name: 'Provider Website Testimonials',
+        meta: { websiteFlag: 'testimonials' },
+        component: () => import('../views/provider-website/pages/Testimonials.vue'),
+      },
+      {
+        path: '/provider-website/blogs',
+        name: 'Provider Website Blogs',
+        meta: { websiteFlag: 'blog' },
+        component: () => import('../views/provider-website/common/Blogs.vue'),
+      },
+      {
+        path: '/provider-website/blogs/:id',
+        name: 'Provider Website Blog Detail',
+        meta: { websiteFlag: 'blog' },
+        component: () => import('../views/provider-website/pages/BlogDetail.vue'),
+      },
+      {
+        path: '/provider-website/faq',
+        name: 'Provider Website FAQ',
+        meta: { websiteFlag: 'faq' },
+        component: () => import('../views/provider-website/pages/Faq.vue'),
+      },
+      {
+        path: '/provider-website/join-us',
+        name: 'Provider Website Join Us',
+        meta: { websiteFlag: 'contact' },
+        component: () => import('../views/provider-website/common/JoinUs.vue'),
+      },
+      {
+        path: '/provider-website/login',
+        name: 'Provider Website login',
+        component: () => import('../views/provider-website/common/csLogin.vue'),
+      },
+      {
+        path: '/provider-website/quote',
+        name: 'Provider Website Quote Page',
+        component: () => import('../views/provider-website/common/quote.vue'),
+      },
+    ],
   },
 
 
@@ -516,6 +543,29 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.beforeEach(async (to) => {
+  if (!to.path.startsWith('/provider-website') || !to.meta?.websiteFlag) return true
+
+  const { useWebsiteStore } = await import('../views/provider-website/store/websiteStore.js')
+  const websiteStore = useWebsiteStore()
+  if (!websiteStore.loaded) await websiteStore.fetchWebsite()
+
+  const flagMap = {
+    about: websiteStore.showAbout,
+    services: websiteStore.showServices,
+    pricing: websiteStore.showPricing,
+    testimonials: websiteStore.showTestimonials,
+    blog: websiteStore.showBlog,
+    faq: websiteStore.showFaq,
+    contact: websiteStore.showContact,
+  }
+
+  if (flagMap[to.meta.websiteFlag] === false) {
+    return { path: '/provider-website', replace: true }
+  }
+  return true
 })
 
 export default router
