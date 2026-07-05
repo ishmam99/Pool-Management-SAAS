@@ -216,7 +216,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
+import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/AuthStore.js';
 import api from '../../services/api.js';
@@ -243,6 +243,7 @@ const customerLoading = ref(false);
 const customerSearch = ref('');
 const selectedCustomer = ref(null);
 const isLoadingCustomers = ref(false);
+const isDataLoaded = ref(false);
 
 // Toggle mobile
 const toggleMobileMenu = () => {
@@ -308,6 +309,9 @@ const toggleSelectCustomerDropdown = async () => {
 // Fetch customers
 const fetchCustomers = async () => {
   console.log('🔄 fetchCustomers called');
+  console.log('📊 authStore.userType:', authStore.userType);
+  console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
+  
   isLoadingCustomers.value = true;
   customerLoading.value = true;
   try {
@@ -347,6 +351,8 @@ const fetchCustomers = async () => {
       authStore.customerId = null;
       console.log('⚠️ No customers available');
     }
+    
+    isDataLoaded.value = true;
   } catch (error) {
     console.error('❌ Failed to fetch customers:', error);
   } finally {
@@ -354,6 +360,10 @@ const fetchCustomers = async () => {
     isLoadingCustomers.value = false;
     console.log('📊 Final state - selectedCustomer:', selectedCustomer.value?.contact_name);
     console.log('📊 Final state - authStore.customerId:', authStore.customerId);
+    
+    // Force update after data is loaded
+    await nextTick();
+    console.log('📊 After nextTick - selectedCustomer:', selectedCustomer.value?.contact_name);
   }
 };
 
@@ -404,11 +414,19 @@ const displayCustomerName = computed(() => {
   console.log('📊 selectedCustomer.value:', selectedCustomer.value);
   console.log('🆔 authStore.customerId:', authStore.customerId);
   console.log('📋 customers.value.length:', customers.value.length);
+  console.log('📌 isDataLoaded:', isDataLoaded.value);
+  console.log('📌 isLoadingCustomers:', isLoadingCustomers.value);
   
   // If customers are still loading, show loading text
   if (isLoadingCustomers.value && customers.value.length === 0) {
     console.log('⏳ Customers are loading...');
     return 'Loading...';
+  }
+  
+  // If data is loaded and we have no customers
+  if (isDataLoaded.value && customers.value.length === 0) {
+    console.log('ℹ️ No customers available');
+    return 'No Customers';
   }
   
   if (selectedCustomer.value) {
@@ -467,8 +485,10 @@ const handleLogout = async () => {
 };
 
 // Watch for customers changes and set selected customer
-watch(() => customers.value, (newCustomers) => {
-  console.log('🔄 customers.value changed, length:', newCustomers.length);
+watch(() => customers.value, (newCustomers, oldCustomers) => {
+  console.log('🔄 customers.value changed');
+  console.log('   Old length:', oldCustomers?.length || 0);
+  console.log('   New length:', newCustomers.length);
   
   if (newCustomers.length > 0 && authStore.customerId) {
     const found = newCustomers.find(c => String(c.id) === String(authStore.customerId));
@@ -523,11 +543,19 @@ watch(() => authStore.customerId, (newId, oldId) => {
 // On mount
 onMounted(async () => {
   console.log('🔧 Navbar mounted');
-  authStore.layout = authStore.layout ?? 'general';
+  console.log('📊 authStore.userType:', authStore.userType);
+  console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
+  console.log('📊 authStore.customerId:', authStore.customerId);
   
-  if (authStore.userType === 'provider') {
-    await fetchCustomers(); // Wait for customers to load
-    console.log('✅ Customers loaded in onMounted');
+  authStore.layout = authStore.layout ?? 'general';
+  selectedLayout.value = authStore.layout;
+  
+  // Always fetch customers if user is authenticated, regardless of userType
+  if (authStore.isAuthenticated) {
+    console.log('✅ User is authenticated, fetching customers...');
+    await fetchCustomers();
+  } else {
+    console.log('⚠️ User is not authenticated, skipping customer fetch');
   }
 
   document.addEventListener('keydown', handleEscape);
@@ -544,6 +572,12 @@ watch(() => authStore.userType, (newType) => {
   if (newType === 'provider') {
     fetchCustomers();
   }
+});
+
+// Watch for changes in authStore layout
+watch(() => authStore.layout, (newLayout) => {
+  console.log('🔄 authStore.layout changed:', newLayout);
+  selectedLayout.value = newLayout;
 });
 </script>
 
