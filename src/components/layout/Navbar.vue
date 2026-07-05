@@ -17,7 +17,7 @@
             </div>
           </div>
         </router-link>
-        <!-- {{ authStore.layout }} -->
+
         <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center space-x-1">
           <router-link to="/"
@@ -81,121 +81,103 @@
               </button>
 
               <!-- Select Customer (visible only when Customer Layout is active) -->
-             <div v-if="selectedLayout === 'customer'" class="relative">
-  <button 
-    @click="toggleSelectCustomerDropdown"
-    class="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 flex items-center gap-2 bg-white border-2 shadow-sm hover:shadow-md"
-    :class="[
-      selectedCustomer 
-        ? 'border-emerald-500 text-emerald-700 bg-emerald-50/50 hover:bg-emerald-50' 
-        : 'border-gray-300 text-gray-600 hover:border-emerald-400 hover:text-emerald-600'
-    ]"
-  >
-    <UserIcon class="w-4 h-4" />
-    <span>{{ selectedCustomer ? selectedCustomer.contact_name : 'Select Customer' }}</span>
-    <ChevronDownIcon 
-      class="w-4 h-4 transition-transform duration-200 ml-1"
-      :class="{ 'rotate-180': isCustomerDropdownOpen }"
-    />
-  </button>
+              <div v-if="selectedLayout === 'customer'" class="relative customer-dropdown-wrapper">
+                <button @click="toggleSelectCustomerDropdown"
+                  class="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 flex items-center gap-2 bg-white border-2 shadow-sm hover:shadow-md"
+                  :class="[
+                    selectedCustomer || authStore.customerId
+                      ? 'border-emerald-500 text-emerald-700 bg-emerald-50/50 hover:bg-emerald-50'
+                      : 'border-gray-300 text-gray-600 hover:border-emerald-400 hover:text-emerald-600'
+                  ]">
+                  <UserIcon class="w-4 h-4" />
+                  <span>{{ displayCustomerName }}</span>
+                  <ChevronDownIcon class="w-4 h-4 transition-transform duration-200 ml-1"
+                    :class="{ 'rotate-180': isCustomerDropdownOpen }" />
+                </button>
 
-  <!-- Dropdown -->
-  <div 
-    v-if="isCustomerDropdownOpen"
-    class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100/80 overflow-hidden z-50 backdrop-blur-sm animate-slideDown"
-  >
-    <!-- Search Input -->
-    <div class="p-3 border-b border-gray-100">
-      <div class="relative">
-        <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-        <input
-          v-model="customerSearch"
-          type="text"
-          placeholder="Search customers..."
-          class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200"
-        />
-      </div>
-    </div>
+                <!-- Dropdown -->
+                <div v-if="isCustomerDropdownOpen"
+                  class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100/80 overflow-hidden z-50 backdrop-blur-sm animate-slideDown">
+                  <!-- Search Input -->
+                  <div class="p-3 border-b border-gray-100">
+                    <div class="relative">
+                      <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input v-model="customerSearch" type="text" placeholder="Search customers..."
+                        class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200" />
+                    </div>
+                  </div>
 
-    <!-- Customer List -->
-    <div class="p-2 max-h-72 overflow-y-auto custom-scrollbar">
-      <div v-if="customerLoading" class="text-center py-6">
-        <div class="inline-block w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-2 text-sm text-gray-500">Loading customers...</p>
-      </div>
-      
-      <div v-else-if="filteredCustomers.length === 0" class="text-center py-8">
-        <UsersIcon class="w-10 h-10 text-gray-300 mx-auto mb-2" />
-        <p class="text-sm text-gray-500">No customers found</p>
-      </div>
+                  <!-- Customer List -->
+                  <div class="p-2 max-h-72 overflow-y-auto custom-scrollbar">
+                    <div v-if="customerLoading" class="text-center py-6">
+                      <div
+                        class="inline-block w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin">
+                      </div>
+                      <p class="mt-2 text-sm text-gray-500">Loading customers...</p>
+                    </div>
 
-      <button 
-        v-for="customer in filteredCustomers" 
-        :key="customer.id" 
-        @click="selectCustomer(customer)"
-        class="w-full text-left px-4 py-3 rounded-xl transition-all duration-150 flex items-center gap-3 group"
-        :class="[
-          authStore.customerId === customer.id
-            ? 'bg-emerald-50/80 ring-2 ring-emerald-500/30 shadow-sm'
-            : 'hover:bg-gray-50/80'
-        ]"
-      >
-        <!-- Avatar -->
-        <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold"
-          :class="[
-            authStore.customerId === customer.id
-              ? 'bg-emerald-500 text-white'
-              : 'bg-gray-200 text-gray-600 group-hover:bg-emerald-100 group-hover:text-emerald-700'
-          ]"
-        >
-          {{ getInitials(customer.contact_name) }}
-        </div>
+                    <div v-else-if="filteredCustomers.length === 0" class="text-center py-8">
+                      <UsersIcon class="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                      <p class="text-sm text-gray-500">No customers found</p>
+                    </div>
 
-        <div class="flex-1 min-w-0">
-          <div class="font-medium text-gray-800 truncate flex items-center gap-2">
-            {{ customer.contact_name }}
-            <span v-if="authStore.customerId === customer.id" class="flex-shrink-0">
-              <CheckIcon class="w-4 h-4 text-emerald-600" />
-            </span>
-          </div>
-          <div class="text-xs text-gray-500 truncate flex items-center gap-1">
-            <BuildingIcon class="w-3 h-3" />
-            {{ customer.company_name || 'No company' }}
-          </div>
-        </div>
+                    <button v-for="customer in filteredCustomers" :key="customer.id" @click="selectCustomer(customer)"
+                      class="w-full text-left px-4 py-3 rounded-xl transition-all duration-150 flex items-center gap-3 group"
+                      :class="[
+                        authStore.customerId === customer.id
+                          ? 'bg-emerald-50/80 ring-2 ring-emerald-500/30 shadow-sm'
+                          : 'hover:bg-gray-50/80'
+                      ]">
+                      <!-- Avatar -->
+                      <div
+                        class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold"
+                        :class="[
+                          authStore.customerId === customer.id
+                            ? 'bg-emerald-500 text-white'
+                            : 'bg-gray-200 text-gray-600 group-hover:bg-emerald-100 group-hover:text-emerald-700'
+                        ]">
+                        {{ getInitials(customer.contact_name) }}
+                      </div>
 
-        <!-- Status Badge -->
-        <div class="flex-shrink-0">
-          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-            :class="[
-              customer.status === 'active'
-                ? 'bg-emerald-100 text-emerald-700'
-                : 'bg-gray-100 text-gray-500'
-            ]"
-          >
-            <span class="w-1.5 h-1.5 rounded-full mr-1"
-              :class="[
-                customer.status === 'active' ? 'bg-emerald-500' : 'bg-gray-400'
-              ]"
-            ></span>
-            {{ customer.status || 'Active' }}
-          </span>
-        </div>
-      </button>
-    </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="font-medium text-gray-800 truncate flex items-center gap-2">
+                          {{ customer.contact_name }}
+                          <span v-if="authStore.customerId === customer.id" class="flex-shrink-0">
+                            <CheckIcon class="w-4 h-4 text-emerald-600" />
+                          </span>
+                        </div>
+                        <div class="text-xs text-gray-500 truncate flex items-center gap-1">
+                          <BuildingIcon class="w-3 h-3" />
+                          {{ customer.company_name || 'No company' }}
+                        </div>
+                      </div>
 
-    <!-- Footer -->
-    <div class="p-2 border-t border-gray-100 bg-gray-50/50">
-      <button 
-        @click="clearCustomerSelection"
-        class="w-full text-center text-xs text-gray-500 hover:text-red-600 transition-colors duration-200 py-1.5 rounded-lg hover:bg-red-50"
-        v-if="authStore.customerId"
-      >
-        Clear Selection
-      </button>
-    </div>
-  </div>
-</div>
+                      <!-- Status Badge -->
+                      <div class="flex-shrink-0">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" :class="[
+                          customer.status === 'active'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-gray-100 text-gray-500'
+                        ]">
+                          <span class="w-1.5 h-1.5 rounded-full mr-1" :class="[
+                            customer.status === 'active' ? 'bg-emerald-500' : 'bg-gray-400'
+                          ]"></span>
+                          {{ customer.status || 'Active' }}
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+
+                  <!-- Footer -->
+                  <div class="p-2 border-t border-gray-100 bg-gray-50/50">
+                    <button @click="clearCustomerSelection"
+                      class="w-full text-center text-xs text-gray-500 hover:text-red-600 transition-colors duration-200 py-1.5 rounded-lg hover:bg-red-50"
+                      v-if="authStore.customerId">
+                      Clear Selection
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- Logout Button – always visible for authenticated users -->
@@ -238,6 +220,14 @@ import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/AuthStore.js';
 import api from '../../services/api.js';
+import { 
+  UserIcon, 
+  ChevronDownIcon, 
+  SearchIcon, 
+  UsersIcon,
+  BuildingIcon,
+  CheckIcon 
+} from 'lucide-vue-next';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -252,6 +242,7 @@ const customers = ref([]);
 const customerLoading = ref(false);
 const customerSearch = ref('');
 const selectedCustomer = ref(null);
+const isLoadingCustomers = ref(false);
 
 // Toggle mobile
 const toggleMobileMenu = () => {
@@ -272,17 +263,34 @@ const closeMobileMenu = () => {
 
 // Layout toggle – saves to store
 const setLayout = (layout) => {
+  console.log('🔄 setLayout called with:', layout);
   selectedLayout.value = layout;
   authStore.layout = layout;
   if (layout === 'general') {
     selectedCustomer.value = null;
     isCustomerDropdownOpen.value = false;
+    router.push("/provider/dashboard");
+  } else {
+    if (authStore.customerId) {
+      // Try to find customer by ID
+      const found = customers.value.find(c => String(c.id) === String(authStore.customerId));
+      if (found) {
+        selectedCustomer.value = found;
+      } else if (customers.value.length > 0) {
+        selectedCustomer.value = customers.value[0];
+        authStore.customerId = customers.value[0].id;
+      }
+    } else if (customers.value.length > 0) {
+      selectedCustomer.value = customers.value[0];
+      authStore.customerId = customers.value[0].id;
+    }
+    router.push("/customer/dashboard");
   }
-  router.push("/provider/dashboard")
 };
 
 // Toggle the Select Customer dropdown
 const toggleSelectCustomerDropdown = async () => {
+  console.log('🔄 toggleSelectCustomerDropdown called');
   if (!isCustomerDropdownOpen.value) {
     if (selectedLayout.value !== 'customer') {
       setLayout('customer');
@@ -295,64 +303,77 @@ const toggleSelectCustomerDropdown = async () => {
   if (isCustomerDropdownOpen.value) {
     customerSearch.value = '';
   }
-  router.push("/customer/dashboard")
 };
 
 // Fetch customers
 const fetchCustomers = async () => {
+  console.log('🔄 fetchCustomers called');
+  isLoadingCustomers.value = true;
   customerLoading.value = true;
   try {
     const response = await api().get('/customer-management/customers-active');
     customers.value = response.data.data || [];
-    
-    // Auto-select customer if we have a stored ID or select first one
+    console.log('✅ Customers fetched:', customers.value.length);
+    console.log('📋 First customer:', customers.value[0]);
+
     if (customers.value.length > 0) {
       const storedId = authStore.customerId;
+      console.log('📌 storedId from authStore:', storedId);
+      
       if (storedId) {
-        const found = customers.value.find(c => c.id === storedId);
+        // Try to find the stored customer
+        const found = customers.value.find(c => String(c.id) === String(storedId));
+        console.log('🔎 Looking for storedId:', storedId, 'Found:', found ? found.contact_name : 'Not found');
+        
         if (found) {
           selectedCustomer.value = found;
+          // Make sure authStore has the correct ID
           authStore.customerId = found.id;
+          console.log('✅ Selected customer from storedId:', found.contact_name);
         } else {
-          // If stored ID not found, select first
+          // If stored ID not found, select first customer
           selectedCustomer.value = customers.value[0];
           authStore.customerId = customers.value[0].id;
+          console.log('⚠️ storedId not found, selected first customer:', customers.value[0].contact_name);
         }
       } else {
-        // Select first customer by default
+        // No stored ID, select first customer
         selectedCustomer.value = customers.value[0];
         authStore.customerId = customers.value[0].id;
+        console.log('ℹ️ No storedId, selected first customer:', customers.value[0].contact_name);
       }
     } else {
       selectedCustomer.value = null;
       authStore.customerId = null;
+      console.log('⚠️ No customers available');
     }
   } catch (error) {
-    console.error('Failed to fetch customers:', error);
+    console.error('❌ Failed to fetch customers:', error);
   } finally {
     customerLoading.value = false;
+    isLoadingCustomers.value = false;
+    console.log('📊 Final state - selectedCustomer:', selectedCustomer.value?.contact_name);
+    console.log('📊 Final state - authStore.customerId:', authStore.customerId);
   }
 };
 
 // Select a customer – saves to store
 const selectCustomer = (customer) => {
+  console.log('🔄 selectCustomer called with:', customer.contact_name);
   selectedCustomer.value = customer;
   authStore.customerId = customer.id;
   isCustomerDropdownOpen.value = false;
   customerSearch.value = '';
-  router.push("/customer/dashboard")
+  router.push("/customer/dashboard");
 };
 
 // Clear customer selection
 const clearCustomerSelection = () => {
+  console.log('🔄 clearCustomerSelection called');
   selectedCustomer.value = null;
   authStore.customerId = null;
   isCustomerDropdownOpen.value = false;
   customerSearch.value = '';
-  if (customers.value.length > 0) {
-    // Optionally select first customer again
-    // selectCustomer(customers.value[0]);
-  }
 };
 
 // Get initials from name
@@ -370,11 +391,53 @@ const getInitials = (name) => {
 const filteredCustomers = computed(() => {
   if (!customerSearch.value.trim()) return customers.value;
   const search = customerSearch.value.toLowerCase().trim();
-  return customers.value.filter(customer => 
+  return customers.value.filter(customer =>
     customer.contact_name?.toLowerCase().includes(search) ||
     customer.company_name?.toLowerCase().includes(search) ||
     customer.email?.toLowerCase().includes(search)
   );
+});
+
+// Display customer name computed
+const displayCustomerName = computed(() => {
+  console.log('🔍 displayCustomerName computed called');
+  console.log('📊 selectedCustomer.value:', selectedCustomer.value);
+  console.log('🆔 authStore.customerId:', authStore.customerId);
+  console.log('📋 customers.value.length:', customers.value.length);
+  
+  // If customers are still loading, show loading text
+  if (isLoadingCustomers.value && customers.value.length === 0) {
+    console.log('⏳ Customers are loading...');
+    return 'Loading...';
+  }
+  
+  if (selectedCustomer.value) {
+    console.log('✅ selectedCustomer found:', selectedCustomer.value.contact_name);
+    return selectedCustomer.value.contact_name;
+  }
+  
+  // Try to find by ID if selectedCustomer is null but authStore has ID
+  if (authStore.customerId && customers.value.length > 0) {
+    console.log('🔎 Searching for customer with ID:', authStore.customerId);
+    const found = customers.value.find(c => {
+      const match = String(c.id) === String(authStore.customerId);
+      console.log(`   Comparing c.id: ${c.id} (${typeof c.id}) with authStore.customerId: ${authStore.customerId} (${typeof authStore.customerId}) => ${match}`);
+      return match;
+    });
+    
+    if (found) {
+      console.log('✅ Found customer by ID:', found.contact_name);
+      selectedCustomer.value = found; // Update selectedCustomer
+      return found.contact_name;
+    } else {
+      console.log('❌ No customer found with ID:', authStore.customerId);
+    }
+  } else {
+    console.log('⚠️ No authStore.customerId or no customers available');
+  }
+  
+  console.log('❌ Returning "Select Customer"');
+  return 'Select Customer';
 });
 
 // Close dropdown on escape key
@@ -403,13 +466,70 @@ const handleLogout = async () => {
   }
 };
 
-// On mount
-onMounted(() => {
-  authStore.layout = authStore.layout ?? 'general';
-  if (authStore.userType === 'provider') {
-    fetchCustomers();
-  }
+// Watch for customers changes and set selected customer
+watch(() => customers.value, (newCustomers) => {
+  console.log('🔄 customers.value changed, length:', newCustomers.length);
   
+  if (newCustomers.length > 0 && authStore.customerId) {
+    const found = newCustomers.find(c => String(c.id) === String(authStore.customerId));
+    if (found) {
+      console.log('✅ Setting selectedCustomer from watch:', found.contact_name);
+      selectedCustomer.value = found;
+    } else if (!selectedCustomer.value) {
+      // If no selected customer and we have customers, select the first one
+      console.log('ℹ️ No matching customer found, selecting first');
+      selectedCustomer.value = newCustomers[0];
+      authStore.customerId = newCustomers[0].id;
+    }
+  } else if (newCustomers.length > 0 && !selectedCustomer.value) {
+    // If we have customers but no selectedCustomer, select first
+    console.log('ℹ️ No authStore.customerId but we have customers, selecting first');
+    selectedCustomer.value = newCustomers[0];
+    authStore.customerId = newCustomers[0].id;
+  }
+}, { immediate: true, deep: true });
+
+// Watch for authStore.customerId changes
+watch(() => authStore.customerId, (newId, oldId) => {
+  console.log('🔄 watch: authStore.customerId changed');
+  console.log('   Old ID:', oldId);
+  console.log('   New ID:', newId);
+  console.log('   customers.value.length:', customers.value.length);
+  
+  if (newId && customers.value.length > 0) {
+    // Use strict equality with type conversion
+    const found = customers.value.find(c => {
+      const match = String(c.id) === String(newId);
+      console.log(`   Comparing c.id: ${c.id} (${typeof c.id}) with newId: ${newId} (${typeof newId}) => ${match}`);
+      return match;
+    });
+    
+    if (found) {
+      console.log('✅ Found customer in watch:', found.contact_name);
+      selectedCustomer.value = found;
+    } else {
+      console.log('❌ Customer not found in watch, selecting first available');
+      selectedCustomer.value = customers.value[0] || null;
+      if (selectedCustomer.value) {
+        authStore.customerId = selectedCustomer.value.id;
+      }
+    }
+  } else if (!newId) {
+    console.log('⚠️ newId is null/undefined, setting selectedCustomer to null');
+    selectedCustomer.value = null;
+  }
+}, { immediate: true });
+
+// On mount
+onMounted(async () => {
+  console.log('🔧 Navbar mounted');
+  authStore.layout = authStore.layout ?? 'general';
+  
+  if (authStore.userType === 'provider') {
+    await fetchCustomers(); // Wait for customers to load
+    console.log('✅ Customers loaded in onMounted');
+  }
+
   document.addEventListener('keydown', handleEscape);
   document.addEventListener('click', handleClickOutside);
 });
@@ -420,19 +540,9 @@ onUnmounted(() => {
 });
 
 watch(() => authStore.userType, (newType) => {
+  console.log('🔄 authStore.userType changed:', newType);
   if (newType === 'provider') {
     fetchCustomers();
-  }
-});
-
-watch(() => authStore.customerId, (newId) => {
-  if (newId && customers.value.length > 0) {
-    const found = customers.value.find(c => c.id === newId);
-    if (found) {
-      selectedCustomer.value = found;
-    }
-  } else if (!newId) {
-    selectedCustomer.value = null;
   }
 });
 </script>
@@ -444,6 +554,7 @@ watch(() => authStore.customerId, (newId) => {
     opacity: 0;
     transform: translateY(-8px) scale(0.98);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -524,9 +635,12 @@ watch(() => authStore.customerId, (newId) => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -534,7 +648,7 @@ watch(() => authStore.customerId, (newId) => {
 
 /* Dropdown shadow */
 .dropdown-shadow {
-  box-shadow: 
+  box-shadow:
     0 20px 60px -12px rgba(0, 0, 0, 0.15),
     0 4px 18px 0 rgba(0, 0, 0, 0.05);
 }
@@ -581,6 +695,7 @@ watch(() => authStore.customerId, (newId) => {
     transform: scale(0);
     opacity: 0;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -614,4 +729,3 @@ watch(() => authStore.customerId, (newId) => {
   transition: opacity 0s;
 }
 </style>
-
