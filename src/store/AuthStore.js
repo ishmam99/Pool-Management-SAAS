@@ -9,8 +9,9 @@ export const useAuthStore = defineStore('authStore', {
     role: null,
     currentDashboard: null,
     companyId: null,
-    layout: 'general',          //  or 'customer'
-    customerId: null,      // selected customer ID
+    layout: 'general',         
+    customerId: null,
+    tenantId: null,
     companyName: null,
     sidebarOpenr: true,
     user: {
@@ -78,8 +79,9 @@ export const useAuthStore = defineStore('authStore', {
       'companyName',
       'sidebarOpen',
       'user',
-      'layout',      // add this
-      'customerId'   // add this
+      'layout',      
+      'customerId',  
+      'tenantId'     
     ]
   }
 })

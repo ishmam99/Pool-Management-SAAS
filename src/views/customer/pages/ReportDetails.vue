@@ -59,37 +59,91 @@
         </div>
       </div>
 
-      <!-- Checklist -->
+      <!-- Checklist Section - Redesigned -->
       <div class="p-6">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4">Checklist</h3>
-        <div v-if="order.checklist && order.checklist.length" class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-slate-200 border border-slate-200 rounded-lg">
-            <thead class="bg-slate-800 text-white">
-              <tr>
-                <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">#</th>
-                <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Item</th>
-                <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Status</th>
-                <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider">Activities</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200">
-              <tr v-for="(item, idx) in order.checklist" :key="idx" class="even:bg-slate-50">
-                <td class="px-4 py-2 text-center">{{ idx + 1 }}</td>
-                <td class="px-4 py-2">{{ item.item || '—' }}</td>
-                <td class="px-4 py-2 text-center">
-                  <span :class="{
-                    'bg-emerald-100 text-emerald-800': item.isChecked === 'true' || item.isChecked === true,
-                    'bg-red-100 text-red-800': item.isChecked !== 'true' && item.isChecked !== true,
-                  }" class="px-2.5 py-0.5 rounded-full text-xs font-medium">
-                    {{ item.isChecked === 'true' || item.isChecked === true ? '✓ Done' : '✗ Pending' }}
-                  </span>
-                </td>
-                <td class="px-4 py-2">{{ item.activities || '—' }}</td>
-              </tr>
-            </tbody>
-          </table>
+        <h3 class="text-lg font-semibold text-slate-800 mb-4">Service Tasks</h3>
+        
+        <!-- Empty State -->
+        <div v-if="!order.checklist || order.checklist.length === 0" class="text-center py-12">
+          <div class="text-6xl mb-4">📋</div>
+          <p class="text-slate-500 text-lg">No checklist items available.</p>
         </div>
-        <div v-else class="text-slate-500 text-sm">No checklist items available.</div>
+
+        <!-- Checklist Cards Grid -->
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div 
+            v-for="(item, idx) in order.checklist" 
+            :key="idx"
+            class="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden"
+          >
+            <div class="p-5">
+              <!-- Status Badge -->
+              <div class="flex justify-between items-start mb-3">
+                <span 
+                  :class="{
+                    'bg-emerald-100 text-emerald-800 border-emerald-200': isChecked(item),
+                    'bg-slate-100 text-slate-600 border-slate-200': !isChecked(item)
+                  }"
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border"
+                >
+                  <span v-if="isChecked(item)" class="text-emerald-600">✓</span>
+                  <span v-else class="text-slate-400">○</span>
+                  {{ isChecked(item) ? 'Completed' : 'Pending' }}
+                </span>
+                
+                <!-- Service ID Badge -->
+                <span class="text-xs text-slate-400 font-medium bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">
+                  #{{ item.service_id || 'N/A' }}
+                </span>
+              </div>
+
+              <!-- Service Name -->
+              <h4 class="text-lg font-semibold text-slate-800 mb-3">
+                {{ item.item || 'Unnamed Service' }}
+              </h4>
+
+              <!-- Activity Notes -->
+              <div class="mb-4">
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Activity</span>
+                <p class="mt-1 text-sm text-slate-700 bg-slate-50 rounded-md p-3 border border-slate-100">
+                  {{ item.activities || 'No activity provided.' }}
+                </p>
+              </div>
+
+              <!-- Photos Section -->
+              <div>
+                <span class="text-xs font-medium text-slate-500 uppercase tracking-wider block mb-2">Photos</span>
+                
+                <div v-if="item.photos && item.photos.length > 0" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <div 
+                    v-for="(photo, photoIdx) in item.photos" 
+                    :key="photoIdx"
+                    class="relative group cursor-pointer rounded-lg overflow-hidden border border-slate-200 hover:border-indigo-400 transition-colors"
+                    @click="openPhotoPreview(photo)"
+                  >
+                    <img 
+                      :src="buildImageUrl(photo.path)" 
+                      :alt="photo.type || 'Service photo'"
+                      class="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-200"
+                      @error="handleImageError"
+                    />
+                    <span 
+                      v-if="photo.type"
+                      class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] font-medium px-2 py-0.5 rounded-md backdrop-blur-sm"
+                    >
+                      {{ photo.type }}
+                    </span>
+                  </div>
+                </div>
+
+                <div v-else class="text-sm text-slate-400 bg-slate-50 rounded-md p-3 border border-slate-100 text-center">
+                  <span class="block text-2xl mb-1">🖼️</span>
+                  No photos uploaded.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Download PDF button -->
         <div class="mt-6 flex justify-end">
@@ -102,6 +156,41 @@
             </svg>
             Download PDF
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Photo Preview Modal -->
+    <div 
+      v-if="previewPhoto" 
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+      @click="closePhotoPreview"
+    >
+      <div 
+        class="relative max-w-4xl max-h-[90vh] bg-white rounded-xl shadow-2xl overflow-hidden"
+        @click.stop
+      >
+        <button 
+          @click="closePhotoPreview"
+          class="absolute top-3 right-3 z-10 bg-black/60 hover:bg-black/80 text-white rounded-full p-2 transition"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        <div class="p-4 bg-slate-50 border-b border-slate-200">
+          <span class="text-sm font-medium text-slate-600">
+            {{ previewPhoto.type || 'Service Photo' }}
+          </span>
+        </div>
+        
+        <div class="flex items-center justify-center p-4 bg-black/5 min-h-[200px]">
+          <img 
+            :src="buildImageUrl(previewPhoto.path)" 
+            :alt="previewPhoto.type || 'Service photo'"
+            class="max-w-full max-h-[70vh] object-contain rounded-lg"
+          />
         </div>
       </div>
     </div>
@@ -119,6 +208,35 @@ const route = useRoute()
 const order = ref(null)
 const loading = ref(true)
 const error = ref(null)
+const previewPhoto = ref(null)
+
+// Helper: Build image URL
+const buildImageUrl = (path) => {
+  if (!path) return ''
+  return `${import.meta.env.VITE_BASE_URL}/storage/${path}`
+}
+
+// Helper: Check if item is checked
+const isChecked = (item) => {
+  return item.isChecked === true || item.isChecked === 'true'
+}
+
+// Handle image loading errors
+const handleImageError = (e) => {
+  e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect width="200" height="200" fill="%23f1f5f9"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" fill="%2394a3b8" font-size="14" font-family="sans-serif"%3ENo Image%3C/text%3E%3C/svg%3E'
+}
+
+// Open photo preview
+const openPhotoPreview = (photo) => {
+  previewPhoto.value = photo
+  document.body.style.overflow = 'hidden'
+}
+
+// Close photo preview
+const closePhotoPreview = () => {
+  previewPhoto.value = null
+  document.body.style.overflow = ''
+}
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '—'
@@ -144,7 +262,7 @@ const fetchOrder = async () => {
   }
 }
 
-// Reuse the same PDF function (copy from list or import)
+// Updated PDF generation with checklist enhancements
 const downloadPDF = (report) => {
   if (!report) return
   const doc = new jsPDF('p', 'mm', 'a4')
@@ -198,23 +316,38 @@ const downloadPDF = (report) => {
     doc.text('Checklist', margin, y)
     y += 6
 
-    const tableData = checklist.map((item, idx) => [
-      String(idx + 1),
-      item.item || '—',
-      item.isChecked === 'true' || item.isChecked === true ? '✓ Done' : '✗ Pending',
-      item.activities || '—'
-    ])
+    const tableData = checklist.map((item, idx) => {
+      const status = isChecked(item) ? '✓ Done' : '✗ Pending'
+      const photoCount = item.photos?.length || 0
+      const photosText = photoCount > 0 ? `Yes (${photoCount})` : 'No'
+      
+      return [
+        String(idx + 1),
+        item.item || '—',
+        String(item.service_id || 'N/A'),
+        status,
+        item.activities || '—',
+        photosText
+      ]
+    })
 
     autoTable(doc, {
       startY: y,
-      head: [['#', 'Item', 'Status', 'Activities']],
+      head: [['#', 'Service Name', 'Service ID', 'Status', 'Activities', 'Photos']],
       body: tableData,
       theme: 'striped',
-      headStyles: { fillColor: [30, 58, 138], textColor: [255, 255, 255], fontSize: 10, halign: 'center' },
-      styles: { fontSize: 9, cellPadding: 3 },
+      headStyles: { 
+        fillColor: [30, 58, 138], 
+        textColor: [255, 255, 255], 
+        fontSize: 9, 
+        halign: 'center' 
+      },
+      styles: { fontSize: 8, cellPadding: 2.5 },
       columnStyles: {
-        0: { cellWidth: 10, halign: 'center' },
-        2: { cellWidth: 30, halign: 'center' },
+        0: { cellWidth: 8, halign: 'center' },
+        2: { cellWidth: 18, halign: 'center' },
+        3: { cellWidth: 22, halign: 'center' },
+        5: { cellWidth: 20, halign: 'center' },
       },
       margin: { left: margin, right: margin }
     })

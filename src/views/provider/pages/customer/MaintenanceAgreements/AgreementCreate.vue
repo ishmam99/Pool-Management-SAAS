@@ -462,8 +462,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, onMounted, computed, watch } from 'vue'
 import api from '../../../../../services/api'
+import { useAuthStore } from '../../../../../store/AuthStore'
+
+const authStore = useAuthStore()
 
 // Form data
 const form = reactive({
@@ -575,8 +578,10 @@ const formatDate = (dateString) => {
 
 const fetchCustomers = async () => {
     loading.customers = true
+
+    const url = authStore.authType == 'admin' ? `/customer-management/customers-advance?tenant_id=${authStore.tenantId}` : '/customer-management/customers-advance'
     try {
-        const response = await api().get('/customer-management/customers-advance')
+        const response = await api().get(url)
         customers.value = response.data?.data ?? []
     } catch (error) {
         console.error('Error fetching customers:', error)
@@ -611,7 +616,7 @@ const fetchWorkOrders = async () => {
 // Fetch term templates
 const fetchTermTemplates = async () => {
     loading.termTemplates = true
-
+const url = authStore.authType == 'admin' ? `/term-templates/templates?tenant_id=${authStore.tenantId}` : '/term-templates/templates'
     try {
         const response = await api().get('/term-templates/templates')
         termTemplates.value = response.data?.data || []
@@ -704,9 +709,15 @@ const createAgreement = async () => {
     }
 }
 
+watch(() => authStore.tenantId, () => {
+  fetchCustomers();
+    fetchTermTemplates()
+})
+
+
 // Lifecycle
 onMounted(() => {
     fetchCustomers()
-    fetchTermTemplates() // Added to fetch templates on mount
+    fetchTermTemplates() 
 })
 </script>

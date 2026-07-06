@@ -151,7 +151,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import Swal from "sweetalert2";
 import {
   customerPortalApi,
@@ -163,6 +163,9 @@ import {
   formatStatus,
   statusBadgeClass,
 } from "../utils/formatters.js";
+import { useAuthStore } from '../../../store/AuthStore.js'
+
+const authStore = useAuthStore()
 
 const loading = ref(true);
 const invoices = ref([]);
@@ -203,7 +206,19 @@ const fetchInvoices = async () => {
   }
 };
 
+watch(
+  () => authStore.customerId,
+  (newId, oldId) => {
+    if (newId === oldId) return
+
+    fetchInvoices()
+  }
+)
+
+
 onMounted(fetchInvoices);
+
+
 </script>
 
 <style scoped>

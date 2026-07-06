@@ -200,6 +200,7 @@ import Swal from 'sweetalert2'
 import AdminStatCard from '../../components/AdminStatCard.vue'
 import { adminApi, normalizeList, getApiErrorMessage } from '../../../../services/adminApi.js'
 import { formatCurrency, formatDate, formatStatus, statusBadgeClass } from '../../utils/formatters.js'
+import { useAuthStore } from '../../../../store/AuthStore.js'
 
 Chart.register(DoughnutController, ArcElement, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend)
 
@@ -207,6 +208,7 @@ const loading = ref(true)
 const tenants = ref([])
 const admins = ref([])
 const subscriptions = ref([])
+const authStore = useAuthStore()
 
 const tenantStats = ref({ total: 0, active: 0, trial: 0, suspended: 0, cancelled: 0, past_due: 0 })
 const adminStats = ref({ total: 0, super_admin: 0, admin: 0, support: 0 })

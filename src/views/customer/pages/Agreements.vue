@@ -99,10 +99,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { customerPortalApi, getApiErrorMessage } from '../../../services/customerPortalApi.js'
 import { formatCurrency, formatDate, formatStatus, statusBadgeClass } from '../utils/formatters.js'
+import { useAuthStore } from '../../../store/AuthStore.js'
+
+const authStore = useAuthStore()
 
 const loading = ref(true)
 const agreements = ref([])
@@ -118,6 +121,16 @@ const fetchAgreements = async () => {
     loading.value = false
   }
 }
+
+watch(
+  () => authStore.customerId,
+  (newId, oldId) => {
+    if (newId === oldId) return
+
+    fetchAgreements()
+  }
+)
+
 
 onMounted(fetchAgreements)
 </script>

@@ -61,7 +61,7 @@
         <!-- Right side: auth & layout controls -->
         <div class="flex gap-2 items-center">
           <template v-if="authStore.isAuthenticated">
-            <!-- Layout Toggle Group – only for providers -->
+            <!-- Provider Layout Controls -->
             <div v-if="authStore.authType === 'provider'"
               class="flex items-center space-x-1 ml-2 border-l border-gray-200 pl-3">
               <!-- General Layout -->
@@ -95,7 +95,7 @@
                     :class="{ 'rotate-180': isCustomerDropdownOpen }" />
                 </button>
 
-                <!-- Dropdown -->
+                <!-- Customer Dropdown -->
                 <div v-if="isCustomerDropdownOpen"
                   class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100/80 overflow-hidden z-50 backdrop-blur-sm animate-slideDown">
                   <!-- Search Input -->
@@ -180,6 +180,128 @@
               </div>
             </div>
 
+            <!-- Admin Layout Controls -->
+            <div v-if="authStore.authType === 'admin'"
+              class="flex items-center space-x-1 ml-2 border-l border-gray-200 pl-3">
+              <!-- General Layout -->
+              <button @click="setAdminLayout('general')"
+                class="px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 border-2" :class="selectedAdminLayout === 'general'
+                  ? 'bg-purple-500 text-white border-purple-500 shadow-md'
+                  : 'bg-transparent text-gray-600 border-gray-300 hover:bg-purple-50/50 hover:border-purple-300'">
+                General Layout
+              </button>
+
+              <!-- Tenant Layout -->
+              <button @click="setAdminLayout('tenant')"
+                class="px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 border-2" :class="selectedAdminLayout === 'tenant'
+                  ? 'bg-purple-500 text-white border-purple-500 shadow-md'
+                  : 'bg-transparent text-gray-600 border-gray-300 hover:bg-purple-50/50 hover:border-purple-300'">
+                Tenant Layout
+              </button>
+
+              <!-- Select Tenant (visible only when Tenant Layout is active) -->
+              <div v-if="selectedAdminLayout === 'tenant'" class="relative tenant-dropdown-wrapper">
+                <button @click="toggleSelectTenantDropdown"
+                  class="px-4 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 flex items-center gap-2 bg-white border-2 shadow-sm hover:shadow-md"
+                  :class="[
+                    selectedTenant || authStore.tenantId
+                      ? 'border-purple-500 text-purple-700 bg-purple-50/50 hover:bg-purple-50'
+                      : 'border-gray-300 text-gray-600 hover:border-purple-400 hover:text-purple-600'
+                  ]">
+                  <UserIcon class="w-4 h-4" />
+                  <span>{{ displayTenantName }}</span>
+                  <ChevronDownIcon class="w-4 h-4 transition-transform duration-200 ml-1"
+                    :class="{ 'rotate-180': isTenantDropdownOpen }" />
+                </button>
+
+                <!-- Tenant Dropdown -->
+                <div v-if="isTenantDropdownOpen"
+                  class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100/80 overflow-hidden z-50 backdrop-blur-sm animate-slideDown">
+                  <!-- Search Input -->
+                  <div class="p-3 border-b border-gray-100">
+                    <div class="relative">
+                      <SearchIcon class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input v-model="tenantSearch" type="text" placeholder="Search tenants..."
+                        class="w-full pl-9 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200" />
+                    </div>
+                  </div>
+
+                  <!-- Tenant List -->
+                  <div class="p-2 max-h-72 overflow-y-auto custom-scrollbar">
+                    <div v-if="tenantLoading" class="text-center py-6">
+                      <div
+                        class="inline-block w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin">
+                      </div>
+                      <p class="mt-2 text-sm text-gray-500">Loading tenants...</p>
+                    </div>
+
+                    <div v-else-if="filteredTenants.length === 0" class="text-center py-8">
+                      <UsersIcon class="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                      <p class="text-sm text-gray-500">No tenants found</p>
+                    </div>
+
+                    <button v-for="tenant in filteredTenants" :key="tenant.id" @click="selectTenant(tenant)"
+                      class="w-full text-left px-4 py-3 rounded-xl transition-all duration-150 flex items-center gap-3 group"
+                      :class="[
+                        authStore.tenantId === tenant.id
+                          ? 'bg-purple-50/80 ring-2 ring-purple-500/30 shadow-sm'
+                          : 'hover:bg-gray-50/80'
+                      ]">
+                      <!-- Avatar -->
+                      <div
+                        class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold"
+                        :class="[
+                          authStore.tenantId === tenant.id
+                            ? 'bg-purple-500 text-white'
+                            : 'bg-gray-200 text-gray-600 group-hover:bg-purple-100 group-hover:text-purple-700'
+                        ]">
+                        {{ getInitials(tenant.company_name) }}
+                      </div>
+
+                      <div class="flex-1 min-w-0">
+                        <div class="font-medium text-gray-800 truncate flex items-center gap-2">
+                          {{ tenant.company_name }}
+                          <span v-if="authStore.tenantId === tenant.id" class="flex-shrink-0">
+                            <CheckIcon class="w-4 h-4 text-purple-600" />
+                          </span>
+                        </div>
+                        <div class="text-xs text-gray-500 truncate flex items-center gap-1">
+                          <BuildingIcon class="w-3 h-3" />
+                          {{ tenant.email || 'No email' }}
+                        </div>
+                      </div>
+
+                      <!-- Status Badge -->
+                      <div class="flex-shrink-0">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" :class="[
+                          tenant.status === 'active'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : tenant.status === 'trial'
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-gray-100 text-gray-500'
+                        ]">
+                          <span class="w-1.5 h-1.5 rounded-full mr-1" :class="[
+                            tenant.status === 'active' ? 'bg-emerald-500' : 
+                            tenant.status === 'trial' ? 'bg-blue-500' : 'bg-gray-400'
+                          ]"></span>
+                          {{ tenant.status || 'Active' }}
+                        </span>
+                      </div>
+                    </button>
+                  </div>
+
+                  <!-- Footer -->
+                  <div class="p-2 border-t border-gray-100 bg-gray-50/50">
+                    <button @click="clearTenantSelection"
+                      class="w-full text-center text-xs text-gray-500 hover:text-red-600 transition-colors duration-200 py-1.5 rounded-lg hover:bg-red-50"
+                      v-if="authStore.tenantId">
+                      Clear Selection
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Logout Button – always visible for authenticated users -->
             <button @click="handleLogout"
               class="px-4 py-2 font-medium text-white bg-gradient-to-r from-red-600 to-red-700 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_12px_rgba(220,38,38,0.4)]">
@@ -216,7 +338,6 @@
 </template>
 
 <script setup>
-// import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
 import { ref, onMounted, watch, computed, onUnmounted, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '../../store/AuthStore.js';
@@ -239,10 +360,10 @@ const dropdownWrapper = ref(null);
 const isMobileOpen = ref(false);
 const isMobileDropdownOpen = ref(false);
 
-// Layout state
+// Provider Layout state
 const selectedLayout = ref(authStore.layout || 'general');
 
-// Customer dropdown states
+// Customer dropdown states (Provider)
 const isCustomerDropdownOpen = ref(false);
 const customers = ref([]);
 const customerLoading = ref(false);
@@ -250,6 +371,18 @@ const customerSearch = ref('');
 const selectedCustomer = ref(null);
 const isLoadingCustomers = ref(false);
 const isDataLoaded = ref(false);
+
+// Admin Layout state
+const selectedAdminLayout = ref(authStore.adminLayout || 'general');
+
+// Tenant dropdown states (Admin)
+const tenants = ref([]);
+const tenantLoading = ref(false);
+const tenantSearch = ref('');
+const selectedTenant = ref(null);
+const isTenantDropdownOpen = ref(false);
+const isLoadingTenants = ref(false);
+const isTenantDataLoaded = ref(false);
 
 // Toggle mobile
 const toggleMobileMenu = () => {
@@ -268,15 +401,15 @@ const closeMobileMenu = () => {
   isMobileDropdownOpen.value = false;
 };
 
-// Layout toggle – saves to store
+// ============ PROVIDER FUNCTIONS ============
+
+// Provider Layout toggle – saves to store
 const setLayout = (layout) => {
-  console.log('🔄 setLayout called with:', layout);
+  console.log('🔄 Provider setLayout called with:', layout);
   selectedLayout.value = layout;
   authStore.layout = layout;
   // If switching to general, clear customer selection
   if (layout === 'general') {
-    selectedCustomer.value = null;
-    authStore.customerId = null;
     isCustomerDropdownOpen.value = false;
     router.push("/provider/dashboard");
   } else {
@@ -314,7 +447,7 @@ const toggleSelectCustomerDropdown = async () => {
   }
 };
 
-// Fetch customers (separate function, used also on mount)
+// Fetch customers (Provider)
 const fetchCustomers = async () => {
   console.log('🔄 fetchCustomers called');
   console.log('📊 authStore.userType:', authStore.userType);
@@ -469,17 +602,221 @@ const displayCustomerName = computed(() => {
   return 'Select Customer';
 });
 
+// ============ ADMIN FUNCTIONS ============
+
+// Admin Layout toggle – saves to store
+const setAdminLayout = (layout) => {
+  console.log('🔄 Admin setAdminLayout called with:', layout);
+  selectedAdminLayout.value = layout;
+  authStore.adminLayout = layout;
+  
+  if (layout === 'general') {
+    isTenantDropdownOpen.value = false;
+    router.push("/admin/dashboard");
+  } else {
+    // Tenant layout - navigate to provider dashboard
+    if (authStore.tenantId) {
+      // Try to find tenant by ID
+      const found = tenants.value.find(t => String(t.id) === String(authStore.tenantId));
+      if (found) {
+        selectedTenant.value = found;
+      } else if (tenants.value.length > 0) {
+        selectedTenant.value = tenants.value[0];
+        authStore.tenantId = tenants.value[0].id;
+      }
+    } else if (tenants.value.length > 0) {
+      selectedTenant.value = tenants.value[0];
+      authStore.tenantId = tenants.value[0].id;
+    }
+    router.push("/provider/dashboard");
+  }
+};
+
+// Toggle the Select Tenant dropdown
+const toggleSelectTenantDropdown = async () => {
+  console.log('🔄 toggleSelectTenantDropdown called');
+  if (!isTenantDropdownOpen.value) {
+    if (selectedAdminLayout.value !== 'tenant') {
+      setAdminLayout('tenant');
+    }
+    if (tenants.value.length === 0) {
+      await fetchTenants();
+    }
+  }
+  isTenantDropdownOpen.value = !isTenantDropdownOpen.value;
+  if (isTenantDropdownOpen.value) {
+    tenantSearch.value = '';
+  }
+};
+
+// Fetch tenants (Admin)
+const fetchTenants = async () => {
+  console.log('🔄 fetchTenants called');
+  console.log('📊 authStore.authType:', authStore.authType);
+  console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
+
+  isLoadingTenants.value = true;
+  tenantLoading.value = true;
+  try {
+    const response = await api().get('/tenant/tenants');
+    tenants.value = response.data.data || [];
+    console.log('✅ Tenants fetched:', tenants.value.length);
+    console.log('📋 First tenant:', tenants.value[0]);
+
+    if (tenants.value.length > 0) {
+      const storedId = authStore.tenantId;
+      console.log('📌 storedId from authStore:', storedId);
+
+      if (storedId) {
+        // Try to find the stored tenant
+        const found = tenants.value.find(t => String(t.id) === String(storedId));
+        console.log('🔎 Looking for storedId:', storedId, 'Found:', found ? found.company_name : 'Not found');
+
+        if (found) {
+          selectedTenant.value = found;
+          // Make sure authStore has the correct ID
+          authStore.tenantId = found.id;
+          console.log('✅ Selected tenant from storedId:', found.company_name);
+        } else {
+          // If stored ID not found, select first tenant
+          selectedTenant.value = tenants.value[0];
+          authStore.tenantId = tenants.value[0].id;
+          console.log('⚠️ storedId not found, selected first tenant:', tenants.value[0].company_name);
+        }
+      } else {
+        // No stored ID, select first tenant
+        selectedTenant.value = tenants.value[0];
+        authStore.tenantId = tenants.value[0].id;
+        console.log('ℹ️ No storedId, selected first tenant:', tenants.value[0].company_name);
+      }
+    } else {
+      selectedTenant.value = null;
+      authStore.tenantId = null;
+      console.log('⚠️ No tenants available');
+    }
+
+    isTenantDataLoaded.value = true;
+  } catch (error) {
+    console.error('❌ Failed to fetch tenants:', error);
+  } finally {
+    tenantLoading.value = false;
+    isLoadingTenants.value = false;
+    console.log('📊 Final state - selectedTenant:', selectedTenant.value?.company_name);
+    console.log('📊 Final state - authStore.tenantId:', authStore.tenantId);
+
+    // Force update after data is loaded
+    await nextTick();
+    console.log('📊 After nextTick - selectedTenant:', selectedTenant.value?.company_name);
+  }
+};
+
+// Select a tenant – saves to store and navigates
+const selectTenant = (tenant) => {
+  console.log('🔄 selectTenant called with:', tenant.company_name);
+  selectedTenant.value = tenant;
+  authStore.tenantId = tenant.id;
+  // Ensure layout is tenant
+  if (selectedAdminLayout.value !== 'tenant') {
+    setAdminLayout('tenant');
+  }
+  isTenantDropdownOpen.value = false;
+  tenantSearch.value = '';
+};
+
+// Clear tenant selection – resets to general layout
+const clearTenantSelection = () => {
+  console.log('🔄 clearTenantSelection called');
+  selectedTenant.value = null;
+  authStore.tenantId = null;
+  isTenantDropdownOpen.value = false;
+  tenantSearch.value = '';
+};
+
+// Filtered tenants based on search
+const filteredTenants = computed(() => {
+  if (!tenantSearch.value.trim()) return tenants.value;
+  const search = tenantSearch.value.toLowerCase().trim();
+  return tenants.value.filter(tenant =>
+    tenant.company_name?.toLowerCase().includes(search) ||
+    tenant.email?.toLowerCase().includes(search) ||
+    tenant.phone?.toLowerCase().includes(search)
+  );
+});
+
+// Display tenant name computed
+const displayTenantName = computed(() => {
+  console.log('🔍 displayTenantName computed called');
+  console.log('📊 selectedTenant.value:', selectedTenant.value);
+  console.log('🆔 authStore.tenantId:', authStore.tenantId);
+  console.log('📋 tenants.value.length:', tenants.value.length);
+  console.log('📌 isTenantDataLoaded:', isTenantDataLoaded.value);
+  console.log('📌 isLoadingTenants:', isLoadingTenants.value);
+
+  // If tenants are still loading, show loading text
+  if (isLoadingTenants.value && tenants.value.length === 0) {
+    console.log('⏳ Tenants are loading...');
+    return 'Loading...';
+  }
+
+  // If data is loaded and we have no tenants
+  if (isTenantDataLoaded.value && tenants.value.length === 0) {
+    console.log('ℹ️ No tenants available');
+    return 'No Tenants';
+  }
+
+  if (selectedTenant.value) {
+    console.log('✅ selectedTenant found:', selectedTenant.value.company_name);
+    return selectedTenant.value.company_name;
+  }
+
+  // Try to find by ID if selectedTenant is null but authStore has ID
+  if (authStore.tenantId && tenants.value.length > 0) {
+    console.log('🔎 Searching for tenant with ID:', authStore.tenantId);
+    const found = tenants.value.find(t => {
+      const match = String(t.id) === String(authStore.tenantId);
+      console.log(`   Comparing t.id: ${t.id} (${typeof t.id}) with authStore.tenantId: ${authStore.tenantId} (${typeof authStore.tenantId}) => ${match}`);
+      return match;
+    });
+
+    if (found) {
+      console.log('✅ Found tenant by ID:', found.company_name);
+      selectedTenant.value = found; // Update selectedTenant
+      return found.company_name;
+    } else {
+      console.log('❌ No tenant found with ID:', authStore.tenantId);
+    }
+  } else {
+    console.log('⚠️ No authStore.tenantId or no tenants available');
+  }
+
+  console.log('❌ Returning "Select Tenant"');
+  return 'Select Tenant';
+});
+
+// ============ COMMON FUNCTIONS ============
+
 // Close dropdown on escape key
 const handleEscape = (event) => {
-  if (event.key === 'Escape' && isCustomerDropdownOpen.value) {
-    isCustomerDropdownOpen.value = false;
+  if (event.key === 'Escape') {
+    if (isCustomerDropdownOpen.value) {
+      isCustomerDropdownOpen.value = false;
+    }
+    if (isTenantDropdownOpen.value) {
+      isTenantDropdownOpen.value = false;
+    }
   }
 };
 
 // Close dropdown on click outside
 const handleClickOutside = (event) => {
+  // Close customer dropdown if clicked outside
   if (dropdownWrapper.value && !dropdownWrapper.value.contains(event.target)) {
     isCustomerDropdownOpen.value = false;
+  }
+  // Close tenant dropdown if clicked outside
+  const tenantDropdownWrapper = document.querySelector('.tenant-dropdown-wrapper');
+  if (tenantDropdownWrapper && !tenantDropdownWrapper.contains(event.target)) {
+    isTenantDropdownOpen.value = false;
   }
 };
 
@@ -494,7 +831,9 @@ const handleLogout = async () => {
   }
 };
 
-// Watch for customers changes and set selected customer
+// ============ WATCHES ============
+
+// Watch for customers changes and set selected customer (Provider)
 watch(() => customers.value, (newCustomers, oldCustomers) => {
   console.log('🔄 customers.value changed');
   console.log('   Old length:', oldCustomers?.length || 0);
@@ -519,7 +858,7 @@ watch(() => customers.value, (newCustomers, oldCustomers) => {
   }
 }, { immediate: true, deep: true });
 
-// Watch for authStore.customerId changes
+// Watch for authStore.customerId changes (Provider)
 watch(() => authStore.customerId, (newId, oldId) => {
   console.log('🔄 watch: authStore.customerId changed');
   console.log('   Old ID:', oldId);
@@ -550,22 +889,96 @@ watch(() => authStore.customerId, (newId, oldId) => {
   }
 }, { immediate: true });
 
-// On mount
+// Watch for tenants changes and set selected tenant (Admin)
+watch(() => tenants.value, (newTenants, oldTenants) => {
+  console.log('🔄 tenants.value changed');
+  console.log('   Old length:', oldTenants?.length || 0);
+  console.log('   New length:', newTenants.length);
+
+  if (newTenants.length > 0 && authStore.tenantId) {
+    const found = newTenants.find(t => String(t.id) === String(authStore.tenantId));
+    if (found) {
+      console.log('✅ Setting selectedTenant from watch:', found.company_name);
+      selectedTenant.value = found;
+    } else if (!selectedTenant.value) {
+      // If no selected tenant and we have tenants, select the first one
+      console.log('ℹ️ No matching tenant found, selecting first');
+      selectedTenant.value = newTenants[0];
+      authStore.tenantId = newTenants[0].id;
+    }
+  } else if (newTenants.length > 0 && !selectedTenant.value) {
+    // If we have tenants but no selectedTenant, select first
+    console.log('ℹ️ No authStore.tenantId but we have tenants, selecting first');
+    selectedTenant.value = newTenants[0];
+    authStore.tenantId = newTenants[0].id;
+  }
+}, { immediate: true, deep: true });
+
+// Watch for authStore.tenantId changes (Admin)
+watch(() => authStore.tenantId, (newId, oldId) => {
+  console.log('🔄 watch: authStore.tenantId changed');
+  console.log('   Old ID:', oldId);
+  console.log('   New ID:', newId);
+  console.log('   tenants.value.length:', tenants.value.length);
+
+  if (newId && tenants.value.length > 0) {
+    // Use strict equality with type conversion
+    const found = tenants.value.find(t => {
+      const match = String(t.id) === String(newId);
+      console.log(`   Comparing t.id: ${t.id} (${typeof t.id}) with newId: ${newId} (${typeof newId}) => ${match}`);
+      return match;
+    });
+
+    if (found) {
+      console.log('✅ Found tenant in watch:', found.company_name);
+      selectedTenant.value = found;
+    } else {
+      console.log('❌ Tenant not found in watch, selecting first available');
+      selectedTenant.value = tenants.value[0] || null;
+      if (selectedTenant.value) {
+        authStore.tenantId = selectedTenant.value.id;
+      }
+    }
+  } else if (!newId) {
+    console.log('⚠️ newId is null/undefined, setting selectedTenant to null');
+    selectedTenant.value = null;
+  }
+}, { immediate: true });
+
+// Watch for authStore.adminLayout changes
+watch(() => authStore.adminLayout, (newLayout) => {
+  console.log('🔄 authStore.adminLayout changed:', newLayout);
+  selectedAdminLayout.value = newLayout;
+});
+
+// ============ MOUNTED ============
+
 onMounted(async () => {
   console.log('🔧 Navbar mounted');
-  console.log('📊 authStore.userType:', authStore.userType);
+  console.log('📊 authStore.authType:', authStore.authType);
   console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
   console.log('📊 authStore.customerId:', authStore.customerId);
+  console.log('📊 authStore.tenantId:', authStore.tenantId);
 
+  // Set provider layout
   authStore.layout = authStore.layout ?? 'general';
   selectedLayout.value = authStore.layout;
 
-  // Always fetch customers if user is authenticated, regardless of userType
+  // Set admin layout
+  authStore.adminLayout = authStore.adminLayout ?? 'general';
+  selectedAdminLayout.value = authStore.adminLayout;
+
+  // Fetch data based on auth type
   if (authStore.isAuthenticated) {
-    console.log('✅ User is authenticated, fetching customers...');
-    await fetchCustomers();
+    if (authStore.authType === 'provider') {
+      console.log('✅ User is provider, fetching customers...');
+      await fetchCustomers();
+    } else if (authStore.authType === 'admin') {
+      console.log('✅ User is admin, fetching tenants...');
+      await fetchTenants();
+    }
   } else {
-    console.log('⚠️ User is not authenticated, skipping customer fetch');
+    console.log('⚠️ User is not authenticated, skipping data fetch');
   }
 
   document.addEventListener('keydown', handleEscape);
@@ -576,20 +989,23 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
-watch(() => authStore.userType, (newType) => {
-  console.log('🔄 authStore.userType changed:', newType);
+// Watch for authType changes
+watch(() => authStore.authType, (newType) => {
+  console.log('🔄 authStore.authType changed:', newType);
   if (newType === 'provider') {
     fetchCustomers();
+  } else if (newType === 'admin') {
+    fetchTenants();
   }
 });
 
-// Watch for changes in authStore layout
+// Watch for changes in authStore.layout (Provider)
 watch(() => authStore.layout, (newLayout) => {
   console.log('🔄 authStore.layout changed:', newLayout);
   selectedLayout.value = newLayout;
 });
 
-// Also watch layout changes from other components (e.g., if set elsewhere)
+// Also watch layout changes from other components (Provider)
 watch(() => authStore.layout, (newLayout) => {
   selectedLayout.value = newLayout;
 });

@@ -268,7 +268,7 @@ const handleSubmit = async () => {
       showConfirmButton: true
     })
 
-    router.push('/provider/customers')
+    router.push('/provider/customers/prospective')
   } catch (error) {
     // Handle validation errors from Laravel
     if (error.response?.data?.errors) {

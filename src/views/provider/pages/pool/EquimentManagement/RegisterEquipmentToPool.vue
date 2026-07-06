@@ -17,7 +17,7 @@
             </div>
             <div>
               <h1 class="text-xl lg:text-2xl font-bold text-gray-900 tracking-tight">Equipment Register</h1>
-              <p class="text-sm text-gray-500 mt-0.5">Manage all pool equipment across your service network.</p>
+              <p class="text-sm text-gray-500 mt-0.5">Manage pool equipment across your service network.</p>
             </div>
           </div>
           <div class="flex items-center gap-2">
@@ -62,43 +62,43 @@
               <div class="text-xs font-medium text-gray-500">Total Equipment</div>
             </div>
           </div>
-          <!-- Pumps -->
+          <!-- Total Price -->
           <div class="group relative overflow-hidden rounded-2xl bg-white border border-gray-200 p-5 hover:border-blue-300 transition-all duration-300 hover:shadow-lg hover:shadow-blue-100 hover:-translate-y-0.5 cursor-default">
             <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-blue-100/30 blur-xl group-hover:bg-blue-100/50 transition-all duration-300"></div>
             <div class="relative">
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-100 border border-blue-200">
-                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
               </div>
-              <div class="text-3xl font-bold text-gray-900 mb-1">{{ kpi.pumps }}</div>
-              <div class="text-xs font-medium text-gray-500">Pumps</div>
+              <div class="text-3xl font-bold text-gray-900 mb-1">${{ kpi.totalPrice.toLocaleString() }}</div>
+              <div class="text-xs font-medium text-gray-500">Total Value</div>
             </div>
           </div>
-          <!-- Filters -->
+          <!-- Components -->
           <div class="group relative overflow-hidden rounded-2xl bg-white border border-gray-200 p-5 hover:border-emerald-300 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-100 hover:-translate-y-0.5 cursor-default">
             <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-emerald-100/30 blur-xl group-hover:bg-emerald-100/50 transition-all duration-300"></div>
             <div class="relative">
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-200">
-                  <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L13 13.414V19a1 1 0 01-.553.894l-4 2A1 1 0 017 21v-7.586L3.293 6.707A1 1 0 013 6V4z"/></svg>
+                  <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                 </div>
               </div>
-              <div class="text-3xl font-bold text-gray-900 mb-1">{{ kpi.filters }}</div>
-              <div class="text-xs font-medium text-gray-500">Filters</div>
+              <div class="text-3xl font-bold text-gray-900 mb-1">{{ kpi.totalComponents }}</div>
+              <div class="text-xs font-medium text-gray-500">Total Components</div>
             </div>
           </div>
-          <!-- Heaters -->
+          <!-- Avg Components per Pool -->
           <div class="group relative overflow-hidden rounded-2xl bg-white border border-gray-200 p-5 hover:border-orange-300 transition-all duration-300 hover:shadow-lg hover:shadow-orange-100 hover:-translate-y-0.5 cursor-default">
             <div class="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-orange-100/30 blur-xl group-hover:bg-orange-100/50 transition-all duration-300"></div>
             <div class="relative">
               <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-100 border border-orange-200">
-                  <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"/></svg>
+                  <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 </div>
               </div>
-              <div class="text-3xl font-bold text-gray-900 mb-1">{{ kpi.heaters }}</div>
-              <div class="text-xs font-medium text-gray-500">Heaters</div>
+              <div class="text-3xl font-bold text-gray-900 mb-1">{{ kpi.avgComponents }}</div>
+              <div class="text-xs font-medium text-gray-500">Avg Components per Pool</div>
             </div>
           </div>
         </template>
@@ -106,24 +106,27 @@
 
       <!-- ===== FILTER BAR ===== -->
       <div class="rounded-2xl bg-white border border-gray-200 p-4 shadow-sm">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <!-- Search -->
-          <div class="relative lg:col-span-2">
+          <div class="relative lg:col-span-1">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            <input v-model="filters.search" type="text" placeholder="Search brand, model, serial..." class="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"/>
+            <input v-model="filters.search" type="text" placeholder="Search pool, model, serial..." class="w-full pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"/>
           </div>
-          <!-- Equipment Type -->
-          <select v-model="filters.type" class="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
-            <option value="">All Types</option>
-            <option v-for="t in equipmentTypes" :key="t.value" :value="t.value">{{ t.label }}</option>
-          </select>
           <!-- Pool -->
-          <select v-model="filters.pool_id" class="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+          <select v-model="filters.pool_id" @change="applyFilters" class="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
             <option value="">All Pools</option>
             <option v-for="pool in pools" :key="pool.id" :value="pool.id">{{ pool.name }}</option>
           </select>
-          <!-- Install Year -->
-          <input v-model="filters.year" type="number" placeholder="Install year..." class="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"/>
+          <!-- Manufacturer -->
+          <select v-model="filters.manufacturer_id" @change="fetchModelsForFilter" class="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+            <option value="">All Manufacturers</option>
+            <option v-for="m in manufacturers" :key="m.id" :value="m.id">{{ m.name }}</option>
+          </select>
+          <!-- Equipment Model -->
+          <select v-model="filters.equipment_model_id" class="px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all" :disabled="!filters.manufacturer_id">
+            <option value="">All Models</option>
+            <option v-for="m in filterModels" :key="m.id" :value="m.id">{{ m.name }}</option>
+          </select>
         </div>
         <div class="flex items-center gap-2 mt-3">
           <button @click="applyFilters" class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/20 transition-all hover:-translate-y-0.5">
@@ -171,7 +174,7 @@
           </div>
         </div>
         <h3 class="text-lg font-bold text-gray-900 mb-2">No Equipment Found</h3>
-        <p class="text-sm text-gray-500 text-center max-w-xs mb-6">There are no registered equipment yet. Add your first piece of equipment to get started.</p>
+        <p class="text-sm text-gray-500 text-center max-w-xs mb-6">There are no registered equipment sets yet. Add your first equipment set to get started.</p>
         <button @click="openAddModal" class="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/25 transition-all hover:-translate-y-0.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
           Add Equipment
@@ -182,20 +185,20 @@
       <div v-else class="rounded-2xl border border-gray-200 overflow-hidden bg-white shadow-sm">
         <div class="overflow-x-auto">
           <!-- Header -->
-          <div class="bg-gray-50 border-b border-gray-200 px-5 py-3 min-w-[900px]">
+          <div class="bg-gray-50 border-b border-gray-200 px-5 py-3 min-w-[1100px]">
             <div class="grid grid-cols-12 gap-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
               <div class="col-span-1">ID</div>
-              <div class="col-span-2">Type / Brand</div>
-              <div class="col-span-2">Model</div>
-              <div class="col-span-2">Serial Number</div>
               <div class="col-span-2">Pool</div>
-              <div class="col-span-1">Install Date</div>
-              <div class="col-span-1 text-center">Age</div>
+              <div class="col-span-2">Manufacturer</div>
+              <div class="col-span-2">Model</div>
+              <div class="col-span-1">Components</div>
+              <div class="col-span-1">Total Price</div>
+              <div class="col-span-2">Installed Components</div>
               <div class="col-span-1 text-right">Actions</div>
             </div>
           </div>
           <!-- Body -->
-          <div class="divide-y divide-gray-100 bg-white min-w-[900px]">
+          <div class="divide-y divide-gray-100 bg-white min-w-[1100px]">
             <div
               v-for="item in equipment"
               :key="item.id"
@@ -205,42 +208,42 @@
               <div class="col-span-1">
                 <span class="text-xs font-mono text-gray-400">#{{ String(item.id).padStart(4, '0') }}</span>
               </div>
-              <!-- Type / Brand -->
-              <div class="col-span-2 flex items-center gap-2.5">
-                <div :class="['flex items-center justify-center w-8 h-8 rounded-lg flex-shrink-0', getTypeIconBg(item.type)]">
-                  <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
-                </div>
-                <div class="min-w-0">
-                  <div class="text-sm font-semibold text-gray-900 truncate">{{ formatTypeLabel(item.type) }}</div>
-                  <div class="text-xs text-gray-500 truncate">{{ item.brand }}</div>
-                </div>
-              </div>
-              <!-- Model -->
-              <div class="col-span-2">
-                <span class="text-sm text-gray-700 truncate block">{{ item.model }}</span>
-              </div>
-              <!-- Serial Number -->
-              <div class="col-span-2">
-                <span class="inline-block font-mono text-xs px-2 py-1 rounded-lg bg-gray-100 text-gray-600 border border-gray-200 truncate max-w-full">{{ item.serial_number }}</span>
-              </div>
               <!-- Pool -->
               <div class="col-span-2">
                 <div v-if="item.pool" class="min-w-0">
-                  <div class="text-sm font-medium text-gray-800 truncate">{{ item.pool?.label }}</div>
-                  <div class="text-xs text-gray-500 truncate">{{ item.pool.customer?.contact_name  }}</div>
-                  <div class="text-xs text-gray-500 truncate">{{ item.pool?.service_address || '' }}</div>
+                  <div class="text-sm font-medium text-gray-800 truncate">{{ item.pool.name }}</div>
+                  <div class="text-xs text-gray-500 truncate">{{ item.pool.customer?.contact_name }}</div>
                 </div>
                 <span v-else class="text-xs text-gray-400">—</span>
               </div>
-              <!-- Install Date -->
-              <div class="col-span-1">
-                <span class="text-xs text-gray-500">{{ formatDate(item.install_date) }}</span>
+              <!-- Manufacturer -->
+              <div class="col-span-2">
+                <span class="text-sm text-gray-700 truncate block">{{ item.manufacturer?.name || '—' }}</span>
               </div>
-              <!-- Age -->
-              <div class="col-span-1 flex justify-center">
-                <span :class="['inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border', getAgeBadge(item.install_date)]">
-                  {{ calcAge(item.install_date) }}
+              <!-- Model -->
+              <div class="col-span-2">
+                <span class="text-sm text-gray-700 truncate block">{{ item.equipment_model?.name || '—' }}</span>
+              </div>
+              <!-- Components Count -->
+              <div class="col-span-1">
+                <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-cyan-50 text-cyan-600 font-semibold text-sm border border-cyan-200">
+                  {{ item.components?.length || 0 }}
                 </span>
+              </div>
+              <!-- Total Price -->
+              <div class="col-span-1">
+                <span class="text-sm font-semibold text-gray-900">${{ calculateTotalPrice(item.components).toLocaleString() }}</span>
+              </div>
+              <!-- Installed Components -->
+              <div class="col-span-2">
+                <div class="flex flex-wrap gap-1">
+                  <span v-for="comp in (item.components || []).slice(0, 3)" :key="comp.id" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200">
+                    {{ comp.component?.name || 'Component' }}
+                  </span>
+                  <span v-if="(item.components || []).length > 3" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">
+                    +{{ (item.components || []).length - 3 }}
+                  </span>
+                </div>
               </div>
               <!-- Actions -->
               <div class="col-span-1 flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -262,7 +265,7 @@
       <!-- ===== PAGINATION ===== -->
       <div v-if="pagination.total > 0" class="flex flex-col sm:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-3 text-sm text-gray-500">
-          <span>Showing <span class="text-gray-900 font-medium">{{ paginationStart }}–{{ paginationEnd }}</span> of <span class="text-gray-900 font-medium">{{ pagination.total }}</span> equipment</span>
+          <span>Showing <span class="text-gray-900 font-medium">{{ paginationStart }}–{{ paginationEnd }}</span> of <span class="text-gray-900 font-medium">{{ pagination.total }}</span> equipment sets</span>
           <span class="w-px h-4 bg-gray-300"></span>
           <div class="flex items-center gap-2">
             <span>Per page:</span>
@@ -299,18 +302,18 @@
       <Transition name="modal">
         <div v-if="viewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" @click="viewModal = false"></div>
-          <div class="relative w-full max-w-2xl bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden">
+          <div class="relative w-full max-w-3xl bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden">
             <!-- Header -->
             <div class="relative bg-gradient-to-r from-cyan-50 via-blue-50 to-white px-6 py-5 border-b border-gray-200">
               <div class="absolute inset-0 bg-gradient-to-br from-cyan-100/30 to-transparent"></div>
               <div class="relative flex items-start justify-between">
                 <div class="flex items-center gap-4">
-                  <div :class="['flex items-center justify-center w-12 h-12 rounded-2xl', getTypeIconBg(selectedItem?.type)]">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
+                  <div class="flex items-center justify-center w-12 h-12 rounded-2xl bg-cyan-100 border border-cyan-200">
+                    <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/></svg>
                   </div>
                   <div>
-                    <h2 class="text-xl font-bold text-gray-900">{{ formatTypeLabel(selectedItem?.type) }}</h2>
-                    <p class="text-sm text-gray-500 mt-0.5">{{ selectedItem?.brand }} · {{ selectedItem?.model }}</p>
+                    <h2 class="text-xl font-bold text-gray-900">Equipment Set Details</h2>
+                    <p class="text-sm text-gray-500 mt-0.5">{{ selectedItem?.equipment_model?.name || 'Equipment Set' }}</p>
                   </div>
                 </div>
                 <button @click="viewModal = false" class="flex items-center justify-center w-8 h-8 rounded-xl text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all">
@@ -319,66 +322,73 @@
               </div>
             </div>
             <!-- Body -->
-            <div class="p-6 overflow-y-auto max-h-[70vh] space-y-4">
-              <!-- Equipment Info -->
+            <div class="p-6 overflow-y-auto max-h-[70vh] space-y-6">
+              <!-- Pool Information -->
               <div>
-                <div class="flex items-center gap-2 mb-3">
-                  <div class="w-1 h-4 rounded-full bg-gradient-to-b from-cyan-400 to-blue-500"></div>
-                  <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Equipment Information</h3>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Type</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ formatTypeLabel(selectedItem?.type) }}</div>
-                  </div>
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Brand</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem?.brand }}</div>
-                  </div>
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Model</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem?.model }}</div>
-                  </div>
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Serial Number</div>
-                    <div class="text-sm font-mono font-semibold text-cyan-700">{{ selectedItem?.serial_number }}</div>
-                  </div>
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Install Date</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ formatDate(selectedItem?.install_date) }}</div>
-                  </div>
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Equipment Age</div>
-                    <div :class="['text-sm font-semibold', getAgeColor(selectedItem?.install_date)]">{{ calcAge(selectedItem?.install_date) }}</div>
-                  </div>
-                </div>
-              </div>
-              <!-- Pool Info -->
-              <div v-if="selectedItem?.pool">
                 <div class="flex items-center gap-2 mb-3">
                   <div class="w-1 h-4 rounded-full bg-gradient-to-b from-emerald-400 to-teal-500"></div>
                   <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Pool Information</h3>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                   <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Pool Name</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem.pool.label }}</div>
-                  </div>
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Chemical Type</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem.pool.chemical_type || '—' }}</div>
-                  </div>
-                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Pool Volume</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem.pool.volume_gallons ? Number(selectedItem.pool.volume_gallons).toLocaleString() + ' gal' : '—' }}</div>
+                    <div class="text-xs text-gray-500 mb-1">Pool</div>
+                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem?.pool?.name || '—' }}</div>
                   </div>
                   <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
                     <div class="text-xs text-gray-500 mb-1">Customer</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem.pool.customer.contact_name || selectedItem.pool.customer || '—' }}</div>
+                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem?.pool?.customer?.contact_name || '—' }}</div>
                   </div>
-                  <div class="col-span-2 p-3.5 rounded-xl bg-gray-50 border border-gray-200">
-                    <div class="text-xs text-gray-500 mb-1">Service Address</div>
-                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem.pool.service_address || '—' }}</div>
+                </div>
+              </div>
+
+              <!-- Manufacturer & Model -->
+              <div>
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-gradient-to-b from-cyan-400 to-blue-500"></div>
+                  <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Equipment Details</h3>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
+                    <div class="text-xs text-gray-500 mb-1">Manufacturer</div>
+                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem?.manufacturer?.name || '—' }}</div>
+                  </div>
+                  <div class="p-3.5 rounded-xl bg-gray-50 border border-gray-200">
+                    <div class="text-xs text-gray-500 mb-1">Equipment Model</div>
+                    <div class="text-sm font-semibold text-gray-900">{{ selectedItem?.equipment_model?.name || '—' }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Components -->
+              <div>
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-gradient-to-b from-purple-400 to-pink-500"></div>
+                  <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Components ({{ selectedItem?.components?.length || 0 }})</h3>
+                </div>
+                <div class="space-y-3">
+                  <div v-for="comp in (selectedItem?.components || [])" :key="comp.id" class="p-4 rounded-xl bg-gray-50 border border-gray-200">
+                    <div class="flex items-center justify-between mb-2">
+                      <h4 class="text-sm font-bold text-gray-900">{{ comp.component?.name || 'Component' }}</h4>
+                      <span class="text-xs font-semibold text-gray-500">${{ comp.component?.price?.toLocaleString() || '0' }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span class="text-gray-500">Serial Number:</span>
+                        <span class="ml-1 font-mono text-gray-700">{{ comp.serial_number || '—' }}</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-500">Install Date:</span>
+                        <span class="ml-1 text-gray-700">{{ formatDate(comp.install_date) }}</span>
+                      </div>
+                      <div>
+                        <span class="text-gray-500">Warranty Expiry:</span>
+                        <span class="ml-1 text-gray-700">{{ formatDate(comp.warranty_expiry) }}</span>
+                      </div>
+                      <div class="col-span-2">
+                        <span class="text-gray-500">Notes:</span>
+                        <span class="ml-1 text-gray-700">{{ comp.notes || '—' }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -386,7 +396,7 @@
             <div class="flex items-center gap-3 px-6 py-4 border-t border-gray-200">
               <button @click="openEditModal(selectedItem); viewModal = false" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/20 transition-all hover:-translate-y-0.5">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                Edit Equipment
+                Edit Equipment Set
               </button>
               <button @click="viewModal = false" class="px-6 py-2.5 rounded-xl text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 transition-all">Close</button>
             </div>
@@ -400,12 +410,12 @@
       <Transition name="modal">
         <div v-if="editModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" @click="editModal = false"></div>
-          <div class="relative w-full max-w-xl bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden">
+          <div class="relative w-full max-w-2xl bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden">
             <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-5 border-b border-gray-200">
               <div class="flex items-center justify-between">
                 <div>
-                  <h2 class="text-lg font-bold text-gray-900">{{ isAdding ? 'Add Equipment' : 'Edit Equipment' }}</h2>
-                  <p class="text-xs text-gray-500 mt-0.5">{{ isAdding ? 'Register new equipment to a pool' : 'Update equipment details' }}</p>
+                  <h2 class="text-lg font-bold text-gray-900">{{ isAdding ? 'Add Equipment Set' : 'Edit Equipment Set' }}</h2>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ isAdding ? 'Register new equipment to a pool' : 'Update equipment set details' }}</p>
                 </div>
                 <button @click="editModal = false" class="flex items-center justify-center w-8 h-8 rounded-xl text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -413,49 +423,87 @@
               </div>
             </div>
             <div class="p-6 overflow-y-auto max-h-[70vh] space-y-5">
-              <!-- Pool -->
+              <!-- Step 1: Select Pool -->
               <div>
                 <label class="block text-xs font-semibold text-gray-600 mb-1.5">Pool <span class="text-rose-500">*</span></label>
-                <select v-model="form.pool_id" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+                <select v-model="form.pool_id" @change="onPoolChange" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
                   <option value="">Select pool...</option>
-                  <option v-for="pool in pools" :key="pool.id" :value="pool.id">{{ pool.label }}-{{ pool.customer?.contact_name}}</option>
+                  <option v-for="pool in pools" :key="pool.id" :value="pool.id">{{ pool.name }} - {{ pool.customer?.contact_name }}</option>
                 </select>
               </div>
-              <!-- Type -->
+
+              <!-- Step 2: Select Manufacturer -->
               <div>
-                <label class="block text-xs font-semibold text-gray-600 mb-1.5">Equipment Type <span class="text-rose-500">*</span></label>
-                <select v-model="form.type" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
-                  <option value="">Select type...</option>
-                  <option v-for="t in equipmentTypes" :key="t.value" :value="t.value">{{ t.label }}</option>
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">Manufacturer <span class="text-rose-500">*</span></label>
+                <select v-model="form.manufacturer_id" @change="onManufacturerChange" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+                  <option value="">Select manufacturer...</option>
+                  <option v-for="m in manufacturers" :key="m.id" :value="m.id">{{ m.name }}</option>
                 </select>
               </div>
-              <!-- Brand + Model -->
-              <div class="grid grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs font-semibold text-gray-600 mb-1.5">Brand <span class="text-rose-500">*</span></label>
-                  <input v-model="form.brand" type="text" placeholder="e.g. Hayward" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"/>
+
+              <!-- Step 3: Select Equipment Model -->
+              <div>
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">Equipment Model <span class="text-rose-500">*</span></label>
+                <select v-model="form.equipment_model_id" @change="onModelChange" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all" :disabled="!form.manufacturer_id">
+                  <option value="">Select model...</option>
+                  <option v-for="m in models" :key="m.id" :value="m.id">{{ m.name }}</option>
+                </select>
+              </div>
+
+              <!-- Step 4: Component Checklist -->
+              <div v-if="form.equipment_model_id && components.length > 0">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-gradient-to-b from-cyan-400 to-blue-500"></div>
+                  <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Select Components</h3>
                 </div>
-                <div>
-                  <label class="block text-xs font-semibold text-gray-600 mb-1.5">Model <span class="text-rose-500">*</span></label>
-                  <input v-model="form.model" type="text" placeholder="e.g. SP2610X15" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"/>
+                <div class="space-y-2 max-h-48 overflow-y-auto">
+                  <label v-for="comp in components" :key="comp.id" class="flex items-start gap-3 p-3 rounded-xl bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-all cursor-pointer">
+                    <input type="checkbox" :value="comp.id" v-model="form.selected_components" class="mt-1 w-4 h-4 text-cyan-500 border-gray-300 rounded focus:ring-cyan-500">
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between">
+                        <span class="text-sm font-semibold text-gray-900">{{ comp.name }}</span>
+                        <span class="text-xs font-semibold text-gray-600">${{ comp.price?.toLocaleString() || '0' }}</span>
+                      </div>
+                      <p class="text-xs text-gray-500 truncate">{{ comp.default_information || 'No additional info' }}</p>
+                    </div>
+                  </label>
                 </div>
               </div>
-              <!-- Serial Number -->
-              <div>
-                <label class="block text-xs font-semibold text-gray-600 mb-1.5">Serial Number <span class="text-rose-500">*</span></label>
-                <input v-model="form.serial_number" type="text" placeholder="e.g. SN-2024-001234" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-mono text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"/>
-              </div>
-              <!-- Install Date -->
-              <div>
-                <label class="block text-xs font-semibold text-gray-600 mb-1.5">Install Date <span class="text-rose-500">*</span></label>
-                <input v-model="form.install_date" type="date" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"/>
+
+              <!-- Step 5: Pool Specific Information for Selected Components -->
+              <div v-if="form.selected_components.length > 0" class="space-y-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <div class="w-1 h-4 rounded-full bg-gradient-to-b from-emerald-400 to-teal-500"></div>
+                  <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Component Details</h3>
+                </div>
+                <div v-for="compId in form.selected_components" :key="compId" class="p-4 rounded-xl bg-gray-50 border border-gray-200">
+                  <h4 class="text-sm font-bold text-gray-900 mb-2">{{ getComponentName(compId) }}</h4>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="block text-xs font-semibold text-gray-600 mb-1">Serial Number <span class="text-rose-500">*</span></label>
+                      <input v-model="componentDetails[compId].serial_number" type="text" placeholder="Enter serial number" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold text-gray-600 mb-1">Install Date <span class="text-rose-500">*</span></label>
+                      <input v-model="componentDetails[compId].install_date" type="date" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+                    </div>
+                    <div>
+                      <label class="block text-xs font-semibold text-gray-600 mb-1">Warranty Expiry</label>
+                      <input v-model="componentDetails[compId].warranty_expiry" type="date" class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
+                    </div>
+                    <div class="col-span-2">
+                      <label class="block text-xs font-semibold text-gray-600 mb-1">Notes</label>
+                      <textarea v-model="componentDetails[compId].notes" rows="2" placeholder="Additional notes..." class="w-full px-3.5 py-2 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"></textarea>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="flex items-center gap-3 px-6 py-4 border-t border-gray-200">
-              <button @click="saveEquipment" :disabled="saving || !form.pool_id || !form.type || !form.brand || !form.model || !form.serial_number || !form.install_date" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 transition-all hover:-translate-y-0.5">
+              <button @click="saveEquipment" :disabled="saving || !isFormValid" class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 transition-all hover:-translate-y-0.5">
                 <svg v-if="saving" class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                 <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                {{ saving ? 'Saving...' : (isAdding ? 'Add Equipment' : 'Save Changes') }}
+                {{ saving ? 'Saving...' : (isAdding ? 'Add Equipment Set' : 'Save Changes') }}
               </button>
               <button @click="editModal = false" class="px-6 py-2.5 rounded-xl text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 transition-all">Cancel</button>
             </div>
@@ -467,38 +515,19 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, reactive } from 'vue'
+import { ref, computed, onMounted, reactive, watch } from 'vue'
 import Swal from 'sweetalert2'
 import * as XLSX from 'xlsx'
-import api from '../../../../services/api.js'
-
-// ===== EQUIPMENT TYPES =====
-const equipmentTypes = [
-  { value: 'pump', label: 'Pump' },
-  { value: 'filter', label: 'Filter' },
-  { value: 'heater', label: 'Heater' },
-  { value: 'chlorinator', label: 'Chlorinator' },
-  { value: 'salt_system', label: 'Salt System' },
-  { value: 'automation', label: 'Automation' },
-  { value: 'light', label: 'Light' },
-  { value: 'valve', label: 'Valve' },
-  { value: 'cleaner', label: 'Cleaner' },
-  { value: 'skimmer', label: 'Skimmer' },
-  { value: 'drain', label: 'Drain' },
-  { value: 'chemical_feeder', label: 'Chemical Feeder' },
-  { value: 'uv_system', label: 'UV System' },
-  { value: 'ozone_system', label: 'Ozone System' },
-  { value: 'sensor', label: 'Sensor' },
-  { value: 'controller', label: 'Controller' },
-  { value: 'blower', label: 'Blower' },
-  { value: 'motor', label: 'Motor' },
-  { value: 'transformer', label: 'Transformer' },
-  { value: 'other', label: 'Other' },
-]
+import api from '../../../../../services/api.js'
 
 // ===== STATE =====
 const equipment = ref([])
 const pools = ref([])
+const manufacturers = ref([])
+const models = ref([])
+const components = ref([])
+const filterModels = ref([])
+
 const loadingEquipment = ref(false)
 const saving = ref(false)
 const viewModal = ref(false)
@@ -514,28 +543,49 @@ const pagination = ref({
   per_page: 10,
 })
 
-const filters = reactive({ search: '', type: '', pool_id: '', year: '' })
+const filters = reactive({ 
+  search: '', 
+  pool_id: '', 
+  manufacturer_id: '',
+  equipment_model_id: ''
+})
 
 const form = reactive({
   id: null,
   pool_id: '',
-  type: '',
-  brand: '',
-  model: '',
-  serial_number: '',
-  install_date: '',
+  manufacturer_id: '',
+  equipment_model_id: '',
+  selected_components: [],
 })
 
+const componentDetails = reactive({})
+
 // ===== COMPUTED =====
-const kpi = computed(() => ({
-  total: equipment.value.length,
-  pumps: equipment.value.filter(e => e.type === 'pump').length,
-  filters: equipment.value.filter(e => e.type === 'filter').length,
-  heaters: equipment.value.filter(e => e.type === 'heater').length,
-}))
+const kpi = computed(() => {
+  let totalPrice = 0
+  let totalComponents = 0
+  const poolIds = new Set()
+  
+  equipment.value.forEach(item => {
+    if (item.components) {
+      totalComponents += item.components.length
+      item.components.forEach(comp => {
+        totalPrice += comp.component?.price || 0
+      })
+    }
+    if (item.pool_id) poolIds.add(item.pool_id)
+  })
+  
+  return {
+    total: equipment.value.length,
+    totalPrice,
+    totalComponents,
+    avgComponents: poolIds.size > 0 ? Math.round(totalComponents / poolIds.size) : 0
+  }
+})
 
 const activeFilterCount = computed(() =>
-  [filters.search, filters.type, filters.pool_id, filters.year].filter(Boolean).length
+  [filters.search, filters.pool_id, filters.manufacturer_id, filters.equipment_model_id].filter(Boolean).length
 )
 
 const paginationStart = computed(() => (pagination.value.current_page - 1) * pagination.value.per_page + 1)
@@ -550,19 +600,29 @@ const visiblePages = computed(() => {
   return [1, '...', current - 1, current, current + 1, '...', total]
 })
 
+const isFormValid = computed(() => {
+  if (!form.pool_id || !form.manufacturer_id || !form.equipment_model_id || form.selected_components.length === 0) {
+    return false
+  }
+  return form.selected_components.every(compId => {
+    const details = componentDetails[compId]
+    return details && details.serial_number && details.install_date
+  })
+})
+
 // ===== API =====
 async function fetchEquipment(page = 1) {
   loadingEquipment.value = true
   try {
-    const params = { page, per_page: perPage.value, with: 'pool.customer' }
+    const params = { page, per_page: perPage.value, with: 'pool.customer,manufacturer,equipment_model,components.component' }
     if (filters.search) params.search = filters.search
-    if (filters.type) params.type = filters.type
     if (filters.pool_id) params.pool_id = filters.pool_id
-    if (filters.year) params.install_year = filters.year
+    if (filters.manufacturer_id) params.manufacturer_id = filters.manufacturer_id
+    if (filters.equipment_model_id) params.equipment_model_id = filters.equipment_model_id
 
-    const res = await api().get('/equipment-management/equipment-advance', { params })
+    const res = await api().get('/equipment-management/equipment-sets', { params })
     const data = res.data
-    equipment.value = data.data.data ?? data
+    equipment.value = data.data ?? data
     if (data.meta || data.current_page) {
       const meta = data.meta ?? data
       pagination.value = {
@@ -573,7 +633,7 @@ async function fetchEquipment(page = 1) {
       }
     }
   } catch (e) {
-    console.error('Failed to load equipment', e)
+    console.error('Failed to load equipment sets', e)
   } finally {
     loadingEquipment.value = false
   }
@@ -581,27 +641,99 @@ async function fetchEquipment(page = 1) {
 
 async function fetchPools() {
   try {
-    const res = await api().get('/pool-management/pools')
+    const res = await api().get('/pool-management/pools?with=customer')
     pools.value = Array.isArray(res.data) ? res.data : (res.data?.data ?? [])
   } catch (e) {
     console.error('Failed to load pools', e)
   }
 }
 
+async function fetchManufacturers() {
+  try {
+    const res = await api().get('/equipment-management/manufacturers')
+    manufacturers.value = Array.isArray(res.data) ? res.data : (res.data?.data ?? [])
+  } catch (e) {
+    console.error('Failed to load manufacturers', e)
+  }
+}
+
+async function fetchModels(manufacturerId) {
+  if (!manufacturerId) {
+    models.value = []
+    return
+  }
+  try {
+    const res = await api().get(`/equipment-management/manufacturers/${manufacturerId}/models`)
+    models.value = Array.isArray(res.data) ? res.data : (res.data?.data ?? [])
+  } catch (e) {
+    console.error('Failed to load models', e)
+  }
+}
+
+async function fetchComponents(modelId) {
+  if (!modelId) {
+    components.value = []
+    return
+  }
+  try {
+    const res = await api().get(`/equipment-management/models/${modelId}/components`)
+    components.value = Array.isArray(res.data) ? res.data : (res.data?.data ?? [])
+  } catch (e) {
+    console.error('Failed to load components', e)
+  }
+}
+
+async function fetchModelsForFilter() {
+  if (!filters.manufacturer_id) {
+    filterModels.value = []
+    return
+  }
+  try {
+    const res = await api().get(`/equipment-management/manufacturers/${filters.manufacturer_id}/models`)
+    filterModels.value = Array.isArray(res.data) ? res.data : (res.data?.data ?? [])
+  } catch (e) {
+    console.error('Failed to load models for filter', e)
+  }
+}
+
+async function fetchEquipmentSet(id) {
+  try {
+    const res = await api().get(`/equipment-management/equipment-sets/${id}?with=pool.customer,manufacturer,equipment_model,components.component`)
+    return res.data
+  } catch (e) {
+    console.error('Failed to load equipment set', e)
+    return null
+  }
+}
+
 async function saveEquipment() {
   saving.value = true
   try {
-    if (isAdding.value) {
-      await api().post('/equipment-management/equipment', { ...form })
-    } else {
-      await api().post(`/equipment-management/equipment/${form.id}`, { ...form, _method: 'PUT' })
+    const payload = {
+      pool_id: form.pool_id,
+      manufacturer_id: form.manufacturer_id,
+      equipment_model_id: form.equipment_model_id,
+      components: form.selected_components.map(compId => ({
+        component_id: compId,
+        serial_number: componentDetails[compId]?.serial_number || '',
+        install_date: componentDetails[compId]?.install_date || '',
+        warranty_expiry: componentDetails[compId]?.warranty_expiry || null,
+        notes: componentDetails[compId]?.notes || '',
+      }))
     }
+
+    if (isAdding.value) {
+      await api().post('/equipment-management/equipment-sets', payload)
+    } else {
+      await api().post(`/equipment-management/equipment-sets/${form.id}`, { ...payload, _method: 'PUT' })
+    }
+    
     editModal.value = false
     await fetchEquipment(pagination.value.current_page)
     Swal.fire({
       icon: 'success',
-      title: isAdding.value ? 'Equipment Added' : 'Equipment Updated',
-      text: isAdding.value ? 'Equipment registered successfully.' : 'Equipment updated successfully.',
+      title: isAdding.value ? 'Equipment Set Added' : 'Equipment Set Updated',
+      text: isAdding.value ? 'Equipment set registered successfully.' : 'Equipment set updated successfully.',
       background: '#ffffff',
       color: '#1f2937',
       iconColor: '#22d3ee',
@@ -610,7 +742,14 @@ async function saveEquipment() {
       showConfirmButton: false,
     })
   } catch (e) {
-    Swal.fire({ icon: 'error', title: 'Error', text: e?.response?.data?.message ?? 'Something went wrong.', background: '#ffffff', color: '#1f2937', confirmButtonColor: '#0891b2' })
+    Swal.fire({ 
+      icon: 'error', 
+      title: 'Error', 
+      text: e?.response?.data?.message ?? 'Something went wrong.', 
+      background: '#ffffff', 
+      color: '#1f2937', 
+      confirmButtonColor: '#0891b2' 
+    })
   } finally {
     saving.value = false
   }
@@ -618,7 +757,7 @@ async function saveEquipment() {
 
 async function handleDelete(id) {
   const result = await Swal.fire({
-    title: 'Delete Equipment?',
+    title: 'Delete Equipment Set?',
     text: 'This action cannot be undone.',
     icon: 'warning',
     showCancelButton: true,
@@ -632,32 +771,61 @@ async function handleDelete(id) {
   })
   if (!result.isConfirmed) return
   try {
-    await api().delete(`/equipment-management/equipment/${id}`)
+    await api().delete(`/equipment-management/equipment-sets/${id}`)
     await fetchEquipment(pagination.value.current_page)
-    Swal.fire({ icon: 'success', title: 'Deleted', text: 'Equipment deleted successfully.', background: '#ffffff', color: '#1f2937', confirmButtonColor: '#0891b2', timer: 2000, showConfirmButton: false })
+    Swal.fire({ 
+      icon: 'success', 
+      title: 'Deleted', 
+      text: 'Equipment set deleted successfully.', 
+      background: '#ffffff', 
+      color: '#1f2937', 
+      confirmButtonColor: '#0891b2', 
+      timer: 2000, 
+      showConfirmButton: false 
+    })
   } catch (e) {
-    Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to delete equipment.', background: '#ffffff', color: '#1f2937', confirmButtonColor: '#0891b2' })
+    Swal.fire({ 
+      icon: 'error', 
+      title: 'Error', 
+      text: 'Failed to delete equipment set.', 
+      background: '#ffffff', 
+      color: '#1f2937', 
+      confirmButtonColor: '#0891b2' 
+    })
   }
 }
 
 // ===== MODAL HELPERS =====
 function openAddModal() {
   isAdding.value = true
-  Object.assign(form, { id: null, pool_id: '', type: '', brand: '', model: '', serial_number: '', install_date: '' })
+  resetForm()
   editModal.value = true
 }
 
-function openEditModal(item) {
+async function openEditModal(item) {
   isAdding.value = false
-  Object.assign(form, {
-    id: item.id,
-    pool_id: item.pool_id ?? item.pool?.id ?? '',
-    type: item.type ?? '',
-    brand: item.brand ?? '',
-    model: item.model ?? '',
-    serial_number: item.serial_number ?? '',
-    install_date: item.install_date ?? '',
+  const data = await fetchEquipmentSet(item.id)
+  if (!data) return
+  
+  resetForm()
+  form.id = data.id
+  form.pool_id = data.pool_id
+  form.manufacturer_id = data.manufacturer_id
+  form.equipment_model_id = data.equipment_model_id
+  
+  await fetchModels(data.manufacturer_id)
+  await fetchComponents(data.equipment_model_id)
+  
+  data.components?.forEach(comp => {
+    form.selected_components.push(comp.component_id)
+    componentDetails[comp.component_id] = {
+      serial_number: comp.serial_number || '',
+      install_date: comp.install_date || '',
+      warranty_expiry: comp.warranty_expiry || '',
+      notes: comp.notes || '',
+    }
   })
+  
   editModal.value = true
 }
 
@@ -666,90 +834,110 @@ function openViewModal(item) {
   viewModal.value = true
 }
 
+// ===== FORM HELPERS =====
+function resetForm() {
+  form.id = null
+  form.pool_id = ''
+  form.manufacturer_id = ''
+  form.equipment_model_id = ''
+  form.selected_components = []
+  Object.keys(componentDetails).forEach(key => delete componentDetails[key])
+  models.value = []
+  components.value = []
+}
+
+function onPoolChange() {
+  // Pool changed - reset dependent fields
+  form.manufacturer_id = ''
+  form.equipment_model_id = ''
+  form.selected_components = []
+  models.value = []
+  components.value = []
+  Object.keys(componentDetails).forEach(key => delete componentDetails[key])
+}
+
+function onManufacturerChange() {
+  form.equipment_model_id = ''
+  form.selected_components = []
+  components.value = []
+  Object.keys(componentDetails).forEach(key => delete componentDetails[key])
+  fetchModels(form.manufacturer_id)
+}
+
+function onModelChange() {
+  form.selected_components = []
+  Object.keys(componentDetails).forEach(key => delete componentDetails[key])
+  fetchComponents(form.equipment_model_id)
+}
+
+function getComponentName(compId) {
+  const comp = components.value.find(c => c.id === compId)
+  return comp?.name || 'Component'
+}
+
+function calculateTotalPrice(components) {
+  if (!components) return 0
+  return components.reduce((sum, comp) => sum + (comp.component?.price || 0), 0)
+}
+
 // ===== FILTERS =====
-function applyFilters() { fetchEquipment(1) }
+function applyFilters() { 
+  fetchEquipment(1) 
+}
+
 function resetFilters() {
-  Object.assign(filters, { search: '', type: '', pool_id: '', year: '' })
+  Object.assign(filters, { search: '', pool_id: '', manufacturer_id: '', equipment_model_id: '' })
+  filterModels.value = []
   fetchEquipment(1)
 }
 
 // ===== EXPORT =====
 function exportExcel() {
   const rows = equipment.value.map(e => ({
-    'Equipment ID': e.id,
-    'Type': formatTypeLabel(e.type),
-    'Brand': e.brand,
-    'Model': e.model,
-    'Serial Number': e.serial_number,
-    'Pool': e.pool?.label ?? '—',
-    'Customer': e.pool?.customer?.contact_name ?? '—',
-    'Install Date': formatDate(e.install_date),
+    'ID': e.id,
+    'Pool': e.pool?.name || '—',
+    'Customer': e.pool?.customer?.contact_name || '—',
+    'Manufacturer': e.manufacturer?.name || '—',
+    'Equipment Model': e.equipment_model?.name || '—',
+    'Components': (e.components || []).map(c => c.component?.name).join(', '),
+    'Component Count': (e.components || []).length,
+    'Total Price': `$${calculateTotalPrice(e.components).toLocaleString()}`,
+    'Created Date': formatDate(e.created_at),
   }))
   const ws = XLSX.utils.json_to_sheet(rows)
   const wb = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(wb, ws, 'Equipment')
+  XLSX.utils.book_append_sheet(wb, ws, 'Equipment Sets')
   XLSX.writeFile(wb, `equipment-register-${new Date().toISOString().slice(0, 10)}.xlsx`)
 }
 
 // ===== HELPERS =====
-function formatTypeLabel(type) {
-  return equipmentTypes.find(t => t.value === type)?.label ?? (type ?? '—')
-}
-
 function formatDate(d) {
   if (!d) return '—'
   return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 
-function calcAge(installDate) {
-  if (!installDate) return '—'
-  const diff = Date.now() - new Date(installDate).getTime()
-  const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25))
-  const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44))
-  if (years > 0) return `${years}y ${months}m`
-  return `${months}m`
-}
-
-function getAgeBadge(installDate) {
-  if (!installDate) return 'bg-gray-100 text-gray-500 border-gray-200'
-  const years = (Date.now() - new Date(installDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25)
-  if (years < 2) return 'bg-emerald-100 text-emerald-700 border-emerald-200'
-  if (years < 5) return 'bg-amber-100 text-amber-700 border-amber-200'
-  return 'bg-rose-100 text-rose-700 border-rose-200'
-}
-
-function getAgeColor(installDate) {
-  if (!installDate) return 'text-gray-400'
-  const years = (Date.now() - new Date(installDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25)
-  if (years < 2) return 'text-emerald-600'
-  if (years < 5) return 'text-amber-600'
-  return 'text-rose-600'
+function formatTypeLabel(type) {
+  return type || '—'
 }
 
 function getTypeIconBg(type) {
-  const map = {
-    pump: 'bg-gradient-to-br from-blue-500 to-cyan-600',
-    filter: 'bg-gradient-to-br from-emerald-500 to-teal-600',
-    heater: 'bg-gradient-to-br from-orange-500 to-red-600',
-    chlorinator: 'bg-gradient-to-br from-cyan-500 to-blue-600',
-    salt_system: 'bg-gradient-to-br from-teal-500 to-emerald-600',
-    automation: 'bg-gradient-to-br from-violet-500 to-purple-600',
-    light: 'bg-gradient-to-br from-yellow-500 to-amber-600',
-    valve: 'bg-gradient-to-br from-slate-500 to-slate-600',
-    cleaner: 'bg-gradient-to-br from-indigo-500 to-blue-600',
-    skimmer: 'bg-gradient-to-br from-sky-500 to-cyan-600',
-    uv_system: 'bg-gradient-to-br from-purple-500 to-fuchsia-600',
-    ozone_system: 'bg-gradient-to-br from-rose-500 to-pink-600',
-    sensor: 'bg-gradient-to-br from-amber-500 to-orange-600',
-    controller: 'bg-gradient-to-br from-fuchsia-500 to-violet-600',
-  }
-  return map[type] ?? 'bg-gradient-to-br from-slate-500 to-slate-600'
+  return 'bg-gradient-to-br from-cyan-500 to-blue-600'
 }
 
 // ===== LIFECYCLE =====
 onMounted(() => {
   fetchEquipment()
   fetchPools()
+  fetchManufacturers()
+})
+
+// Watch for manufacturer filter change to load models
+watch(() => filters.manufacturer_id, (newVal) => {
+  if (newVal) {
+    fetchModelsForFilter()
+  } else {
+    filterModels.value = []
+  }
 })
 </script>
 

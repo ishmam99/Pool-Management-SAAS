@@ -435,6 +435,9 @@ import { useRouter } from 'vue-router'
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 import api from '../../../../../services/api'
 import Swal from 'sweetalert2'
+import { useAuthStore } from '../../../../../store/AuthStore'
+
+const authStore = useAuthStore()
 
 const router = useRouter()
 const submitting = ref(false)
@@ -523,8 +526,10 @@ const onCustomerChange = () => {
 }
 
 const loadCustomers = async () => {
+
+  const url = authStore.authType == 'admin' ? `/customer-management/customers-advance?tenant_id=${authStore.tenantId}` : '/customer-management/customers-advance'
   try {
-    const response = await api().get('/customer-management/customers-advance', {
+    const response = await api().get(url, {
       params: { with: 'pools,agreements.pools' }
     })
     customers.value = response.data.data || []
@@ -539,8 +544,9 @@ const loadCustomers = async () => {
 }
 
 const loadTechnicians = async () => {
+  const url = authStore.authType == 'admin' ? `/user-management/technicians?tenant_id=${authStore.tenantId}` : '/user-management/technicians'
   try {
-    const response = await api().get('/user-management/technicians')
+    const response = await api().get(url)
     technicians.value = response.data || []
   } catch (error) {
     console.error('Failed to load technicians:', error)
@@ -550,8 +556,9 @@ const loadTechnicians = async () => {
 
 const loadServices = async () => {
   loadingServices.value = true
+  const url = authStore.authType == 'admin' ? `/tenant-portal/services?tenant_id=${authStore.tenantId}` : '/tenant-portal/services'
   try {
-    const response = await api().get('/tenant-portal/services')
+    const response = await api().get(url)
     services.value = response.data.data || []
   } catch (error) {
     console.error('Failed to load services:', error)
@@ -702,6 +709,12 @@ const cancel = () => {
 // Watch for customer changes to reset pool selection
 watch(() => form.customer_id, () => {
   form.pool_ids = []
+})
+
+watch(() => authStore.tenantId, () => {
+   loadCustomers(),
+    loadTechnicians(),
+    loadServices()
 })
 
 // Lifecycle

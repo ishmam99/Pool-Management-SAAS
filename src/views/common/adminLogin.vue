@@ -158,6 +158,7 @@ const handleLogin = async () => {
       email: admin.email,
       phone: admin.phone || '',
       avatar: admin.avatar || null,
+
       roles: Array.isArray(admin.roles) ? admin.roles : [admin.role || 'admin'],
       permissions: admin.permissions || [],
     }
@@ -167,7 +168,7 @@ const handleLogin = async () => {
 
     // Store auth via Pinia (adapt to your store's actual signature)
     // If your store expects (user, token, role), use:
-    authStore.login(user, token, primaryRole)
+    authStore.login(user, token, primaryRole, 'admin')
 
     // If your store also stores company info, add it (ensure the store has these properties)
     if (authStore.companyName !== undefined) {

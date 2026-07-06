@@ -22,8 +22,8 @@ const form = ref({
   name: '',
   description: '',
   content: [''],
-  is_active: 1,  // Changed from true to 1
-  is_default: 0  // Changed from false to 0
+  is_active: 1,  
+  is_default: 0
 })
 
 const formErrors = ref({})
@@ -114,7 +114,7 @@ async function loadTemplates() {
       params.append('is_active', '0')  // Changed from 'false' to '0'
     }
 
-    const url = `/term-templates/templates${params.toString() ? '?' + params.toString() : ''}`
+    const url = authStore.authType == 'admin' ? `/term-templates/templates?tenant_id=${authStore.tenantId}${params.toString() ? '&' + params.toString() : ''}` : `/term-templates/templates${params.toString() ? '?' + params.toString() : ''}`
     const response = await api().get(url)
     templates.value = response.data?.data || response.data || []
   } catch (err) {

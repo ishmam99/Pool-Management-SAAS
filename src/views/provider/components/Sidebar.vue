@@ -192,11 +192,11 @@ const menuColors = {
   'Blog': '#7c3aed',               // Indigo
   'Website Management': '#ca8a04',               // Yellow
 
-   // Blank menu items (10 total)
+  // Blank menu items (10 total)
   'Pages': '#d946ef',               // Fuchsia
   'Media Library': '#0891b2',               // Cyan
   'Interactions': '#7c3aed',               // Violet
-  'Blank 4': '#db2777',               // Pink
+  'Equipment Management': '#db2777',               // Pink
   'Blank 5': '#f97316',               // Orange
   'Blank 6': '#059669',               // Emerald
   'Blank 7': '#dc2626',               // Red
@@ -245,7 +245,7 @@ const menus = [
     icon: 'ri-user-community-line',
 
     links: [
-          { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add New Customer' },
+      { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add New Customer' },
 
     ],
     groups: [
@@ -288,12 +288,27 @@ const menus = [
     id: 'pools',
     title: 'Pools',
     icon: 'ri-water-flash-line',
-    groups: [],
+    groups: [
+      {
+        key: 'pool-equipment',
+        icon: 'ri-file-copy-line',
+        title: 'Equipment Management',
+        links: [
+
+          { to: '/provider/equipment-manufacturer', icon: 'ri-tools-line', text: 'Equipment Manufacturer' },
+          { to: '/provider/equipment-model', icon: 'ri-tools-line', text: 'Equipment Model' },
+          { to: '/provider/equipment-component', icon: 'ri-tools-line', text: 'Equipment Components' },
+          { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Register Equipment to Pools' },
+
+        ]
+      }
+    ],
     links: [
       { to: '/provider/pools-create', icon: 'ri-list-unordered', text: 'Add Pools' },
       { to: '/provider/pools', icon: 'ri-list-unordered', text: 'All Pools' },
       { to: '/provider/pools-types', icon: 'ri-grid-line', text: 'By Type' },
-      { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Equipment Register' },
+
+
       // { to: '/provider/pools-map', icon: 'ri-map-2-line', text: 'Pool Map View' }
     ]
   },
@@ -419,55 +434,55 @@ const menus = [
     links: []
   },
   {
-  id: 'website-management',
-  title: 'Website Management',
-  icon: 'ri-global-line',
-  groups: [
-    {
-      key: 'website-pages',
-      icon: 'ri-file-copy-line',
-      title: 'Pages',
-      links: [
-        { to: '/provider/website/pages', icon: 'ri-file-list-line', text: 'All Pages' },
-        { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Page' },
-      ]
-    },
-    {
-      key: 'website-blog',
-      icon: 'ri-edit-2-line',
-      title: 'Blog',
-      links: [
-        { to: '/provider/website/blog/posts', icon: 'ri-article-line', text: 'Posts' },
-        { to: '/provider/website/blog/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
-        { to: '/provider/website/blog/categories', icon: 'ri-folder-2-line', text: 'Categories' },
-        { to: '/provider/website/blog/tags', icon: 'ri-price-tag-3-line', text: 'Tags' },
-      ]
-    },
-    {
-      key: 'website-media',
-      icon: 'ri-image-line',
-      title: 'Media Library',
-      links: [
-        { to: '/provider/website/media', icon: 'ri-image-2-line', text: 'All Media' },
-        { to: '/provider/website/media/upload', icon: 'ri-upload-2-line', text: 'Upload New' },
-      ]
-    },
-    {
-      key: 'website-interactions',
-      icon: 'ri-chat-4-line',
-      title: 'Interactions',
-      links: [
-        { to: '/provider/website/contact-forms', icon: 'ri-mail-send-line', text: 'Contact Forms' },
-        { to: '/provider/website/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
-        { to: '/provider/website/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
-      ]
-    }
-  ],
-  links: [
-    { to: '/provider/website/settings', icon: 'ri-settings-3-line', text: 'Website Settings' },
-    { to: '/provider/website/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
-  ]
-},
+    id: 'website-management',
+    title: 'Website Management',
+    icon: 'ri-global-line',
+    groups: [
+      {
+        key: 'website-pages',
+        icon: 'ri-file-copy-line',
+        title: 'Pages',
+        links: [
+          { to: '/provider/website/pages', icon: 'ri-file-list-line', text: 'All Pages' },
+          { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Page' },
+        ]
+      },
+      {
+        key: 'website-blog',
+        icon: 'ri-edit-2-line',
+        title: 'Blog',
+        links: [
+          { to: '/provider/website/blog/posts', icon: 'ri-article-line', text: 'Posts' },
+          { to: '/provider/website/blog/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
+          { to: '/provider/website/blog/categories', icon: 'ri-folder-2-line', text: 'Categories' },
+          { to: '/provider/website/blog/tags', icon: 'ri-price-tag-3-line', text: 'Tags' },
+        ]
+      },
+      {
+        key: 'website-media',
+        icon: 'ri-image-line',
+        title: 'Media Library',
+        links: [
+          { to: '/provider/website/media', icon: 'ri-image-2-line', text: 'All Media' },
+          { to: '/provider/website/media/upload', icon: 'ri-upload-2-line', text: 'Upload New' },
+        ]
+      },
+      {
+        key: 'website-interactions',
+        icon: 'ri-chat-4-line',
+        title: 'Interactions',
+        links: [
+          { to: '/provider/website/contact-forms', icon: 'ri-mail-send-line', text: 'Contact Forms' },
+          { to: '/provider/website/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
+          { to: '/provider/website/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
+        ]
+      }
+    ],
+    links: [
+      { to: '/provider/website/settings', icon: 'ri-settings-3-line', text: 'Website Settings' },
+      { to: '/provider/website/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
+    ]
+  },
   {
     id: 'communication',
     title: 'Communication',
