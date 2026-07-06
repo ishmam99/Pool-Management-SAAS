@@ -467,9 +467,9 @@ const menus = [
       icon: 'ri-chat-4-line',
       title: 'Interactions',
       links: [
-        { to: '/provider/website/contact-forms', icon: 'ri-mail-send-line', text: 'Contact Forms' },
-        { to: '/provider/website/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
-        { to: '/provider/website/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
+        { to: '/provider/website/interactions/contactForms', icon: 'ri-mail-send-line', text: 'Contact Forms' },
+        { to: '/provider/website/interactions/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
+        { to: '/provider/website/interactions/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
       ]
     }
   ],

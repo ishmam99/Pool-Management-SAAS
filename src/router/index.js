@@ -361,6 +361,21 @@ const routes = [
         name: 'provider-website-media-list',
         component: () => import('../views/provider/pages/media/list.vue')
       },
+      {
+        path: '/provider/website/interactions/contactForms',
+        name: 'provider-website-interactions-contact-forms',
+        component: () => import('../views/provider/pages/interactions/contactForms.vue')
+      },
+      {
+        path: '/provider/website/interactions/testimonials',
+        name: 'provider-website-interactions-testimonials',
+        component: () => import('../views/provider/pages/interactions/testimonials.vue')
+      },
+      {
+        path: '/provider/website/interactions/faqs',
+        name: 'provider-website-interactions-faqs',
+        component: () => import('../views/provider/pages/interactions/faqs.vue')
+      },
 
 
 
