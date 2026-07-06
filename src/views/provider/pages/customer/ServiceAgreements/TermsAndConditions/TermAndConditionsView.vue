@@ -323,6 +323,13 @@ watch(activeFilter, () => {
   loadTemplates()
 })
 
+
+watch(() => authStore.tenantId, () => {
+  loadTemplates()
+})
+
+
+
 // ---------------- Lifecycle ----------------
 onMounted(() => {
   loadTemplates()

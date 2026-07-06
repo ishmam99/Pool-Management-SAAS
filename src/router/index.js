@@ -157,7 +157,12 @@ const routes = [
       {
         path: '/provider/pools-equipment',
         name: 'provider-pools-equipment',
-        component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipmentToPool.vue')
+        component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/RegisterEquipmentPools.vue')
+      },
+       {
+        path: '/provider/pools-equipment-register/:id',
+        name: 'provider-pools-equipment-register',
+        component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/RegisterEquipmentToPool.vue')
       },
        {
         path: '/provider/equipment-manufacturer',
