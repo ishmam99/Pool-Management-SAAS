@@ -29,21 +29,21 @@
 
     <!-- Table -->
     <div v-else class="bg-white rounded-xl shadow overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y table-zebra divide-gray-200">
+        <thead class="bg-blue-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <!-- <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th> -->
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="(category, index) in categories" :key="category.id">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ category.name }}</td>
-            <td class="px-6 py-4 text-sm text-gray-900">{{ category.description || '-' }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
+            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap text-sm text-gray-900">{{ category.name }}</td>
+            <!-- <td class="px-6 py-4 border-e border-slate-200 text-sm text-gray-900">{{ category.description || '-' }}</td> -->
+            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap text-sm font-medium">
               <button @click="openEditModal(category)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
               <button @click="confirmDelete(category.id)" class="text-red-600 hover:text-red-900">Delete</button>
             </td>

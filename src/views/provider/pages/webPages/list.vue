@@ -60,31 +60,31 @@
     </div>
 
     <div v-else class="bg-white rounded-xl shadow overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 table-zebra">
+      <table class="min-w-full divide-y table-zebra divide-gray-200 table-zebra">
         <thead class="bg-cyan-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Page Type</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Page Type</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
+            <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="(page, index) in pages" :key="page.id">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ index+1 }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ page.title }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="px-6 py-4 border-e border-slate-300 whitespace-nowrap text-sm text-gray-500">{{ index+1 }}</td>
+            <td class="px-6 py-4 border-e border-slate-300 whitespace-nowrap text-sm text-gray-900">{{ page.title }}</td>
+            <td class="px-6 py-4 border-e border-slate-300 whitespace-nowrap text-sm text-gray-900">
               <span class="capitalize">{{ page.page_type }}</span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-6 py-4 border-e border-slate-300 whitespace-nowrap">
               <span :class="page.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'" class="px-2 py-1 text-xs font-medium rounded-full capitalize">
                 {{ page.status }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(page.updated_at) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <td class="px-6 py-4 border-e border-slate-300 whitespace-nowrap text-sm text-gray-500">{{ formatDate(page.updated_at) }}</td>
+            <td class="px-6 py-4 border-e border-slate-300 whitespace-nowrap text-sm font-medium">
               <button @click="openEditModal(page)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
               <button @click="confirmDelete(page.id)" class="text-red-600 hover:text-red-900">Delete</button>
             </td>

@@ -67,36 +67,36 @@
     <!-- Table -->
     <div v-else class="bg-white rounded-xl shadow overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+        <thead class="bg-pink-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="(post, index) in posts" :key="post.id">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ post.title }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
+            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-900">{{ post.title }}</td>
+            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-900">
               {{ getCategoryName(post.category_id) }}
             </td>
-            <td class="px-6 py-4 text-sm text-gray-900">
+            <td class="px-6 border-e border-slate-300 py-4 text-sm text-gray-900">
               <span v-for="tagId in (post.tags || [])" :key="tagId" class="inline-block bg-gray-200 rounded-full px-2 py-0.5 text-xs mr-1 mb-1">
                 {{ getTagName(tagId) }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap">
               <span :class="post.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'" class="px-2 py-1 text-xs font-medium rounded-full capitalize">
                 {{ post.status }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(post.updated_at) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(post.updated_at) }}</td>
+            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm font-medium">
               <button @click="openEditModal(post)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
               <button @click="confirmDelete(post.id)" class="text-red-600 hover:text-red-900">Delete</button>
             </td>
