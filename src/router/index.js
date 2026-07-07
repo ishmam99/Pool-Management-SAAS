@@ -157,7 +157,27 @@ const routes = [
       {
         path: '/provider/pools-equipment',
         name: 'provider-pools-equipment',
-        component: () => import('../views/provider/pages/pool/EquipmentRegister.vue')
+        component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/RegisterEquipmentPools.vue')
+      },
+       {
+        path: '/provider/pools-equipment-register/:id',
+        name: 'provider-pools-equipment-register',
+        component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/RegisterEquipmentToPool.vue')
+      },
+       {
+        path: '/provider/equipment-manufacturer',
+        name: 'provider-pools-equipment-manufacturer',
+        component: () => import('../views/provider/pages/pool/EquimentManagement/EquipmentManufacturer.vue')
+      },
+       {
+        path: '/provider/equipment-model',
+        name: 'provider-pools-equipment-model',
+        component: () => import('../views/provider/pages/pool/EquimentManagement/EquipmentModel.vue')
+      },
+       {
+        path: '/provider/equipment-component',
+        name: 'provider-pools-equipment-component',
+        component: () => import('../views/provider/pages/pool/EquimentManagement/EquipmentComponent.vue')
       },
       {
         path: '/provider/pools-map',

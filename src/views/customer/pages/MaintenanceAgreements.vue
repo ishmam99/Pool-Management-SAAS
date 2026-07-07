@@ -89,10 +89,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { customerPortalApi, getApiErrorMessage } from '../../../services/customerPortalApi.js'
 import api from '../../../services/api.js'
+import { useAuthStore } from '../../../store/AuthStore.js'
+
+const authStore = useAuthStore()
 
 const loading = ref(true)
 const agreements = ref([])
@@ -100,9 +103,8 @@ const agreements = ref([])
 const fetchAgreements = async () => {
   loading.value = true
   try {
-    const response = await customerPortalApi.getMaintenanceAgreements()
-    // The API returns { success, message, data: [...] }
-    agreements.value = response.data.data || []
+  const data = await customerPortalApi.getMaintenanceAgreements()
+    agreements.value = Array.isArray(data) ? data : data?.agreements || []
   } catch (error) {
     await Swal.fire({
       icon: 'error',
@@ -163,7 +165,14 @@ const statusBadgeClass = (status) => {
       return 'bg-gray-100 text-gray-800'
   }
 }
+watch(
+  () => authStore.customerId,
+  (newId, oldId) => {
+    if (newId === oldId) return
 
+    fetchAgreements()
+  }
+)
 
 
 onMounted(() => {

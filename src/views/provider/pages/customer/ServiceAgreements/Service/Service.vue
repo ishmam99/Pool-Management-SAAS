@@ -179,8 +179,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import api from '../../../../../../services/api.js'
+import { useAuthStore } from '../../../../../../store/AuthStore.js'
+
+const authStore = useAuthStore()
 
 // ---------- state ----------
 const services = ref([])
@@ -220,8 +223,10 @@ const filteredServices = computed(() => {
 // ---------- API Methods ----------
 const loadServices = async () => {
   loading.value = true
+
+  const url = authStore.authType == 'admin' ? `/tenant-portal/services?tenant_id=${authStore.tenantId}` : '/tenant-portal/services'
   try {
-    const response = await api().get('/tenant-portal/services')
+    const response = await api().get(url)
     // Handle different response structures
     services.value = response.data?.data || response.data || response || []
   } catch (error) {
@@ -364,6 +369,11 @@ const confirmDelete = async (service) => {
   if (!confirm(`Delete "${service.title}"? This action cannot be undone.`)) return
   await deleteService(service.id)
 }
+
+watch(() => authStore.tenantId, () => {
+  loadServices()
+})
+
 
 // ---------- Lifecycle ----------
 onMounted(() => {

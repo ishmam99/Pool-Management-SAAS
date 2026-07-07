@@ -376,13 +376,15 @@ import Swal from 'sweetalert2'
 import Chart from 'chart.js/auto'
 import { useAuthStore } from '../../store/AuthStore.js'
 
+const authStore = useAuthStore()
+
 const router = useRouter()
 const loading = ref(true)
 const dashboard = ref(null)
 const revenueChart = ref(null)
 let chartInstance = null
 
-const authStore = useAuthStore()
+
 
 // Columns
 const visitColumns = ['Customer', 'Pool', 'Technician', 'Scheduled Date', 'Time Window', 'Priority', 'Status']
@@ -639,8 +641,10 @@ function initRevenueChart() {
 // Load Dashboard Data
 async function loadDashboard() {
   loading.value = true
+const url = authStore.authType == 'admin' ? `/tenant-portal/dashboard?tenant_id=${authStore.tenantId}` : '/tenant-portal/dashboard' 
+
   try {
-    const response = await api().get('/tenant-portal/dashboard')
+    const response = await api().get(url)
     dashboard.value = response.data.data
     
     await nextTick()
@@ -686,7 +690,7 @@ onBeforeUnmount(() => {
 })
 
 watch(
-  () => authStore.customerId,
+  () => authStore.tenantId,
   (newId, oldId) => {
     if (newId === oldId) return
 

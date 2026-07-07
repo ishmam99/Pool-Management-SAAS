@@ -55,7 +55,7 @@
 
     <!-- Empty State -->
     <div v-else-if="filteredAgreements.length === 0" class="rounded-2xl bg-white p-12 text-center shadow-sm">
-        <div class="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1 overflow-x-auto">
+      <div class="mb-6 flex gap-1 rounded-xl bg-gray-100 p-1 overflow-x-auto">
         <button v-for="tab in dynamicTabs" :key="tab.value" @click="switchTab(tab.value)"
           class="whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200" :class="[
             currentTab === tab.value
@@ -454,6 +454,9 @@ import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { useAuthStore } from '../../../../../store/AuthStore'
+
+const authStore = useAuthStore()
 
 const router = useRouter()
 
@@ -633,18 +636,20 @@ const getActions = (status) => {
 // API Functions
 const fetchAgreements = async () => {
   loading.value = true
+const url = authStore.authType == 'admin' ? `/service-agreement-management/agreements-advance?tenant_id=${authStore.tenantId}` : '/service-agreement-management/agreements-advance'
+
   try {
-    const response = await api().get('/service-agreement-management/agreements-advance', {
+    const response = await api().get(url, {
       params: {
         with: 'customer,assignedTechnician,pools'
       }
     })
 
     agreements.value = response.data.data || response.data || []
-    
+
     // Update summary from agreements
     updateSummaryFromAgreements()
-    
+
     // Reset pagination
     resetPagination()
   } catch (error) {
@@ -665,23 +670,23 @@ const updateSummaryFromAgreements = () => {
   const draft = agreements.value.filter(a => a.status === 'draft')
   const paused = agreements.value.filter(a => a.status === 'paused')
   const cancelled = agreements.value.filter(a => a.status === 'cancelled')
-  
-  // Calculate total monthly revenue (sum of active agreements)
-const totalMonthlyRevenue = agreements.value.reduce(
-  (sum, a) => sum + Number(a.price || 0),
-  0
-)
-  
-  // Calculate average agreement price (across all agreements)
-const totalPrice = agreements.value.reduce(
-  (sum, a) => sum + Number(a.price ?? 0),
-  0
-)
 
-const averageAgreementPrice =
-  agreements.value.length > 0
-    ? Math.round(totalPrice / agreements.value.length)
-    : 0
+  // Calculate total monthly revenue (sum of active agreements)
+  const totalMonthlyRevenue = agreements.value.reduce(
+    (sum, a) => sum + Number(a.price || 0),
+    0
+  )
+
+  // Calculate average agreement price (across all agreements)
+  const totalPrice = agreements.value.reduce(
+    (sum, a) => sum + Number(a.price ?? 0),
+    0
+  )
+
+  const averageAgreementPrice =
+    agreements.value.length > 0
+      ? Math.round(totalPrice / agreements.value.length)
+      : 0
 
   summary.value = {
     active: active.length,
@@ -694,8 +699,10 @@ const averageAgreementPrice =
 }
 
 const fetchTechnicians = async () => {
+const url = authStore.authType == 'admin' ? `/user-management/technicians?tenant_id=${authStore.tenantId}` : '/user-management/technicians'
+
   try {
-    const response = await api().get('/user-management/technicians')
+    const response = await api().get(url)
     technicians.value = response.data.data || response.data || []
   } catch (error) {
     console.error('Error fetching technicians:', error)
@@ -927,11 +934,16 @@ const handleExport = () => {
   exportAgreementsExcel()
 }
 
+watch(() => authStore.tenantId, () => {
+  fetchAgreements(),
+  fetchTechnicians()
+})
+
 // Lifecycle
 onMounted(async () => {
   await Promise.all([
-    fetchAgreements(),
-    fetchTechnicians()
+  fetchAgreements(),
+  fetchTechnicians()
   ])
 })
 </script>

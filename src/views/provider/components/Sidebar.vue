@@ -192,11 +192,11 @@ const menuColors = {
   'Blog': '#7c3aed',               // Indigo
   'Website Management': '#ca8a04',               // Yellow
 
-   // Blank menu items (10 total)
+  // Blank menu items (10 total)
   'Pages': '#d946ef',               // Fuchsia
   'Media Library': '#0891b2',               // Cyan
   'Interactions': '#7c3aed',               // Violet
-  'Blank 4': '#db2777',               // Pink
+  'Equipment Management': '#db2777',               // Pink
   'Blank 5': '#f97316',               // Orange
   'Blank 6': '#059669',               // Emerald
   'Blank 7': '#dc2626',               // Red
@@ -245,7 +245,7 @@ const menus = [
     icon: 'ri-user-community-line',
 
     links: [
-          { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add New Customer' },
+      { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add New Customer' },
 
     ],
     groups: [
@@ -288,12 +288,27 @@ const menus = [
     id: 'pools',
     title: 'Pools',
     icon: 'ri-water-flash-line',
-    groups: [],
+    groups: [
+      {
+        key: 'pool-equipment',
+        icon: 'ri-file-copy-line',
+        title: 'Equipment Management',
+        links: [
+
+          { to: '/provider/equipment-manufacturer', icon: 'ri-tools-line', text: 'Equipment Manufacturer' },
+          { to: '/provider/equipment-model', icon: 'ri-tools-line', text: 'Equipment Model' },
+          { to: '/provider/equipment-component', icon: 'ri-tools-line', text: 'Equipment Components' },
+          { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Register Equipment to Pools' },
+
+        ]
+      }
+    ],
     links: [
       { to: '/provider/pools-create', icon: 'ri-list-unordered', text: 'Add Pools' },
       { to: '/provider/pools', icon: 'ri-list-unordered', text: 'All Pools' },
       { to: '/provider/pools-types', icon: 'ri-grid-line', text: 'By Type' },
-      { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Equipment Register' },
+
+
       // { to: '/provider/pools-map', icon: 'ri-map-2-line', text: 'Pool Map View' }
     ]
   },

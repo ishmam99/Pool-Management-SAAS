@@ -4,7 +4,7 @@
             <!-- Header with Customer Info -->
             <div class="bg-white/90 backdrop-blur-sm rounded-xl p-4 mb-4 shadow-sm">
                 <h4 class="font-bold text-center text-sm text-sky-700 mb-3 pb-2 border-b border-sky-100">
-             {{   authStore.authType == 'provider' ? 'Service Provider Dashboard' : 'Customer Dashboard'}}
+                    {{ authStore.authType == 'provider' ? 'Service Provider Dashboard' : 'Customer Dashboard' }}
                 </h4>
                 <div class="flex flex-col items-center gap-2">
                     <div
@@ -13,7 +13,7 @@
                     </div>
                     <div class="text-center">
                         <p class="text-sm font-semibold text-gray-800">{{ customerName }}</p>
-                        <p class="text-xs text-gray-500">  {{   authStore.authType == 'provider' ? 'Service Provider Dashboard' : 'Customer Dashboard'}}</p>
+                        <p class="text-xs text-gray-500"> {{ authStore.authType == 'provider' ? 'Service Provider Dashboard' : 'Customer Dashboard'}}</p>
                     </div>
                 </div>
             </div>
@@ -152,6 +152,7 @@ const menuColors = {
     'Equipment': '#3b82f6',
     'Messages': '#ec4899',
     'Profile': '#6366f1',
+    'Payment Methods': '#06b6d4',
     'Help': '#6b7280',
 }
 
@@ -187,129 +188,107 @@ function toggleGroup(key) {
     }
 }
 
-// Sidebar Menu Configuration - Customer Dashboard (With Groups but Single Links)
-const menus = [
-    {
-        id: 'dashboard',
-        title: 'Dashboard',
-        icon: 'ri-dashboard-line',
-        links: [{ to: '/customer/dashboard', icon: 'ri-dashboard-2-line', text: 'Dashboard' }]
-    },
-    {
-        id: 'my-schedule',
-        title: 'My Schedule',
-        icon: 'ri-calendar-check-line',
+// Sidebar Menu Configuration - Computed to handle conditional menus properly
+const menus = computed(() => {
+    const menuItems = [
+        {
+            id: 'dashboard',
+            title: 'Dashboard',
+            icon: 'ri-dashboard-line',
+            links: [{ to: '/customer/dashboard', icon: 'ri-dashboard-2-line', text: 'Dashboard' }]
+        },
+        {
+            id: 'my-schedule',
+            title: 'My Schedule',
+            icon: 'ri-calendar-check-line',
+            links: [
+                { to: '/customer/schedule', icon: 'ri-calendar-event-line', text: 'My Schedule' }
+            ]
+        },
+        {
+            id: 'pool',
+            title: 'My Pool',
+            icon: 'ri-drop-line',
+            links: [
+                { to: '/customer/pools', icon: 'ri-drop-fill', text: 'My Pools' },
+            ]
+        },
+        {
+            id: 'agreements',
+            title: 'Agreements',
+            icon: 'ri-file-text-line',
+            links: [
+                { to: '/customer/maintenance-agreements', icon: 'ri-file-text-fill', text: 'Maintenance Agreements' },
+                { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' }
+            ]
+        },
+        {
+            id: 'work-orders',
+            title: 'My Service Reports',
+            icon: 'ri-file-text-line',
+            links: [
+                { to: '/customer/service-reports', icon: 'ri-file-text-fill', text: 'My Service Reports' },
+            ]
+        },
+        {
+            id: 'billing',
+            title: 'Billing',
+            icon: 'ri-bank-card-line',
+            links: [
+                { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Invoices' },
+                { to: '/customer/payments', icon: 'ri-money-dollar-circle-line', text: 'Payments' }
+            ]
+        }
+    ]
 
-        links: [
-            { to: '/customer/schedule', icon: 'ri-calendar-event-line', text: 'My Schedule' }
-
-        ]
-    },
-    {
-        id: 'pool',
-        title: 'My Pool',
-        icon: 'ri-drop-line',
-    
-        links: [
-            { to: '/customer/pools', icon: 'ri-drop-fill', text: 'My Pools' },
-        ]
-    },
-    // {
-    //     id: 'service-photos',
-    //     title: 'Service Photos',
-    //     icon: 'ri-image-line',
-    //     links: [
-
-    //         { to: '/customer/photos', icon: 'ri-image-2-line', text: 'Service Photos' }
-
-    //     ]
-    // },
-
-     {
-        id: 'agreements',
-        title: 'Agreements',
-        icon: 'ri-file-text-line',
-
-        links: [
-            { to: '/customer/maintenance-agreements', icon: 'ri-file-text-fill', text: 'Maintenance Agreements' },
-            { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' }
-
-        ]
-    },
-     {
-        id: 'work-orders',
-        title: 'My Service Reports',
-        icon: 'ri-file-text-line',
-
-        links: [
-            { to: '/customer/service-reports', icon: 'ri-file-text-fill', text: 'My Service Reports' },
-            // { to: '/customer/agreements', icon: 'ri-file-text-fill', text: 'Service Agreements' }
-
-        ]
-    },
-    {
-        id: 'billing',
-        title: 'Billing',
-        icon: 'ri-bank-card-line',
-
-        links: [
-            { to: '/customer/billing', icon: 'ri-money-dollar-circle-line', text: 'Invoices' },
-            { to: '/customer/payments', icon: 'ri-money-dollar-circle-line', text: 'Payments' }
-
-        ]
-    },
-   
-    // {
-    //     id: 'equipment',
-    //     title: 'Equipment',
-    //     icon: 'ri-tools-line',
-
-    //     links: [
-    //         { to: '/customer/equipment', icon: 'ri-tools-fill', text: 'Equipment' }
-
-    //     ]
-    // },
-    {
+    // Conditionally add Messages menu
+   if (authStore.authType === 'customer') {  menuItems.push({
         id: 'messages',
         title: 'Messages',
         icon: 'ri-chat-3-line',
-
         links: [
             { to: '/customer/messages', icon: 'ri-chat-3-fill', text: 'Messages' }
-
         ]
-    },
-    {
-        id: 'profile',
-        title: 'Profile',
-        icon: 'ri-user-3-line',
+    })}
 
-        links: [
-            { to: '/customer/profile', icon: 'ri-user-3-fill', text: 'Profile' }
-
-        ]
-    },
-    {
-        id: 'payment',
-        title: 'Payment Methods',
-        icon: 'ri-bank-card-line',
-
-        links: [
-            { to: '/customer/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' }
-
-        ]
-    },
-    {
-        id: 'help',
-        title: 'Help',
-        icon: 'ri-question-line',
-
-        links: [
-            { to: '/customer/help', icon: 'ri-question-fill', text: 'Help' }
-
-        ]
+    // Conditionally add Profile menu (only for customers)
+    if (authStore.authType === 'customer') {
+        menuItems.push({
+            id: 'profile',
+            title: 'Profile',
+            icon: 'ri-user-3-line',
+            links: [
+                { to: '/customer/profile', icon: 'ri-user-3-fill', text: 'Profile' }
+            ]
+        })
     }
-]
+
+    // Conditionally add Payment Methods menu
+    if (authStore.authType === 'customer') {
+        menuItems.push({
+            id: 'payment',
+            title: 'Payment Methods',
+            icon: 'ri-bank-card-line',
+            links: [
+                { to: '/customer/payment-methods', icon: 'ri-bank-card-fill', text: 'Payment Methods' }
+            ]
+        })
+    }
+
+    // Conditionally add Help menu
+    if (authStore.authType === 'customer') {
+        menuItems.push({
+            id: 'help',
+            title: 'Help',
+            icon: 'ri-question-line',
+            links: [
+                { to: '/customer/help', icon: 'ri-question-fill', text: 'Help' }
+            ]
+        })
+    }
+
+    return menuItems
+})
 </script>
 
 <style scoped>

@@ -117,13 +117,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import Swal from 'sweetalert2'
 import { customerPortalApi, getApiErrorMessage } from '../../../services/customerPortalApi.js'
 import { formatDate } from '../utils/formatters.js'
+import { useAuthStore } from '../../../store/AuthStore.js'
 
+const authStore = useAuthStore()
 const loading = ref(true)
 const pools = ref([])
+
 
 const fetchPools = async () => {
   loading.value = true
@@ -140,6 +143,15 @@ const fetchPools = async () => {
     loading.value = false
   }
 }
+
+watch(
+  () => authStore.customerId,
+  (newId, oldId) => {
+    if (newId === oldId) return
+
+    fetchPools()
+  }
+)
 
 onMounted(fetchPools)
 </script>

@@ -686,6 +686,9 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Swal from 'sweetalert2'
 import api from '../../../../../services/api.js'
+import { useAuthStore } from '../../../../../store/AuthStore.js'
+
+const authStore = useAuthStore()
 
 const router = useRouter()
 const route = useRoute()
@@ -747,13 +750,13 @@ function getCustomerApi() {
   
   switch (type) {
     case 'prospective':
-      return 'customer-management/customers-prospective?with=pools,agreements'
+      return authStore.authType == 'admin' ? `customer-management/customers-prospective?with=pools,agreements&tenant_id=${authStore.tenantId}` : 'customer-management/customers-prospective?with=pools,agreements'
     case 'current':
-      return 'customer-management/customers-active?with=pools,agreements'
+      return authStore.authType == 'admin' ? `customer-management/customers-active?with=pools,agreements&tenant_id=${authStore.tenantId}` : 'customer-management/customers-active?with=pools,agreements'
     case 'previous':
-      return 'customer-management/customers-previous?with=pools,agreements'
+      return authStore.authType == 'admin' ? `customer-management/customers-previous?with=pools,agreements&tenant_id=${authStore.tenantId}` : 'customer-management/customers-previous?with=pools,agreements'
     default:
-      return 'customer-management/customers-advance?with=pools,agreements'
+      return authStore.authType == 'admin' ? `customer-management/customers-advance?with=pools,agreements&tenant_id=${authStore.tenantId}` : 'customer-management/customers-advance?with=pools,agreements'
   }
 }
 
@@ -1191,6 +1194,15 @@ watch(() => route.params.id, () => {
   currentPage.value = 1
   fetchCustomers()
 })
+
+watch(
+  () => authStore.tenantId,
+  (newId, oldId) => {
+    if (newId === oldId) return
+
+    fetchCustomers()
+  }
+)
 
 // Lifecycle
 onMounted(() => {

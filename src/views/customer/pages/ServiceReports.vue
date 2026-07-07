@@ -50,7 +50,7 @@
             </td>
           </tr>
           <tr v-else-if="reports.length === 0">
-            <td colspan="9" class="px-4 py-10 text-center text-slate-500">No work orders found</td>
+            <td colspan="9" class="px-4 py-10 text-center text-slate-500">No service reports found</td>
           </tr>
           <tr
             v-for="report in reports"
@@ -153,10 +153,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import api from '../../../services/api.js'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { useAuthStore } from '../../../store/AuthStore.js'
+
+const authStore = useAuthStore()
 
 const reports = ref([])
 const loading = ref(false)
@@ -189,8 +192,10 @@ const visiblePages = computed(() => {
 
 const fetchReports = async () => {
   loading.value = true
+
+  const url = authStore.authType == 'provider' ? `/work-order-management/work-orders?customer_id=${authStore.customerId}` : `/work-order-management/work-orders?customer_id=${authStore.user?.id}`
   try {
-    const response = await api().get('/work-order-management/work-orders', {
+    const response = await api().get(url, {
       params: { page: currentPage.value, per_page: perPage.value }
     })
     const data = response.data
@@ -327,6 +332,15 @@ const downloadPDF = (report) => {
 
   doc.save(`WorkOrder_${report.id}_${report.customer?.contact_name || 'report'}.pdf`)
 }
+
+watch(
+  () => authStore.customerId,
+  (newId, oldId) => {
+    if (newId === oldId) return
+
+    fetchReports()
+  }
+)
 
 onMounted(fetchReports)
 </script>
