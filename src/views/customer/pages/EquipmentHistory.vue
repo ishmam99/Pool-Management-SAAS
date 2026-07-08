@@ -225,37 +225,25 @@
                                         rec?.recommended_by?.name || '—' }}</td>
                                     <td class="px-4 py-3 border-r border-gray-100 text-gray-700 whitespace-nowrap">{{
                                         formatDate(rec?.created_at) }}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap">
-                                        <div class="flex items-center gap-1">
-                                            <button @click="openEditRecommendationModal(rec)"
-                                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-all">
-                                                <svg class="w-3 h-3" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                </svg>
-                                                Edit
-                                            </button>
-                                            <button @click="handleDeleteRecommendation(rec?.id)"
-                                                :disabled="deletingRecId === rec?.id"
-                                                class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                                                <svg v-if="deletingRecId === rec?.id" class="w-3 h-3 animate-spin"
-                                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                                </svg>
-                                                <svg v-else class="w-3 h-3" fill="none" stroke="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                                        stroke-width="2"
-                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
+                                                                <td class="px-4 py-4 whitespace-nowrap">
+                                <button v-if="rec.status?.toLowerCase() === 'pending'"
+                                    @click="acceptRecommendation(rec)"
+                                    :disabled="loadingAccept"
+                                    class="bg-green-600 hover:bg-green-700 text-white font-medium py-1.5 px-4 rounded-md text-sm transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm">
+                                    {{ loadingAccept && currentAcceptId === rec.id ? 'Accepting...' : 'Accept' }}
+                                </button>
+                                <span v-else-if="rec.status?.toLowerCase() === 'accepted'"
+                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-green-100 text-green-800">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                    Accepted
+                                </span>
+                                <span v-else
+                                    class="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium bg-gray-100 text-gray-600">
+                                    {{ formatLabel(rec.status) }}
+                                </span>
+                            </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -377,98 +365,7 @@
 
         </div>
 
-        <!-- ===== EDIT RECOMMENDATION MODAL ===== -->
-        <Teleport to="body">
-            <Transition name="modal">
-                <div v-if="editRecommendationModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" @click="closeEditRecommendationModal">
-                    </div>
-                    <div
-                        class="relative w-full max-w-lg bg-white border border-gray-200 rounded-3xl shadow-2xl overflow-hidden">
-                        <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-5 border-b border-gray-200">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <h2 class="text-lg font-bold text-gray-900">Edit Recommendation</h2>
-                                    <p class="text-xs text-gray-500 mt-0.5">{{ editRecForm?.title || 'Recommendation' }}
-                                    </p>
-                                </div>
-                                <button @click="closeEditRecommendationModal"
-                                    class="flex items-center justify-center w-8 h-8 rounded-xl text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Title <span
-                                        class="text-rose-500">*</span></label>
-                                <input v-model="editRecForm.title" type="text"
-                                    class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
-                                    :disabled="updatingRec">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Description</label>
-                                <textarea v-model="editRecForm.description" rows="3" placeholder="Description..."
-                                    class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
-                                    :disabled="updatingRec"></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Recommendation Type <span
-                                        class="text-rose-500">*</span></label>
-                                <input v-model="editRecForm.recommendation_type" type="text"
-                                    placeholder="e.g. Replacement, Repair, Inspection"
-                                    class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
-                                    :disabled="updatingRec">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Priority <span
-                                        class="text-rose-500">*</span></label>
-                                <select v-model="editRecForm.priority"
-                                    class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
-                                    :disabled="updatingRec">
-                                    <option value="">Select priority...</option>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                    <option value="urgent">Urgent</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Estimated Cost</label>
-                                <input v-model="editRecForm.estimated_cost" type="number" step="0.01" placeholder="0.00"
-                                    class="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all"
-                                    :disabled="updatingRec">
-                            </div>
-                            <div v-if="editRecFormError"
-                                class="text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-4 py-2.5">
-                                {{ editRecFormError }}
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3 px-6 py-4 border-t border-gray-200">
-                            <button @click="updateRecommendation" :disabled="updatingRec"
-                                class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 shadow-lg shadow-cyan-500/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 transition-all hover:-translate-y-0.5">
-                                <svg v-if="updatingRec" class="w-4 h-4 animate-spin" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
-                                {{ updatingRec ? 'Saving...' : 'Save Changes' }}
-                            </button>
-                            <button @click="closeEditRecommendationModal"
-                                class="px-6 py-2.5 rounded-xl text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 transition-all"
-                                :disabled="updatingRec">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </Transition>
-        </Teleport>
+
 
     </div>
 </template>
@@ -772,6 +669,55 @@ function formatCurrency(amount) {
     if (amount === null || amount === undefined || amount === '') return '—'
     return `$${parseFloat(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
+
+const acceptRecommendation = async (recommendation) => {
+    const result = await Swal.fire({
+        title: 'Accept Recommendation?',
+        text: 'This recommendation will be marked as accepted.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Accept',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#16a34a',
+        cancelButtonColor: '#6b7280',
+    });
+
+    if (!result.isConfirmed) return;
+
+    loadingAccept.value = true;
+    currentAcceptId.value = recommendation.id;
+
+    try {
+        const formData = new FormData();
+        formData.append('_method', 'PUT');
+        formData.append('status', 'accepted');
+
+        await api().post(`/tenant/equipment-recommendations/${recommendation.id}`, formData);
+
+        await Swal.fire({
+            title: 'Accepted!',
+            text: 'The recommendation has been successfully accepted.',
+            icon: 'success',
+            confirmButtonColor: '#2563eb',
+            timer: 3000,
+            timerProgressBar: true,
+        });
+
+        // Reload recommendations
+        await loadRecommendations(pagination.value?.current_page || 1);
+    } catch (error) {
+        console.error('Error accepting recommendation:', error);
+        await Swal.fire({
+            title: 'Error!',
+            text: 'Failed to accept the recommendation. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#2563eb',
+        });
+    } finally {
+        loadingAccept.value = false;
+        currentAcceptId.value = null;
+    }
+};
 
 // ===== LIFECYCLE =====
 onMounted(async () => {
