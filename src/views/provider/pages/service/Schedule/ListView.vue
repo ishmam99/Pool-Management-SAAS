@@ -116,7 +116,13 @@
               <td class="px-4 py-3"><span class="bg-gray-100 px-2 py-1 rounded text-xs font-mono">#{{ v.id }}</span>
               </td>
               <td class="px-4 py-3 text-sm">{{ formatDate(v.scheduled_date) }}</td>
-              <td class="px-4 py-3 text-sm">{{ v.pool?.label || '—' }}</td>
+              <td class="px-4 py-3 text-sm">
+
+                <div class="flex flex-col gap-0.5">
+                  <span>{{ v.pool?.label || '—' }}</span>
+                  <span>{{ v.pool?.customer?.contact_name || '—' }}</span>
+                </div>
+              </td>
               <td class="px-4 py-3 text-sm">{{ v.pool?.service_address || '—' }}</td>
               <td class="px-4 py-3 text-sm">{{ v.technician?.name || '—' }}</td>
               <td class="px-4 py-3 text-sm">{{ formatTime(v.time_window_start) }} – {{ formatTime(v.time_window_end) }}

@@ -356,6 +356,8 @@ const componentTypes = [
     { value: 'valve', label: 'Valve' },
     { value: 'sensor', label: 'Sensor' },
     { value: 'chemical_feeder', label: 'Chemical Feeder' },
+    { value: 'parts', label: 'Parts' },
+    { value: 'structure', label: 'Pool Structure' },
     { value: 'other', label: 'Other' }
 ]
 
