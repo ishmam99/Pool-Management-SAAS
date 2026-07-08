@@ -339,7 +339,7 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import api from '../../../../../../services/api.js'
+import api from '../../../../../services/api.js'
 
 // Static reference data
 const componentTypes = [
