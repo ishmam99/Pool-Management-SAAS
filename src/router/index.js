@@ -500,6 +500,17 @@ const routes = [
         name: 'customer-service-reports-details',
         component: () => import('../views/customer/pages/ReportDetails.vue')
       },
+
+       {
+        path: '/customer/service-reports/:id',
+        name: 'customer-service-reports-details',
+        component: () => import('../views/customer/pages/ReportDetails.vue')
+      },
+       {
+        path: '/customer/maintenance-recommendations',
+        name: 'customer-maintenance-recommendations',
+        component: () => import('../views/customer/pages/MyMaintenanceRecommendations/MyMaintenanceRecommendations.vue')
+      },
     ]
   },
 

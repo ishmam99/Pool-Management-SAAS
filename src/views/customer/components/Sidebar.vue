@@ -154,6 +154,12 @@ const menuColors = {
     'Profile': '#6366f1',
     'Payment Methods': '#06b6d4',
     'Help': '#6b7280',
+    'My Maintainance Recomendations': '#f97316',               // Orange
+    'My Service Reports': '#059669',               // Emerald
+    'Blank 7': '#dc2626',               // Red
+    'Blank 8': '#4f46e5',               // Indigo
+    'Blank 9': '#0d9488',               // Teal
+    'Blank 10': '#64748b',              // Slate
 }
 
 // Function to get menu color with fallback
@@ -230,6 +236,15 @@ const menus = computed(() => {
                 { to: '/customer/service-reports', icon: 'ri-file-text-fill', text: 'My Service Reports' },
             ]
         },
+
+        {
+            id: 'maintenance-recommendations',
+            title: 'My Maintainance Recomendations',
+            icon: 'ri-file-text-line',
+            links: [
+                { to: '/customer/maintenance-recommendations', icon: 'ri-file-text-fill', text: 'My Maintainance Recomendations' },
+            ]
+        },
         {
             id: 'billing',
             title: 'Billing',
@@ -242,14 +257,16 @@ const menus = computed(() => {
     ]
 
     // Conditionally add Messages menu
-   if (authStore.authType === 'customer') {  menuItems.push({
-        id: 'messages',
-        title: 'Messages',
-        icon: 'ri-chat-3-line',
-        links: [
-            { to: '/customer/messages', icon: 'ri-chat-3-fill', text: 'Messages' }
-        ]
-    })}
+    if (authStore.authType === 'customer') {
+        menuItems.push({
+            id: 'messages',
+            title: 'Messages',
+            icon: 'ri-chat-3-line',
+            links: [
+                { to: '/customer/messages', icon: 'ri-chat-3-fill', text: 'Messages' }
+            ]
+        })
+    }
 
     // Conditionally add Profile menu (only for customers)
     if (authStore.authType === 'customer') {
