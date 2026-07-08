@@ -500,6 +500,11 @@ const routes = [
         name: 'customer-service-reports-details',
         component: () => import('../views/customer/pages/ReportDetails.vue')
       },
+               {
+        path: '/customer/equipment-history/:id',
+        name: 'customer-pools-equipment-history',
+        component: () => import('../views/customer/pages/EquipmentHistory.vue')
+      },
     ]
   },
 
