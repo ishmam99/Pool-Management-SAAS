@@ -204,7 +204,7 @@
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
-                    View History
+                    View History {{ item.id }}
                   </div>
               </td>
             </tr>
@@ -575,12 +575,8 @@ const categorizedSections = computed(() => {
 })
 
 const handleViewHistory = (equipmentId) => {
-  if (!poolId.value || !equipmentId) {
-    console.warn('Pool ID or Equipment ID is missing')
-    return
-  }
   // Navigate to the equipment history page
-  router.push({ name: 'customer-pools-equipment-history', params: { id: poolId.value } })
+  router.push({ name: 'customer-pools-equipment-history', params: { id: equipmentId } })
 }
 
 // ===== LIFECYCLE =====
