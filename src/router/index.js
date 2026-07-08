@@ -324,7 +324,78 @@ const routes = [
         component: () => import('../views/provider/pages/billing/PaymentMethods.vue')
       },
 
-      // Customer
+      // Website
+
+      {
+        path: '/provider/website/settings',
+        name: 'provider-website-settings',
+        component: () => import('../views/provider/pages/website/settings.vue')
+      },
+      {
+        path: '/provider/website/service/create',
+        name: 'provider-website-service-create',
+        component: () => import('../views/provider/pages/serviceArea/create.vue')
+      },
+      {
+        path: '/provider/website/service/view',
+        name: 'provider-website-service-view',
+        component: () => import('../views/provider/pages/serviceArea/view.vue')
+      },
+      {
+        path: '/provider/website/service/import',
+        name: 'provider-website-service-import',
+        component: () => import('../views/provider/pages/serviceArea/import.vue')
+      },
+            {
+        path: '/provider/website/pages/create',
+        name: 'provider-website-pages-create',
+        component: () => import('../views/provider/pages/webPages/create.vue')
+      },
+      {
+        path: '/provider/website/pages/view',
+        name: 'provider-website-pages-view',
+        component: () => import('../views/provider/pages/webPages/list.vue')
+      },
+      {
+        path: '/provider/website/category/create',
+        name: 'provider-website-category-create',
+        component: () => import('../views/provider/pages/blogs/category.vue')
+      },
+      {
+        path: '/provider/website/tags/create',
+        name: 'provider-website-tags-create',
+        component: () => import('../views/provider/pages/blogs/tags.vue')
+      },
+      {
+        path: '/provider/website/blogs/create',
+        name: 'provider-website-blogs-create',
+        component: () => import('../views/provider/pages/blogs/blogs.vue')
+      },
+      {
+        path: '/provider/website/media/create',
+        name: 'provider-website-media-create',
+        component: () => import('../views/provider/pages/media/create.vue')
+      },
+      {
+        path: '/provider/website/media/list',
+        name: 'provider-website-media-list',
+        component: () => import('../views/provider/pages/media/list.vue')
+      },
+      {
+        path: '/provider/website/interactions/contactForms',
+        name: 'provider-website-interactions-contact-forms',
+        component: () => import('../views/provider/pages/interactions/contactForms.vue')
+      },
+      {
+        path: '/provider/website/interactions/testimonials',
+        name: 'provider-website-interactions-testimonials',
+        component: () => import('../views/provider/pages/interactions/testimonials.vue')
+      },
+      {
+        path: '/provider/website/interactions/faqs',
+        name: 'provider-website-interactions-faqs',
+        component: () => import('../views/provider/pages/interactions/faqs.vue')
+      },
 
 
 
