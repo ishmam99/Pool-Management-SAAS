@@ -51,14 +51,14 @@
           <div class="space-y-2">
             <h1 class="text-4xl md:text-5xl font-bold tracking-tight">
               {{ getGreeting() }},
-              <span class="bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+              <span class="bg-gradient-to-r from-white capitalize to-blue-100 bg-clip-text text-transparent">
                 {{ dashboard?.user?.name || 'User' }}
               </span>
               👋
             </h1>
             <p class="text-blue-50 text-lg font-light flex items-center gap-3">
               <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-              {{ dashboard?.user?.role || 'Owner' }} Dashboard
+              <span class="capitalize">{{ dashboard?.user?.role || 'Owner' }}</span>Dashboard
               <span class="w-px h-6 bg-white/20"></span>
               {{ getFormattedDate() }}
             </p>

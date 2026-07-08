@@ -9,11 +9,12 @@ export const useAuthStore = defineStore('authStore', {
     role: null,
     currentDashboard: null,
     companyId: null,
-    layout: 'general',         
+    layout: 'general',           // provider layout
+    adminLayout: 'general',         
     customerId: null,
     tenantId: null,
     companyName: null,
-    sidebarOpenr: true,
+    sidebarOpen: true,
     user: {
       id: '',
       name: '',
@@ -53,7 +54,8 @@ export const useAuthStore = defineStore('authStore', {
       this.currentDashboard = null
       this.companyId = null
       this.companyName = null
-      this.layout = 'general'   
+      this.layout = 'general'
+      this.adminLayout = 'general'   
       this.sidebarOpen = true
       this.user = {
         id: '',
@@ -79,7 +81,8 @@ export const useAuthStore = defineStore('authStore', {
       'companyName',
       'sidebarOpen',
       'user',
-      'layout',      
+      'layout',    
+      'adminLayout',   
       'customerId',  
       'tenantId'     
     ]

@@ -511,6 +511,11 @@ const routes = [
         name: 'customer-maintenance-recommendations',
         component: () => import('../views/customer/pages/MyMaintenanceRecommendations/MyMaintenanceRecommendations.vue')
       },
+               {
+        path: '/customer/equipment-history/:id',
+        name: 'customer-pools-equipment-history',
+        component: () => import('../views/customer/pages/EquipmentHistory.vue')
+      },
     ]
   },
 

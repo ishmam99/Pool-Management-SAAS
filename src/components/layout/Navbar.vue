@@ -350,7 +350,7 @@ import {
   BuildingIcon,
   CheckIcon
 } from 'lucide-vue-next';
-
+const ADMIN_LAYOUT_KEY = 'admin_layout'
 const router = useRouter();
 const authStore = useAuthStore();
 
@@ -608,6 +608,7 @@ const displayCustomerName = computed(() => {
 const setAdminLayout = (layout) => {
   console.log('🔄 Admin setAdminLayout called with:', layout);
   selectedAdminLayout.value = layout;
+  localStorage.setItem(ADMIN_LAYOUT_KEY, layout) 
   authStore.adminLayout = layout;
   
   if (layout === 'general') {
@@ -806,6 +807,14 @@ const handleEscape = (event) => {
     }
   }
 };
+
+const savedAdminLayout = localStorage.getItem(ADMIN_LAYOUT_KEY)
+if (savedAdminLayout) {
+  selectedAdminLayout.value = savedAdminLayout
+} else {
+  selectedAdminLayout.value = 'general'
+}
+ 
 
 // Close dropdown on click outside
 const handleClickOutside = (event) => {
