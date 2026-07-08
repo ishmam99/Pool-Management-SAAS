@@ -2,15 +2,15 @@
   <div class="p-6 mx-auto">
     <!-- Back button & header -->
     <div class="flex items-center gap-4 mb-6">
-      <router-link
-        :to="{ name: 'customer-service-reports' }"
+      <button
+        @click="$router.back()"
         class="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 transition"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
         </svg>
         Back to list
-      </router-link>
+      </button>
       <h2 class="text-2xl font-bold text-slate-800 ml-auto">Service Report #{{ order?.id }}</h2>
     </div>
 

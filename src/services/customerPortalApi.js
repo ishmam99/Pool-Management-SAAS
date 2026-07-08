@@ -11,7 +11,7 @@ export const customerPortalApi = {
 
   getPools: () => api().get(`${isProviderPortal() ? `customer-portal/pools?customer_id=${authStore.customerId}` : 'customer-portal/pools'}`).then(unwrap),
 
-  getPoolHistory: (poolId) => api().get(`${isProviderPortal() ? `customer-portal/pools/${poolId}/history?customer_id=${authStore.customerId}` : `customer-portal/pools/${poolId}/history`}`).then(unwrap),
+  getPoolHistory: (poolId) => api().get(`${isProviderPortal() ? `pool-management/pools/${poolId}?customer_id=${authStore.customerId}` : `pool-management/pools/${poolId}`}`).then(unwrap),
 
   getInvoices: () => api().get(`${isProviderPortal() ? `customer-portal/invoices?customer_id=${authStore.customerId}` : 'customer-portal/invoices'}`).then(unwrap),
 
