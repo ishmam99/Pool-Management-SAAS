@@ -179,6 +179,11 @@ const routes = [
         name: 'provider-pools-equipment-component',
         component: () => import('../views/provider/pages/pool/EquimentManagement/EquipmentComponent.vue')
       },
+         {
+        path: '/provider/equipment-history/:id',
+        name: 'provider-pools-equipment-history',
+        component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/EquipmentHistory.vue')
+      },
       {
         path: '/provider/pools-map',
         name: 'provider-pools-map',
