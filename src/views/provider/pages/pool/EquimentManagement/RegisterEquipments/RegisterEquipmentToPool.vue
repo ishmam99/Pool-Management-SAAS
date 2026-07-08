@@ -550,11 +550,11 @@
                 </div>
                 <div>
                   <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Pool Name</p>
-                  <p class="text-sm font-medium text-gray-900 mt-0.5">{{ pool?.name || '—' }}</p>
+                  <p class="text-sm font-medium text-gray-900 mt-0.5">{{ pool?.label || '—' }}</p>
                 </div>
                 <div class="col-span-2">
                   <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Customer Name</p>
-                  <p class="text-sm font-medium text-gray-900 mt-0.5">{{ pool?.customer?.name || '—' }}</p>
+                  <p class="text-sm font-medium text-gray-900 mt-0.5">{{ pool?.customer?.contact_name || '—' }}</p>
                 </div>
               </div>
             </div>
