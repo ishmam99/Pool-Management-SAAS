@@ -174,7 +174,7 @@
         </div>
       </div>
 
-      <!-- ===== INSTALLED EQUIPMENT SECTION ===== -->
+      <!-- ===== INSTALLED EQUIPMENT SECTION (REFACTORED - CATEGORIZED TABLES) ===== -->
       <div>
         <div class="flex items-center gap-2 mb-4">
           <div class="w-1 h-6 rounded-full bg-gradient-to-b from-cyan-400 to-blue-500"></div>
@@ -220,83 +220,117 @@
           </button>
         </div>
 
-        <!-- Installed Equipment List -->
-        <div v-else-if="!loadingInstalled && installedEquipment.length > 0" class="space-y-4">
-          <div v-for="group in installedGroups" :key="group.manufacturer_id" class="rounded-2xl border border-gray-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
-            <!-- Manufacturer Header -->
-            <div class="bg-gradient-to-r from-gray-50 to-white px-5 py-4 border-b border-gray-200">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-cyan-100 border border-cyan-200">
-                    <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                  </div>
-                  <h3 class="text-base font-bold text-gray-900">{{ group.manufacturer_name }}</h3>
-                  <span class="text-xs text-gray-500">({{ group.models.length }} model{{ group.models.length > 1 ? 's' : '' }})</span>
+        <!-- Categorized Tables -->
+        <div v-else-if="!loadingInstalled && installedEquipment.length > 0" class="space-y-6">
+
+          <div
+            v-for="category in categorizedSections"
+            :key="category.key"
+            class="rounded-2xl border border-gray-200 overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow duration-200"
+          >
+            <!-- Section Header -->
+            <div class="bg-gradient-to-r from-gray-50 to-white px-5 py-4 border-b border-gray-200 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-8 h-8 rounded-xl bg-cyan-100 border border-cyan-200">
+                  <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </div>
-                <span class="text-sm font-semibold text-gray-600">{{ group.total_components }} component{{ group.total_components > 1 ? 's' : '' }}</span>
+                <h3 class="text-base font-bold text-gray-900">{{ category.title }}</h3>
               </div>
+              <span class="text-sm font-semibold text-gray-600">{{ category.items.length }} item{{ category.items.length !== 1 ? 's' : '' }}</span>
             </div>
 
-            <!-- Models -->
-            <div class="divide-y divide-gray-100">
-              <div v-for="model in group.models" :key="model.model_id" class="px-5 py-3">
-                <div class="flex items-center gap-2 mb-3">
-                  <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                  <h4 class="text-sm font-semibold text-gray-700">{{ model.model_name }}</h4>
-                  <span class="text-xs text-gray-400">({{ model.components.length }} component{{ model.components.length > 1 ? 's' : '' }})</span>
-                </div>
-
-                <!-- Components -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 ml-6">
-                  <div v-for="comp in model.components" :key="comp.id" class="p-4 rounded-xl bg-gray-50 border border-gray-200 hover:border-cyan-300 transition-all duration-200">
-                    <div class="flex items-start justify-between mb-2">
-                      <div class="flex-1 min-w-0">
-                        <h5 class="text-sm font-semibold text-gray-900 truncate">{{ comp.component_name }}</h5>
-                        <p class="text-xs text-gray-500 truncate">{{ comp.component_type }}</p>
-                      </div>
-                      <span :class="getStatusBadgeClass(comp.status)" class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
-                        {{ formatStatus(comp.status) }}
-                      </span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-1 text-xs">
-                      <div>
-                        <span class="text-gray-500">Serial:</span>
-                        <span class="ml-1 font-mono text-gray-700">{{ comp.serial_number || '—' }}</span>
-                      </div>
-                      <div>
-                        <span class="text-gray-500">Price:</span>
-                        <span class="ml-1 font-semibold text-gray-900">${{ comp.purchase_price?.toLocaleString() || '0' }}</span>
-                      </div>
-                      <div>
-                        <span class="text-gray-500">Installed:</span>
-                        <span class="ml-1 text-gray-700">{{ formatDate(comp.install_date) }}</span>
-                      </div>
-                      <div>
-                        <span class="text-gray-500">Warranty:</span>
-                        <span class="ml-1 text-gray-700">{{ formatDate(comp.warranty_expiry) }}</span>
-                      </div>
-                      <div v-if="comp.notes" class="col-span-2">
-                        <span class="text-gray-500">Notes:</span>
-                        <span class="ml-1 text-gray-600 truncate block">{{ comp.notes }}</span>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-1 mt-3 pt-2 border-t border-gray-200">
-                      <button @click="openEditComponentModal(comp)" :disabled="updatingId === comp.id" class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                        <svg v-if="updatingId === comp.id" class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        <svg v-else class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                        Edit
-                      </button>
-                      <button @click="handleDeleteComponent(comp.id)" :disabled="deletingId === comp.id" class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-                        <svg v-if="deletingId === comp.id" class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                        <svg v-else class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            <!-- Empty state for this category -->
+            <div v-if="category.items.length === 0" class="flex flex-col items-center justify-center py-10 px-5">
+              <div class="flex items-center justify-center w-12 h-12 rounded-xl bg-gray-50 border border-gray-200 mb-3">
+                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
               </div>
+              <p class="text-sm text-gray-400">No {{ category.title.toLowerCase() }} installed.</p>
+            </div>
+
+            <!-- TableZ Style Table -->
+            <div v-else class="overflow-x-auto">
+              <table class="w-full text-sm border-collapse">
+                <thead class="sticky top-0 z-10">
+                  <tr class="bg-gray-50 border-b border-gray-200">
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Manufacturer</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Model</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Component</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Serial Number</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Install Date</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Warranty</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Purchase Price</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider border-r border-gray-100">Status</th>
+                    <th class="text-left px-4 py-3 font-semibold text-gray-600 text-xs uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  <tr
+                    v-for="item in category.items"
+                    :key="item.id"
+                    class="hover:bg-cyan-50/30 transition-colors"
+                  >
+                    <td class="px-4 py-3 border-r border-gray-100 font-medium text-gray-900 whitespace-nowrap">
+                      {{ item.manufacturer?.name || '—' }}
+                    </td>
+                    <td class="px-4 py-3 border-r border-gray-100 text-gray-700 whitespace-nowrap">
+                      {{ item.equipment_model?.name || '—' }}
+                    </td>
+                    <td class="px-4 py-3 border-r border-gray-100">
+                      <div class="font-medium text-gray-900">{{ item.component?.name || 'Unknown Component' }}</div>
+                      <div class="text-xs text-gray-400">{{ item.component?.type || '—' }}</div>
+                    </td>
+                    <td class="px-4 py-3 border-r border-gray-100 font-mono text-gray-700 whitespace-nowrap">
+                      {{ item.serial_number || '—' }}
+                    </td>
+                    <td class="px-4 py-3 border-r border-gray-100 text-gray-700 whitespace-nowrap">
+                      {{ formatDate(item.install_date) }}
+                    </td>
+                    <td class="px-4 py-3 border-r border-gray-100 text-gray-700 whitespace-nowrap">
+                      {{ formatDate(item.warranty_expiry) }}
+                    </td>
+                    <td class="px-4 py-3 border-r border-gray-100 font-semibold text-gray-900 whitespace-nowrap">
+                      ${{ item.purchase_price?.toLocaleString() || '0' }}
+                    </td>
+                    <td class="px-4 py-3 border-r border-gray-100 whitespace-nowrap">
+                      <span :class="getStatusBadgeClass(item.status)" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium">
+                        {{ formatStatus(item.status) }}
+                      </span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                      <div class="flex items-center gap-1">
+                        <button
+                          @click="openEditComponentModal(item)"
+                          :disabled="updatingId === item.id"
+                          class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-amber-600 bg-amber-50 hover:bg-amber-100 border border-amber-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <svg v-if="updatingId === item.id" class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                          <svg v-else class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                          Edit
+                        </button>
+                        <button
+                          @click="handleDeleteComponent(item.id)"
+                          :disabled="deletingId === item.id"
+                          class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <svg v-if="deletingId === item.id" class="w-3 h-3 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                          <svg v-else class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                          Delete
+                        </button>
+                        <button
+                          @click="handleViewHistory(item.id)"
+                          class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all"
+                        >
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                          View History
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -311,7 +345,7 @@
               <div class="flex items-center justify-between">
                 <div>
                   <h2 class="text-lg font-bold text-gray-900">Edit Component</h2>
-                  <p class="text-xs text-gray-500 mt-0.5">{{ editingComponent?.component_name || 'Component' }}</p>
+                  <p class="text-xs text-gray-500 mt-0.5">{{ editingComponent?.component?.name || editingComponent?.component_name || 'Component' }}</p>
                 </div>
                 <button @click="closeEditComponentModal" class="flex items-center justify-center w-8 h-8 rounded-xl text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-all">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -366,12 +400,13 @@
 
 <script setup>
 import { ref, computed, onMounted, reactive, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import api from '../../../../../../services/api.js'
 
 // ===== STATE =====
 const route = useRoute()
+const router = useRouter()
 const poolId = ref(null)
 const pool = ref(null)
 
@@ -417,6 +452,36 @@ const editForm = reactive({
 })
 const editingComponent = ref(null)
 
+// ===== CATEGORY MAPPING =====
+// Maps component.type -> category key
+const CATEGORY_TYPE_MAP = {
+  // Equipments
+  pump: 'equipments',
+  filter: 'equipments',
+  heater: 'equipments',
+  salt_cell: 'equipments',
+  chlorinator: 'equipments',
+  blower: 'equipments',
+  chemical_feeder: 'equipments',
+  // Electronics
+  controller: 'electronics',
+  automation: 'electronics',
+  light: 'electronics',
+  cleaner: 'electronics',
+  sensor: 'electronics',
+  // Parts
+  valve: 'parts',
+  parts: 'parts',
+  // Pool Structure
+  structure: 'structure',
+  // Others
+  other: 'others',
+}
+
+function getCategoryKey(type) {
+  return CATEGORY_TYPE_MAP[type] || 'others'
+}
+
 // ===== COMPUTED =====
 const estimatedTotal = computed(() => {
   let total = 0
@@ -440,57 +505,35 @@ const totalComponents = computed(() => {
   return installedEquipment.value.length
 })
 
-const installedGroups = computed(() => {
-  const groups = []
-  const manufacturerMap = new Map()
+// ----- Categorized computed collections -----
+const equipmentItems = computed(() =>
+  installedEquipment.value.filter(item => getCategoryKey(item.component?.type) === 'equipments')
+)
 
-  installedEquipment.value.forEach(item => {
-    const manufacturerId = item.manufacturer?.id
-    const modelId = item.equipment_model?.id
+const electronicItems = computed(() =>
+  installedEquipment.value.filter(item => getCategoryKey(item.component?.type) === 'electronics')
+)
 
-    if (!manufacturerMap.has(manufacturerId)) {
-      manufacturerMap.set(manufacturerId, {
-        manufacturer_id: manufacturerId,
-        manufacturer_name: item.manufacturer?.name || 'Unknown Manufacturer',
-        models: [],
-        total_components: 0
-      })
-    }
+const partItems = computed(() =>
+  installedEquipment.value.filter(item => getCategoryKey(item.component?.type) === 'parts')
+)
 
-    const manufacturerGroup = manufacturerMap.get(manufacturerId)
-    let modelGroup = manufacturerGroup.models.find(m => m.model_id === modelId)
+const structureItems = computed(() =>
+  installedEquipment.value.filter(item => getCategoryKey(item.component?.type) === 'structure')
+)
 
-    if (!modelGroup) {
-      modelGroup = {
-        model_id: modelId,
-        model_name: item.equipment_model?.name || 'Unknown Model',
-        components: []
-      }
-      manufacturerGroup.models.push(modelGroup)
-    }
+const otherItems = computed(() =>
+  installedEquipment.value.filter(item => getCategoryKey(item.component?.type) === 'others')
+)
 
-    // Add the equipment item as a component
-    modelGroup.components.push({
-      id: item.id,
-      component_name: item.component?.name || 'Unknown Component',
-      component_type: item.component?.type || '—',
-      serial_number: item.serial_number,
-      install_date: item.install_date,
-      warranty_expiry: item.warranty_expiry,
-      purchase_price: item.purchase_price,
-      notes: item.notes,
-      status: item.status || 'active'
-    })
-    manufacturerGroup.total_components += 1
-  })
-
-  // Convert map to array
-  for (const [key, value] of manufacturerMap) {
-    groups.push(value)
-  }
-
-  return groups
-})
+// Convenience array used by the template to render the 5 sections in order
+const categorizedSections = computed(() => [
+  { key: 'equipments', title: 'Equipments', items: equipmentItems.value },
+  { key: 'electronics', title: 'Electronics', items: electronicItems.value },
+  { key: 'parts', title: 'Parts', items: partItems.value },
+  { key: 'structure', title: 'Pool Structure', items: structureItems.value },
+  { key: 'others', title: 'Others', items: otherItems.value },
+])
 
 // ===== API =====
 
@@ -570,11 +613,11 @@ async function fetchPoolDetails() {
   loadingInstalled.value = true
   try {
     const response = await api().get(`/pool-management/pools/${poolId.value}`, {
-    
+
     })
     const data = response.data
     pool.value = data
-    
+
     // Extract equipment from pool response
     installedEquipment.value = pool.value?.equipment || []
   } catch (error) {
@@ -744,6 +787,18 @@ async function handleDeleteComponent(id) {
   }
 }
 
+// 8. View History - navigation handler (route TBD)
+function handleViewHistory(installedEquipmentId) {
+  // TODO: Replace with the actual history route once provided.
+  // Pass the installed equipment ID (pool_equipment.id) so the destination
+  // page can load the history for this specific installed item.
+  router.push({
+    // route here later
+    // name: 'equipment-history',
+    // params: { id: installedEquipmentId }
+  })
+}
+
 // ===== HELPERS =====
 function getComponentName(id) {
   const comp = catalogComponents.value.find(c => c.id === id)
@@ -858,16 +913,16 @@ function closeEditComponentModal() {
 onMounted(async () => {
   // Get pool ID from route params
   poolId.value = route.params.id
-  
+
   // Set initial pool ID in form
   if (poolId.value) {
     installForm.pool_id = poolId.value
   }
-  
+
   await Promise.all([
     fetchManufacturers()
   ])
-  
+
   // Load pool details if pool ID is available
   if (poolId.value) {
     await fetchPoolDetails()
