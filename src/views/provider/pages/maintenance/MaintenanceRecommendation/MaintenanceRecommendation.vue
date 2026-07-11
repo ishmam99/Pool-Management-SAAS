@@ -185,9 +185,10 @@
                         </h4>
                         <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
                           <table class="w-full">
-                            <thead class="bg-slate-50 border-b border-slate-200">
+                            <thead class="bg-cyan-50 border-b border-slate-200">
                               <tr>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Item</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Description</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Type</th>
                                 <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Price</th>
                                 <th class="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Qty</th>
@@ -197,6 +198,7 @@
                             <tbody>
                               <tr v-for="(item, index) in recommendation.items" :key="index" class="hover:bg-slate-50/60 transition-colors" :class="index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'">
                                 <td class="px-4 py-3 text-sm text-slate-700 border-r border-slate-200">{{ item.item_name }}</td>
+                                <td class="px-4 py-3 text-sm text-slate-700 border-r border-slate-200">{{ item.description }}</td>
                                 <td class="px-4 py-3 text-sm text-slate-500 border-r border-slate-200">{{ item.item_type }}</td>
                                 <td class="px-4 py-3 text-sm text-right text-slate-700 border-r border-slate-200">{{ formatCurrency(item.price) }}</td>
                                 <td class="px-4 py-3 text-sm text-center text-slate-700 border-r border-slate-200">{{ item.quantity }}</td>
@@ -447,6 +449,7 @@
                     <thead class="bg-slate-50 border-b border-slate-200">
                       <tr>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Item</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Description</th>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Type</th>
                         <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Quantity</th>
                         <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Unit Price</th>
@@ -456,6 +459,7 @@
                     <tbody>
                       <tr v-for="(item, index) in viewRecommendation.items" :key="index" class="hover:bg-slate-50/60 transition-colors" :class="index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'">
                         <td class="px-4 py-3 text-sm text-slate-800 border-r border-slate-200">{{ item.item_name }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-800 border-r border-slate-200">{{ item.description }}</td>
                         <td class="px-4 py-3 text-sm text-slate-500 border-r border-slate-200">{{ item.item_type }}</td>
                         <td class="px-4 py-3 text-sm text-right text-slate-800 border-r border-slate-200">{{ item.quantity }}</td>
                         <td class="px-4 py-3 text-sm text-right text-slate-800 border-r border-slate-200">{{ formatCurrency(item.price) }}</td>
@@ -795,6 +799,8 @@ const generateRecommendationPDF = (recommendation) => {
 
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
+  const margin = 20
+  const maxWidth = pageWidth - (margin * 2)
   let y = 20
 
   // Header
@@ -804,7 +810,7 @@ const generateRecommendationPDF = (recommendation) => {
   y += 15
 
   doc.setDrawColor(200, 200, 200)
-  doc.line(20, y, pageWidth - 20, y)
+  doc.line(margin, y, pageWidth - margin, y)
   y += 10
 
   // Recommendation Details
@@ -827,30 +833,38 @@ const generateRecommendationPDF = (recommendation) => {
 
   doc.setFont('helvetica', 'bold')
   details.forEach(([label, value]) => {
-    doc.text(label, 20, y)
+    // Wrap label if too long
+    const labelWidth = 55
+    const valueWidth = maxWidth - labelWidth - 5
+    
+    doc.text(label, margin, y)
     doc.setFont('helvetica', 'normal')
-    doc.text(value, 70, y)
-    y += 8
+    
+    // Wrap description text to fixed width
+    const wrappedValue = doc.splitTextToSize(value.toString(), valueWidth)
+    doc.text(wrappedValue, margin + labelWidth, y)
+    
+    y += (wrappedValue.length * 6) + 2
     doc.setFont('helvetica', 'bold')
   })
 
   y += 5
-  doc.line(20, y, pageWidth - 20, y)
+  doc.line(margin, y, pageWidth - margin, y)
   y += 10
 
   // Items Table
   doc.setFontSize(14)
   doc.setFont('helvetica', 'bold')
-  doc.text('Recommendation Items', 20, y)
+  doc.text('Recommendation Items', margin, y)
   y += 8
 
   doc.setFontSize(10)
   doc.setFillColor(240, 240, 240)
-  doc.rect(20, y, pageWidth - 40, 8, 'F')
+  doc.rect(margin, y, maxWidth, 8, 'F')
 
-  const headers = ['#', 'Item', 'Type', 'Qty', 'Unit Price', 'Total']
-  const colWidths = [10, 50, 40, 20, 30, 30]
-  let x = 20
+  const headers = ['#', 'Item', 'Description', 'Type', 'Unit Price', 'Total']
+  const colWidths = [10, 45, 45, 25, 30, 30]
+  let x = margin
 
   doc.setFont('helvetica', 'bold')
   headers.forEach((header, i) => {
@@ -867,34 +881,50 @@ const generateRecommendationPDF = (recommendation) => {
       y = 20
     }
 
+    // Wrap description to fixed width
+    const description = item.description || 'N/A'
+    const wrappedDesc = doc.splitTextToSize(description, colWidths[2] - 4)
+    
     const rowData = [
       (index + 1).toString(),
       item.item_name || 'N/A',
+      wrappedDesc[0] || 'N/A',
       item.item_type || 'N/A',
-      item.quantity?.toString() || '0',
       formatCurrency(item.price),
       formatCurrency(item.total_price)
     ]
 
-    x = 20
+    x = margin
     rowData.forEach((value, i) => {
-      doc.text(value, x + 2, y + 5)
+      if (i === 2 && Array.isArray(value)) {
+        // Handle wrapped description
+        doc.text(value, x + 2, y + 5)
+        // Add additional lines if needed
+        if (value.length > 1) {
+          const extraY = y + 5
+          value.slice(1).forEach((line, idx) => {
+            doc.text(line, x + 2, extraY + ((idx + 1) * 6))
+          })
+        }
+      } else {
+        doc.text(value.toString(), x + 2, y + 5)
+      }
       x += colWidths[i]
     })
-    y += 8
+    y += 8 + (wrappedDesc.length - 1) * 6
   })
 
   // Summary
   y += 5
-  doc.line(20, y, pageWidth - 20, y)
+  doc.line(margin, y, pageWidth - margin, y)
   y += 8
 
   doc.setFont('helvetica', 'bold')
-  doc.text(`Total Items: ${recommendation.items_count || 0}`, 20, y)
+  doc.text(`Total Items: ${recommendation.items_count || 0}`, margin, y)
   y += 8
   doc.setFontSize(14)
   doc.setTextColor(44, 62, 80)
-  doc.text(`Grand Total: ${formatCurrency(recommendation.total_amount)}`, 20, y)
+  doc.text(`Grand Total: ${formatCurrency(recommendation.total_amount)}`, margin, y)
   y += 15
 
   // Notes
@@ -903,8 +933,8 @@ const generateRecommendationPDF = (recommendation) => {
   doc.setFont('helvetica', 'italic')
   const notes = `This recommendation has been prepared after inspection of the pool equipment. 
 Prices are estimated and may vary depending on actual repair or replacement requirements.`
-  const splitNotes = doc.splitTextToSize(notes, pageWidth - 40)
-  doc.text(splitNotes, 20, y)
+  const splitNotes = doc.splitTextToSize(notes, maxWidth)
+  doc.text(splitNotes, margin, y)
   y += splitNotes.length * 5 + 10
 
   // Footer
@@ -918,7 +948,6 @@ Prices are estimated and may vary depending on actual repair or replacement requ
   // Save PDF
   doc.save(`Recommendation-${recommendation.id}.pdf`)
 }
-
 const downloadPDF = (recommendation) => {
   try {
     generateRecommendationPDF(recommendation)
