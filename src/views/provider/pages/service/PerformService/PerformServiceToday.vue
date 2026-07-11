@@ -390,10 +390,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../../../../../services/api'
 import Swal from 'sweetalert2'
+import { useAuthStore } from '../../../../../store/AuthStore'
 
 // ─── Router ───────────────────────────────────────────────────────────────────
 const route = useRoute()
@@ -529,12 +530,15 @@ function priorityBadge(priority) {
     }
     return map[priority] ?? 'bg-slate-100 text-slate-600 border-slate-200'
 }
-
+const authStore = useAuthStore()
 // ─── API ──────────────────────────────────────────────────────────────────────
 async function loadVisits() {
     loading.value = true
     try {
-        const response = await api().get(`/schedule-visit-management/visits?today=today&with=pool.customer`)
+        const base = '/schedule-visit-management/visits?today=today&with=pool.customer'
+        const url = authStore.authType === 'admin' ? `${base}&tenant_id=${authStore.tenantId}` : base
+        const response = await api().get(url)
+        // const response = await api().get(`/schedule-visit-management/visits?today=today&with=pool.customer`)
         visits.value = response.data?.data ?? []
     } catch (err) {
         Swal.fire({
@@ -560,7 +564,9 @@ function performService(workOrder) {
     }
     router.push(`/provider/services-perform-service/${workOrder.id}`)
 }
-
+watch(() => authStore.tenantId, () => {
+  loadVisits();
+})
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
 onMounted(() => {
     loadVisits()
