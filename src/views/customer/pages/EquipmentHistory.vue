@@ -297,48 +297,51 @@
               </tr>
 
               <!-- Expandable Row -->
+               <!-- Expandable Row -->
               <tr v-for="recommendation in paginatedData" :key="'expand-' + recommendation.id">
-                <td colspan="10" class="px-0 py-0">
+                <td colspan="10" class="p-0 border border-slate-200">
                   <transition
                     enter-active-class="transition-all duration-300 ease-in-out"
                     leave-active-class="transition-all duration-300 ease-in-out"
                     enter-class="max-h-0 opacity-0"
-                    enter-to-class="max-h-screen opacity-100"
-                    leave-class="max-h-screen opacity-100"
+                    enter-to-class="max-h-[1000px] opacity-100"
+                    leave-class="max-h-[1000px] opacity-100"
                     leave-to-class="max-h-0 opacity-0"
                   >
-                    <div v-if="expandedRows.includes(recommendation.id)" class="bg-indigo-50/40 px-6 py-5 border-t border-indigo-100">
+                    <div v-if="expandedRows.includes(recommendation.id)" class="bg-slate-50 px-6 py-5 border-t border-slate-200">
                       <div class="space-y-4">
-                        <h4 class="font-semibold text-slate-700 flex items-center text-sm">
+                        <h4 class="font-semibold text-slate-800 flex items-center text-sm">
                           <svg class="w-4 h-4 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                           </svg>
                           Recommendation Items
                         </h4>
                         <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
-                          <table class="min-w-full divide-y divide-slate-100">
-                            <thead class="bg-slate-50">
+                          <table class="w-full">
+                            <thead class="bg-cyan-50 border-b border-slate-200">
                               <tr>
-                                <th class="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase">Item</th>
-                                <th class="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase">Type</th>
-                                <th class="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 uppercase">Price</th>
-                                <th class="px-4 py-2.5 text-center text-xs font-semibold text-slate-500 uppercase">Qty</th>
-                                <th class="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 uppercase">Total</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Item</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Description</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Type</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Price</th>
+                                <th class="px-4 py-3 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Qty</th>
+                                <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">Total</th>
                               </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100">
-                              <tr v-for="(item, index) in recommendation.items" :key="index" class="hover:bg-slate-50">
-                                <td class="px-4 py-2.5 text-sm text-slate-700">{{ item.item_name }}</td>
-                                <td class="px-4 py-2.5 text-sm text-slate-500">{{ item.item_type }}</td>
-                                <td class="px-4 py-2.5 text-sm text-right text-slate-700">{{ formatCurrency(item.price) }}</td>
-                                <td class="px-4 py-2.5 text-sm text-center text-slate-700">{{ item.quantity }}</td>
-                                <td class="px-4 py-2.5 text-sm text-right font-semibold text-slate-800">{{ formatCurrency(item.total_price) }}</td>
+                            <tbody>
+                              <tr v-for="(item, index) in recommendation.items" :key="index" class="hover:bg-slate-50/60 transition-colors" :class="index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'">
+                                <td class="px-4 py-3 text-sm text-slate-700 border-r border-slate-200">{{ item.item_name }}</td>
+                                <td class="px-4 py-3 text-sm text-slate-700 border-r border-slate-200">{{ item.description }}</td>
+                                <td class="px-4 py-3 text-sm text-slate-500 border-r border-slate-200">{{ item.item_type }}</td>
+                                <td class="px-4 py-3 text-sm text-right text-slate-700 border-r border-slate-200">{{ formatCurrency(item.price) }}</td>
+                                <td class="px-4 py-3 text-sm text-center text-slate-700 border-r border-slate-200">{{ item.quantity }}</td>
+                                <td class="px-4 py-3 text-sm text-right font-semibold text-slate-800">{{ formatCurrency(item.total_price) }}</td>
                               </tr>
                             </tbody>
-                            <tfoot class="bg-slate-50">
+                            <tfoot class="bg-slate-50 border-t border-slate-200">
                               <tr>
-                                <td colspan="4" class="px-4 py-2.5 text-right font-semibold text-slate-600">Grand Total</td>
-                                <td class="px-4 py-2.5 text-right font-bold text-indigo-600">{{ formatCurrency(recommendation.total_amount) }}</td>
+                                <td colspan="4" class="px-4 py-3 text-right font-semibold text-slate-600 border-r border-slate-200">Grand Total</td>
+                                <td class="px-4 py-3 text-right font-bold text-indigo-600">{{ formatCurrency(recommendation.total_amount) }}</td>
                               </tr>
                             </tfoot>
                           </table>
@@ -356,89 +359,28 @@
  
     </div>
 
-    <!-- Edit Modal — light glass backdrop, page stays visible -->
-    <div v-if="showEditModal" class="fixed inset-0 z-50 overflow-y-auto">
-      <div class="fixed inset-0 bg-slate-900/10 backdrop-blur-sm transition-all duration-300" @click="closeEditModal"></div>
 
-      <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl ring-1 ring-slate-200 max-w-md w-full p-6 transform transition-all duration-300 scale-100 opacity-100">
-          <!-- Modal Header -->
-          <div class="flex items-center justify-between mb-5">
-            <h3 class="text-lg font-semibold text-slate-800">Edit Recommendation</h3>
-            <button
-              @click="closeEditModal"
-              class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
 
-          <form @submit.prevent="updateRecommendation">
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Title</label>
-                <input
-                  v-model="editForm.title"
-                  type="text"
-                  required
-                  class="w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-sm"
-                  placeholder="Enter recommendation title"
-                />
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">Description</label>
-                <textarea
-                  v-model="editForm.description"
-                  rows="3"
-                  required
-                  class="w-full rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition-all text-sm"
-                  placeholder="Enter description"
-                ></textarea>
-              </div>
-            </div>
-            <div class="mt-6 flex justify-end space-x-3">
-              <button
-                type="button"
-                @click="closeEditModal"
-                class="px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                :disabled="editLoading"
-                class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-sm shadow-indigo-200"
-              >
-                {{ editLoading ? 'Saving...' : 'Save Changes' }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- View Modal — light glass backdrop, page stays visible -->
+    <!-- View Modal -->
     <div v-if="showViewModal" class="fixed inset-0 z-50 overflow-y-auto">
-      <div class="fixed inset-0 bg-slate-900/10 backdrop-blur-sm transition-all duration-300" @click="closeViewModal"></div>
+      <div class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm transition-all duration-300" @click="closeViewModal"></div>
 
       <div class="flex items-center justify-center min-h-screen px-4 py-8">
-        <div class="relative bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl ring-1 ring-slate-200 w-full max-w-6xl max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 opacity-100">
+        <div class="relative bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-6xl max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100 opacity-100">
           <!-- Sticky Header -->
-          <div class="sticky top-0 bg-white/90 backdrop-blur border-b border-slate-100 px-6 py-4 flex items-center justify-between z-10">
-            <h2 class="text-xl font-bold text-slate-800 flex items-center">
-              <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center mr-3">
+          <div class="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-slate-200 px-6 py-4 flex items-center justify-between z-10">
+            <h2 class="text-xl font-bold text-slate-900 flex items-center">
+              <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mr-3 border border-indigo-100">
                 <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
               Maintenance Recommendation
             </h2>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center gap-2">
               <button
                 @click="downloadPDF(viewRecommendation)"
-                class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-all flex items-center shadow-sm shadow-indigo-200"
+                class="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-all flex items-center shadow-sm hover:shadow-md active:scale-[0.98]"
               >
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -461,57 +403,55 @@
             <div v-if="viewRecommendation" class="space-y-6">
               <!-- Two Column Layout -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Left Column -->
                 <div class="space-y-3">
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Title</h3>
-                    <p class="mt-1 text-base font-semibold text-slate-800">{{ viewRecommendation.title }}</p>
+                    <p class="mt-1 text-base font-semibold text-slate-900">{{ viewRecommendation.title }}</p>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Customer</h3>
                     <p class="mt-1 text-slate-800">{{ viewRecommendation.customer?.contact_name || 'N/A' }}</p>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Email</h3>
                     <p class="mt-1 text-slate-800">{{ viewRecommendation.customer?.email || 'N/A' }}</p>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Phone</h3>
                     <p class="mt-1 text-slate-800">{{ viewRecommendation.customer?.phone || 'N/A' }}</p>
                   </div>
                 </div>
 
-                <!-- Right Column -->
                 <div class="space-y-3">
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Pool</h3>
                     <p class="mt-1 text-slate-800">{{ viewRecommendation.pool?.label || 'N/A' }}</p>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Service Address</h3>
                     <p class="mt-1 text-slate-800">{{ viewRecommendation.pool?.service_address || 'N/A' }}</p>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Priority</h3>
-                    <div class="mt-1 capitalize">
+                    <div class="mt-1">
                       <span :class="getPriorityBadgeClass(viewRecommendation.priority)">
                         {{ viewRecommendation.priority }}
                       </span>
                     </div>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Status</h3>
-                    <div class="mt-1 capitalize">
+                    <div class="mt-1">
                       <span :class="getStatusBadgeClass(viewRecommendation.status)">
                         {{ viewRecommendation.status }}
                       </span>
                     </div>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Recommended By</h3>
                     <p class="mt-1 text-slate-800">{{ viewRecommendation.recommended_by?.name || 'N/A' }}</p>
                   </div>
-                  <div class="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
+                  <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200/60 hover:bg-slate-100 transition-colors">
                     <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Created Date</h3>
                     <p class="mt-1 text-slate-800">{{ formatDate(viewRecommendation.created_at) }}</p>
                   </div>
@@ -519,9 +459,9 @@
               </div>
 
               <!-- Description -->
-              <div class="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100">
-                <h3 class="text-xs font-semibold text-indigo-500 uppercase tracking-wider flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="bg-indigo-50/40 rounded-xl p-4 border border-indigo-100/60">
+                <h3 class="text-xs font-semibold text-indigo-600 uppercase tracking-wider flex items-center">
+                  <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   Description
@@ -533,29 +473,31 @@
 
               <!-- Items Table -->
               <div>
-                <h3 class="text-base font-semibold text-slate-800 mb-3 flex items-center">
-                  <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <h3 class="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                  <svg class="w-5 h-5 mr-2.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                   </svg>
                   Recommendation Items
                 </h3>
-                <div class="overflow-x-auto border border-slate-200 rounded-xl">
-                  <table class="min-w-full divide-y divide-slate-100">
-                    <thead class="bg-slate-50">
+                <div class="overflow-x-auto border border-slate-200/60 rounded-xl">
+                  <table class="w-full">
+                    <thead class="bg-slate-50 border-b border-slate-200">
                       <tr>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Item</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Type</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Quantity</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Unit Price</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Item</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Description</th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Type</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Quantity</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider border-r border-slate-200">Unit Price</th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">Total</th>
                       </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-slate-100">
-                      <tr v-for="(item, index) in viewRecommendation.items" :key="index" class="hover:bg-slate-50 transition-colors">
-                        <td class="px-4 py-3 text-sm text-slate-800">{{ item.item_name }}</td>
-                        <td class="px-4 py-3 text-sm text-slate-500">{{ item.item_type }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-slate-800">{{ item.quantity }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-slate-800">{{ formatCurrency(item.price) }}</td>
+                    <tbody>
+                      <tr v-for="(item, index) in viewRecommendation.items" :key="index" class="hover:bg-slate-50/60 transition-colors" :class="index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'">
+                        <td class="px-4 py-3 text-sm text-slate-800 border-r border-slate-200">{{ item.item_name }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-800 border-r border-slate-200">{{ item.description }}</td>
+                        <td class="px-4 py-3 text-sm text-slate-500 border-r border-slate-200">{{ item.item_type }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-slate-800 border-r border-slate-200">{{ item.quantity }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-slate-800 border-r border-slate-200">{{ formatCurrency(item.price) }}</td>
                         <td class="px-4 py-3 text-sm text-right font-semibold text-slate-800">{{ formatCurrency(item.total_price) }}</td>
                       </tr>
                     </tbody>
@@ -565,24 +507,24 @@
 
               <!-- Summary -->
               <div class="flex justify-end">
-                <div class="bg-indigo-50/70 rounded-2xl p-4 w-full md:w-1/3 border border-indigo-100">
-                  <div class="space-y-2">
+                <div class="bg-indigo-50/40 rounded-2xl p-5 w-full md:w-1/3 border border-indigo-100/60">
+                  <div class="space-y-3">
                     <div class="flex justify-between">
                       <span class="text-sm text-slate-500">Total Items</span>
                       <span class="text-sm font-medium text-slate-800">{{ viewRecommendation.items_count || 0 }}</span>
                     </div>
-                    <div class="flex justify-between border-t border-indigo-200 pt-2">
+                    <div class="flex justify-between pt-3 border-t border-indigo-200/60">
                       <span class="text-base font-semibold text-slate-800">Grand Total</span>
-                      <span class="text-lg font-bold text-indigo-600">{{ formatCurrency(viewRecommendation.total_amount) }}</span>
+                      <span class="text-xl font-bold text-indigo-600">{{ formatCurrency(viewRecommendation.total_amount) }}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               <!-- Notes -->
-              <div class="bg-amber-50/70 rounded-xl p-4 border border-amber-100">
+              <div class="bg-amber-50/40 rounded-xl p-4 border border-amber-100/60">
                 <h3 class="text-xs font-semibold text-amber-600 uppercase tracking-wider flex items-center">
-                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   Recommendation Notes
@@ -594,14 +536,14 @@
               </div>
 
               <!-- Footer -->
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-slate-50 rounded-xl p-4">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between bg-slate-50/80 rounded-xl p-4 border border-slate-200/60">
                 <div>
                   <span class="text-sm text-slate-500">Prepared by:</span>
                   <span class="ml-2 text-sm font-medium text-slate-800">{{ viewRecommendation.recommended_by?.name || 'N/A' }}</span>
                 </div>
                 <button
                   @click="closeViewModal"
-                  class="mt-4 md:mt-0 px-5 py-2 bg-slate-200 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-300 transition-colors"
+                  class="mt-4 md:mt-0 px-5 py-2 bg-white border border-slate-200 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-50 hover:border-slate-300 transition-all"
                 >
                   Close
                 </button>
@@ -1155,6 +1097,8 @@ const generateRecommendationPDF = (recommendation) => {
 
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
+  const margin = 20
+  const maxWidth = pageWidth - (margin * 2)
   let y = 20
 
   // Header
@@ -1164,7 +1108,7 @@ const generateRecommendationPDF = (recommendation) => {
   y += 15
 
   doc.setDrawColor(200, 200, 200)
-  doc.line(20, y, pageWidth - 20, y)
+  doc.line(margin, y, pageWidth - margin, y)
   y += 10
 
   // Recommendation Details
@@ -1187,30 +1131,38 @@ const generateRecommendationPDF = (recommendation) => {
 
   doc.setFont('helvetica', 'bold')
   details.forEach(([label, value]) => {
-    doc.text(label, 20, y)
+    // Wrap label if too long
+    const labelWidth = 55
+    const valueWidth = maxWidth - labelWidth - 5
+    
+    doc.text(label, margin, y)
     doc.setFont('helvetica', 'normal')
-    doc.text(value, 70, y)
-    y += 8
+    
+    // Wrap description text to fixed width
+    const wrappedValue = doc.splitTextToSize(value.toString(), valueWidth)
+    doc.text(wrappedValue, margin + labelWidth, y)
+    
+    y += (wrappedValue.length * 6) + 2
     doc.setFont('helvetica', 'bold')
   })
 
   y += 5
-  doc.line(20, y, pageWidth - 20, y)
+  doc.line(margin, y, pageWidth - margin, y)
   y += 10
 
   // Items Table
   doc.setFontSize(14)
   doc.setFont('helvetica', 'bold')
-  doc.text('Recommendation Items', 20, y)
+  doc.text('Recommendation Items', margin, y)
   y += 8
 
   doc.setFontSize(10)
   doc.setFillColor(240, 240, 240)
-  doc.rect(20, y, pageWidth - 40, 8, 'F')
+  doc.rect(margin, y, maxWidth, 8, 'F')
 
-  const headers = ['#', 'Item', 'Type', 'Qty', 'Unit Price', 'Total']
-  const colWidths = [10, 50, 40, 20, 30, 30]
-  let x = 20
+  const headers = ['#', 'Item', 'Description', 'Type', 'Unit Price', 'Total']
+  const colWidths = [10, 45, 45, 25, 30, 30]
+  let x = margin
 
   doc.setFont('helvetica', 'bold')
   headers.forEach((header, i) => {
@@ -1227,34 +1179,50 @@ const generateRecommendationPDF = (recommendation) => {
       y = 20
     }
 
+    // Wrap description to fixed width
+    const description = item.description || 'N/A'
+    const wrappedDesc = doc.splitTextToSize(description, colWidths[2] - 4)
+    
     const rowData = [
       (index + 1).toString(),
       item.item_name || 'N/A',
+      wrappedDesc[0] || 'N/A',
       item.item_type || 'N/A',
-      item.quantity?.toString() || '0',
       formatCurrency(item.price),
       formatCurrency(item.total_price)
     ]
 
-    x = 20
+    x = margin
     rowData.forEach((value, i) => {
-      doc.text(value, x + 2, y + 5)
+      if (i === 2 && Array.isArray(value)) {
+        // Handle wrapped description
+        doc.text(value, x + 2, y + 5)
+        // Add additional lines if needed
+        if (value.length > 1) {
+          const extraY = y + 5
+          value.slice(1).forEach((line, idx) => {
+            doc.text(line, x + 2, extraY + ((idx + 1) * 6))
+          })
+        }
+      } else {
+        doc.text(value.toString(), x + 2, y + 5)
+      }
       x += colWidths[i]
     })
-    y += 8
+    y += 8 + (wrappedDesc.length - 1) * 6
   })
 
   // Summary
   y += 5
-  doc.line(20, y, pageWidth - 20, y)
+  doc.line(margin, y, pageWidth - margin, y)
   y += 8
 
   doc.setFont('helvetica', 'bold')
-  doc.text(`Total Items: ${recommendation.items_count || 0}`, 20, y)
+  doc.text(`Total Items: ${recommendation.items_count || 0}`, margin, y)
   y += 8
   doc.setFontSize(14)
   doc.setTextColor(44, 62, 80)
-  doc.text(`Grand Total: ${formatCurrency(recommendation.total_amount)}`, 20, y)
+  doc.text(`Grand Total: ${formatCurrency(recommendation.total_amount)}`, margin, y)
   y += 15
 
   // Notes
@@ -1263,8 +1231,8 @@ const generateRecommendationPDF = (recommendation) => {
   doc.setFont('helvetica', 'italic')
   const notes = `This recommendation has been prepared after inspection of the pool equipment. 
 Prices are estimated and may vary depending on actual repair or replacement requirements.`
-  const splitNotes = doc.splitTextToSize(notes, pageWidth - 40)
-  doc.text(splitNotes, 20, y)
+  const splitNotes = doc.splitTextToSize(notes, maxWidth)
+  doc.text(splitNotes, margin, y)
   y += splitNotes.length * 5 + 10
 
   // Footer
@@ -1278,7 +1246,6 @@ Prices are estimated and may vary depending on actual repair or replacement requ
   // Save PDF
   doc.save(`Recommendation-${recommendation.id}.pdf`)
 }
-
 const downloadPDF = (recommendation) => {
   try {
     generateRecommendationPDF(recommendation)
