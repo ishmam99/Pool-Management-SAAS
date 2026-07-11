@@ -765,159 +765,389 @@ const acceptRecommendation = async (recommendation) => {
 
 // PDF Generation
 const generateRecommendationPDF = (recommendation) => {
-  if (!recommendation) return
+    if (!recommendation) return
 
-  const doc = new jsPDF()
-  const pageWidth = doc.internal.pageSize.getWidth()
-  const margin = 20
-  const maxWidth = pageWidth - (margin * 2)
-  let y = 20
+    const doc = new jsPDF()
+    const pageWidth = doc.internal.pageSize.getWidth()
+    const pageHeight = doc.internal.pageSize.getHeight()
+    const margin = 15
+    const maxWidth = pageWidth - (margin * 2)
+    const bottomLimit = pageHeight - 25
+    let y = 0
 
-  // Header
-  doc.setFontSize(24)
-  doc.setTextColor(44, 62, 80)
-  doc.text('Maintenance Recommendation', pageWidth / 2, y, { align: 'center' })
-  y += 15
-
-  doc.setDrawColor(200, 200, 200)
-  doc.line(margin, y, pageWidth - margin, y)
-  y += 10
-
-  // Recommendation Details
-  doc.setFontSize(12)
-  doc.setTextColor(0, 0, 0)
-
-  const details = [
-    ['Title:', recommendation.title || 'N/A'],
-    ['Description:', recommendation.description || 'N/A'],
-    ['Customer:', recommendation.customer?.contact_name || 'N/A'],
-    ['Email:', recommendation.customer?.email || 'N/A'],
-    ['Phone:', recommendation.customer?.phone || 'N/A'],
-    ['Pool:', recommendation.pool?.label || 'N/A'],
-    ['Service Address:', recommendation.pool?.service_address || 'N/A'],
-    ['Priority:', recommendation.priority || 'N/A'],
-    ['Status:', recommendation.status || 'N/A'],
-    ['Recommended By:', recommendation.recommended_by?.name || 'N/A'],
-    ['Created:', formatDate(recommendation.created_at)]
-  ]
-
-  doc.setFont('helvetica', 'bold')
-  details.forEach(([label, value]) => {
-    // Wrap label if too long
-    const labelWidth = 55
-    const valueWidth = maxWidth - labelWidth - 5
-    
-    doc.text(label, margin, y)
-    doc.setFont('helvetica', 'normal')
-    
-    // Wrap description text to fixed width
-    const wrappedValue = doc.splitTextToSize(value.toString(), valueWidth)
-    doc.text(wrappedValue, margin + labelWidth, y)
-    
-    y += (wrappedValue.length * 6) + 2
-    doc.setFont('helvetica', 'bold')
-  })
-
-  y += 5
-  doc.line(margin, y, pageWidth - margin, y)
-  y += 10
-
-  // Items Table
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Recommendation Items', margin, y)
-  y += 8
-
-  doc.setFontSize(10)
-  doc.setFillColor(240, 240, 240)
-  doc.rect(margin, y, maxWidth, 8, 'F')
-
-  const headers = ['#', 'Item', 'Description', 'Type', 'Unit Price', 'Total']
-  const colWidths = [10, 45, 45, 25, 30, 30]
-  let x = margin
-
-  doc.setFont('helvetica', 'bold')
-  headers.forEach((header, i) => {
-    doc.text(header, x + 2, y + 6)
-    x += colWidths[i]
-  })
-  y += 10
-
-  doc.setFont('helvetica', 'normal')
-  const items = Array.isArray(recommendation.items) ? recommendation.items : []
-  items.forEach((item, index) => {
-    if (y > 270) {
-      doc.addPage()
-      y = 20
+    // ---- Color Palette ----
+    const colors = {
+        headerDark: [15, 42, 67],      // deep navy-blue
+        headerAccent: [14, 165, 233],  // sky-500 (cyan accent bar)
+        primary: [14, 116, 144],       // cyan-700
+        primaryLight: [224, 242, 254], // sky-100
+        sectionBg: [248, 250, 252],    // slate-50
+        labelColor: [71, 85, 105],     // slate-600
+        valueColor: [30, 41, 59],      // slate-800
+        border: [203, 213, 225],       // slate-300
+        tableHeaderBg: [13, 92, 122],  // cyan-800
+        zebraBg: [240, 249, 255],      // sky-50
+        badgeBg: [219, 234, 254],      // blue-100
+        badgeText: [30, 64, 175],      // blue-800
+        greenAccent: [5, 150, 105],    // emerald-600
+        greenLight: [209, 250, 229],   // emerald-100
+        notesBg: [255, 251, 235],      // amber-50
+        notesBorder: [253, 230, 138],  // amber-200
+        notesText: [146, 111, 5],      // amber-800
+        muted: [148, 163, 184],        // slate-400
+        white: [255, 255, 255]
     }
 
-    // Wrap description to fixed width
-    const description = item.description || 'N/A'
-    const wrappedDesc = doc.splitTextToSize(description, colWidths[2] - 4)
-    
-    const rowData = [
-      (index + 1).toString(),
-      item.item_name || 'N/A',
-      wrappedDesc[0] || 'N/A',
-      item.item_type || 'N/A',
-      formatCurrency(item.price),
-      formatCurrency(item.total_price)
+    const setFill = (c) => doc.setFillColor(c[0], c[1], c[2])
+    const setText = (c) => doc.setTextColor(c[0], c[1], c[2])
+    const setDraw = (c) => doc.setDrawColor(c[0], c[1], c[2])
+
+    // ============ HEADER ============
+    const headerHeight = 36
+    setFill(colors.headerDark)
+    doc.rect(0, 0, pageWidth, headerHeight, 'F')
+    setFill(colors.headerAccent)
+    doc.rect(0, headerHeight, pageWidth, 2.5, 'F')
+
+    setText(colors.white)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(20)
+    doc.text('Maintenance Recommendation', margin, 17)
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.setTextColor(203, 224, 240)
+    doc.text('Pool Equipment Service Proposal', margin, 25)
+
+    // Right-aligned recommendation number & date
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(10)
+    setText(colors.white)
+    doc.text(`Recommendation #${recommendation.id || 'N/A'}`, pageWidth - margin, 16, { align: 'right' })
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(203, 224, 240)
+    doc.text(`Date: ${formatDate(recommendation.created_at)}`, pageWidth - margin, 23, { align: 'right' })
+
+    y = headerHeight + 8
+
+    // ============ INFO SECTION ============
+    const infoBoxStartY = y
+    const colGap = 8
+    const colWidth = (maxWidth - colGap) / 2
+    const leftX = margin
+    const rightX = margin + colWidth + colGap
+
+    const measureGroup = (rows) => rows.length * 7 + 10
+
+    const recInfoRows = [
+        ['Title', recommendation.title || 'N/A'],
+        ['Priority', recommendation.priority || 'N/A'],
+        ['Status', recommendation.status || 'N/A'],
+        ['Recommended By', recommendation.recommended_by?.name || 'N/A']
+    ]
+    const customerInfoRows = [
+        ['Customer', recommendation.customer?.contact_name || 'N/A'],
+        ['Email', recommendation.customer?.email || 'N/A'],
+        ['Phone', recommendation.customer?.phone || 'N/A']
+    ]
+    const poolInfoRows = [
+        ['Pool', recommendation.pool?.label || 'N/A'],
+        ['Service Address', recommendation.pool?.service_address || 'N/A']
     ]
 
-    x = margin
-    rowData.forEach((value, i) => {
-      if (i === 2 && Array.isArray(value)) {
-        // Handle wrapped description
-        doc.text(value, x + 2, y + 5)
-        // Add additional lines if needed
-        if (value.length > 1) {
-          const extraY = y + 5
-          value.slice(1).forEach((line, idx) => {
-            doc.text(line, x + 2, extraY + ((idx + 1) * 6))
-          })
-        }
-      } else {
-        doc.text(value.toString(), x + 2, y + 5)
-      }
-      x += colWidths[i]
+    const leftHeight = measureGroup(recInfoRows) + 10
+    const rightHeight = measureGroup(customerInfoRows) + measureGroup(poolInfoRows) + 8
+    const infoBoxHeight = Math.max(leftHeight, rightHeight) + 8
+
+    setFill(colors.sectionBg)
+    setDraw(colors.border)
+    doc.roundedRect(margin, infoBoxStartY, maxWidth, infoBoxHeight, 3, 3, 'FD')
+
+    const drawGroupHeader = (label, x, yy) => {
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(9.5)
+        setText(colors.primary)
+        const upperLabel = label.toUpperCase()
+        doc.text(upperLabel, x, yy)
+
+        // Underline only as wide as the text (plus a small padding)
+        const textWidth = doc.getTextWidth(upperLabel)
+        setDraw(colors.primary)
+        doc.setLineWidth(0.5)
+        doc.line(x, yy + 1.5, x + textWidth + 2, yy + 1.5)
+        doc.setLineWidth(0.2)
+
+        return yy + 8
+    }
+
+    const drawKeyValueRow = (label, value, x, yy) => {
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(9)
+        setText(colors.labelColor)
+        doc.text(`${label}:`, x, yy)
+        doc.setFont('helvetica', 'normal')
+        setText(colors.valueColor)
+        const wrapped = doc.splitTextToSize(String(value), colWidth - 32)
+        doc.text(wrapped, x + 32, yy)
+        return yy + Math.max(6, wrapped.length * 5) + 1.5
+    }
+
+    // Left column: Recommendation Information
+    let leftY = infoBoxStartY + 10
+    leftY = drawGroupHeader('Recommendation Information', leftX + 4, leftY)
+    recInfoRows.forEach(([label, value]) => {
+        leftY = drawKeyValueRow(label, value, leftX + 4, leftY)
     })
-    y += 8 + (wrappedDesc.length - 1) * 6
-  })
 
-  // Summary
-  y += 5
-  doc.line(margin, y, pageWidth - margin, y)
-  y += 8
+    // Right column: Customer + Pool Information
+    let rightY = infoBoxStartY + 10
+    rightY = drawGroupHeader('Customer Information', rightX + 4, rightY)
+    customerInfoRows.forEach(([label, value]) => {
+        rightY = drawKeyValueRow(label, value, rightX + 4, rightY)
+    })
+    rightY += 3
+    rightY = drawGroupHeader('Pool Information', rightX + 4, rightY)
+    poolInfoRows.forEach(([label, value]) => {
+        rightY = drawKeyValueRow(label, value, rightX + 4, rightY)
+    })
 
-  doc.setFont('helvetica', 'bold')
-  doc.text(`Total Items: ${recommendation.items_count || 0}`, margin, y)
-  y += 8
-  doc.setFontSize(14)
-  doc.setTextColor(44, 62, 80)
-  doc.text(`Grand Total: ${formatCurrency(recommendation.total_amount)}`, margin, y)
-  y += 15
+    y = infoBoxStartY + infoBoxHeight + 5
 
-  // Notes
-  doc.setFontSize(10)
-  doc.setTextColor(100, 100, 100)
-  doc.setFont('helvetica', 'italic')
-  const notes = `This recommendation has been prepared after inspection of the pool equipment. 
-Prices are estimated and may vary depending on actual repair or replacement requirements.`
-  const splitNotes = doc.splitTextToSize(notes, maxWidth)
-  doc.text(splitNotes, margin, y)
-  y += splitNotes.length * 5 + 10
+    // ============ DESCRIPTION BOX ============
+    const descText = recommendation.description || 'No description provided.'
+    const wrappedDesc = doc.splitTextToSize(descText, maxWidth - 10)
+    const descBoxHeight = wrappedDesc.length * 5 + 16
 
-  // Footer
-  doc.setFontSize(9)
-  doc.setTextColor(150, 150, 150)
-  doc.setFont('helvetica', 'normal')
-  doc.text('Generated by Pool Management System', pageWidth / 2, y, { align: 'center' })
-  y += 5
-  doc.text(`Generated on: ${new Date().toLocaleString()}`, pageWidth / 2, y, { align: 'center' })
+    setFill(colors.primaryLight)
+    setDraw(colors.primary)
+    doc.roundedRect(margin, y, maxWidth, descBoxHeight, 3, 3, 'FD')
 
-  // Save PDF
-  doc.save(`Recommendation-${recommendation.id}.pdf`)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(9)
+    setText(colors.primary)
+    doc.text('DESCRIPTION', margin + 5, y + 8)
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9.5)
+    setText(colors.valueColor)
+    doc.text(wrappedDesc, margin + 5, y + 14)
+
+    y += descBoxHeight + 6
+
+    // ============ ITEMS TABLE ============
+    const columns = [
+        { key: 'idx', label: '#', width: 10, align: 'center' },
+        { key: 'item_name', label: 'Item Name', width: 35, align: 'left', bold: true },
+        { key: 'description', label: 'Description', width: 50, align: 'left' },
+        { key: 'item_type', label: 'Type', width: 25, align: 'center', badge: true },
+        { key: 'price', label: 'Unit Price', width: 30, align: 'right' },
+        { key: 'total_price', label: 'Total', width: 30, align: 'right', bold: true, accent: true }
+    ]
+    const tableHeaderHeight = 11
+
+    const drawTableSectionTitle = (yy) => {
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(13)
+        setText(colors.headerDark)
+        doc.text('Recommendation Items', margin, yy)
+        return yy + 8
+    }
+
+    const drawTableHeader = (yy) => {
+        setFill(colors.tableHeaderBg)
+        setDraw(colors.tableHeaderBg)
+        let x = margin
+        columns.forEach(col => {
+            doc.rect(x, yy, col.width, tableHeaderHeight, 'FD')
+            x += col.width
+        })
+        doc.setFont('helvetica', 'bold')
+        doc.setFontSize(9)
+        setText(colors.white)
+        x = margin
+        columns.forEach(col => {
+            const textY = yy + tableHeaderHeight / 2 + 1.5
+            const align = col.align === 'left' ? undefined : col.align
+            const tx = col.align === 'left' ? x + 3
+                : col.align === 'right' ? x + col.width - 3
+                    : x + col.width / 2
+            doc.text(col.label, tx, textY, align ? { align } : undefined)
+            x += col.width
+        })
+        return yy + tableHeaderHeight
+    }
+
+    y = drawTableSectionTitle(y)
+    y = drawTableHeader(y)
+
+    const items = Array.isArray(recommendation.items) ? recommendation.items : []
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+
+    items.forEach((item, index) => {
+        const descriptionVal = item.description || item.item_name || 'N/A'
+        const wrappedItemDesc = doc.splitTextToSize(String(descriptionVal), columns[2].width - 6)
+        const rowHeight = Math.max(10, wrappedItemDesc.length * 4.5 + 6)
+
+        // Page break check — redraw section title + table header on new page
+        if (y + rowHeight > bottomLimit) {
+            doc.addPage()
+            y = 20
+            y = drawTableSectionTitle(y)
+            y = drawTableHeader(y)
+        }
+
+        const isZebra = index % 2 === 1
+        setFill(isZebra ? colors.zebraBg : colors.white)
+        setDraw(colors.border)
+
+        let x = margin
+        columns.forEach(col => {
+            doc.rect(x, y, col.width, rowHeight, 'FD')
+            x += col.width
+        })
+
+        const centerY = y + rowHeight / 2 + 1.5
+        x = margin
+
+        // # column
+        doc.setFont('helvetica', 'normal')
+        setText(colors.valueColor)
+        doc.text(String(index + 1), x + columns[0].width / 2, centerY, { align: 'center' })
+        x += columns[0].width
+
+        // Item Name (bold)
+        doc.setFont('helvetica', 'bold')
+        setText(colors.valueColor)
+        const nameWrapped = doc.splitTextToSize(item.item_name || 'N/A', columns[1].width - 6)
+        doc.text(nameWrapped, x + 3, centerY - ((nameWrapped.length - 1) * 2))
+        x += columns[1].width
+
+        // Description
+        doc.setFont('helvetica', 'normal')
+        setText(colors.labelColor)
+        const descStartY = y + 6
+        doc.text(wrappedItemDesc, x + 3, descStartY)
+        x += columns[2].width
+
+        // Type (badge)
+        const typeLabel = item.item_type || 'N/A'
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(8.5)
+        const typeTextWidth = doc.getTextWidth(typeLabel)
+        const badgeWidth = Math.min(columns[3].width - 6, typeTextWidth + 8)
+        const badgeX = x + (columns[3].width - badgeWidth) / 2
+        setFill(colors.badgeBg)
+        doc.roundedRect(badgeX, centerY - 4.5, badgeWidth, 6.5, 2, 2, 'F')
+        setText(colors.badgeText)
+        doc.text(typeLabel, x + columns[3].width / 2, centerY, { align: 'center' })
+        doc.setFontSize(9)
+        x += columns[3].width
+
+        // Unit Price
+        doc.setFont('helvetica', 'normal')
+        setText(colors.valueColor)
+        doc.text(formatCurrency(item.price), x + columns[4].width - 3, centerY, { align: 'right' })
+        x += columns[4].width
+
+        // Total (accent, bold)
+        doc.setFont('helvetica', 'bold')
+        setText(colors.greenAccent)
+        doc.text(formatCurrency(item.total_price), x + columns[5].width - 3, centerY, { align: 'right' })
+
+        y += rowHeight
+    })
+
+    y += 6
+
+    // ============ SUMMARY BOX ============
+    const summaryWidth = 85
+    const summaryHeight = 28
+    const summaryX = pageWidth - margin - summaryWidth
+
+    if (y + summaryHeight > bottomLimit) {
+        doc.addPage()
+        y = 20
+    }
+
+    setFill(colors.greenLight)
+    setDraw(colors.greenAccent)
+    doc.roundedRect(summaryX, y, summaryWidth, summaryHeight, 3, 3, 'FD')
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9.5)
+    setText(colors.labelColor)
+    doc.text('Total Items', summaryX + 6, y + 9)
+    setText(colors.valueColor)
+    doc.setFont('helvetica', 'bold')
+    doc.text(String(recommendation.items_count || 0), summaryX + summaryWidth - 6, y + 9, { align: 'right' })
+
+    setDraw(colors.greenAccent)
+    doc.setLineWidth(0.3)
+    doc.line(summaryX + 6, y + 13, summaryX + summaryWidth - 6, y + 13)
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(11)
+    setText(colors.valueColor)
+    doc.text('Grand Total', summaryX + 6, y + 22)
+    doc.setFontSize(15)
+    setText(colors.greenAccent)
+    doc.text(formatCurrency(recommendation.total_amount), summaryX + summaryWidth - 6, y + 22, { align: 'right' })
+
+    y += summaryHeight + 6
+
+    // ============ NOTES ============
+    // ============ NOTES ============
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8.5) // set font BEFORE measuring wrap width
+
+    const notesText = `This recommendation has been prepared after inspection of the pool equipment. Prices are estimated and may vary depending on actual repair or replacement requirements.`
+    const wrappedNotes = doc.splitTextToSize(notesText, maxWidth - 10)
+    const notesHeight = wrappedNotes.length * 4.5 + 12
+
+    if (y + notesHeight > bottomLimit) {
+        doc.addPage()
+        y = 20
+    }
+
+    setFill(colors.notesBg)
+    setDraw(colors.notesBorder)
+    doc.roundedRect(margin, y, maxWidth, notesHeight, 3, 3, 'FD')
+
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(8.5)
+    setText(colors.notesText)
+    doc.text('NOTES', margin + 5, y + 7)
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8.5)
+    setText([120, 92, 30])
+    doc.text(wrappedNotes, margin + 5, y + 13)
+
+    y += notesHeight + 6
+
+    // ============ FOOTER ============
+    if (y + 15 > bottomLimit) {
+        doc.addPage()
+        y = pageHeight - 25
+    }
+    setDraw(colors.border)
+    doc.setLineWidth(0.2)
+    doc.line(margin, y, pageWidth - margin, y)
+    y += 6
+
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8.5)
+    setText(colors.muted)
+    doc.text('Generated by Pool Management System', pageWidth / 2, y, { align: 'center' })
+    y += 4.5
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, pageWidth / 2, y, { align: 'center' })
+
+    // Save PDF
+    doc.save(`Recommendation-${recommendation.id}.pdf`)
 }
+
 const downloadPDF = (recommendation) => {
   try {
     generateRecommendationPDF(recommendation)
