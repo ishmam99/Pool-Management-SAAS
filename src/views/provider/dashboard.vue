@@ -392,18 +392,18 @@ const invoiceColumns = ['Invoice #', 'Customer', 'Invoice Date', 'Due Date', 'To
 
 // Header Actions
 const headerActions = [
-  { label: 'Add Pool', route: '/pools/create' },
-  { label: 'Create Service Request', route: '/work-orders/create' }
+  { label: 'Add Pool', route: '/provider/pools-create' },
+  { label: 'Add New Customer', route: '/provider/customer-create' }
 ]
 
 // Quick Actions
 const quickActions = [
-  { icon: '➕', label: 'Add Customer', route: '/customers/create' },
-  { icon: '🏊', label: 'Add Pool', route: '/pools/create' },
-  { icon: '📄', label: 'Create Agreement', route: '/agreements/create' },
-  { icon: '📅', label: 'Schedule Visit', route: '/visits/create' },
-  { icon: '🔧', label: 'Create Work Order', route: '/work-orders/create' },
-  { icon: '💰', label: 'Generate Invoice', route: '/invoices/create' }
+  { icon: '➕', label: 'Add Customer', route: '/provider/customer-create' },
+  { icon: '🏊', label: 'Add Pool', route: '/provider/pools-create' },
+  { icon: '📄', label: 'Create Agreement', route: '/provider/customer-service-agreements-create' },
+  { icon: '📅', label: 'Schedule Visit', route: '/provider/services-calendar' },
+  { icon: '🔧', label: 'Create Maintenance Schedule', route: '/provider/schedule-maintenance' },
+  // { icon: '💰', label: 'Generate Invoice', route: '/invoices/create' }
 ]
 
 // Computed KPI Cards
