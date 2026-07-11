@@ -78,7 +78,7 @@ const routes = [
         name: 'provider-customer-details',
         component: () => import('../views/provider/pages/customer/AllCustomers/CustomerDetails.vue')
       },
-        {
+      {
         path: '/provider/prospective-customer-details/:id',
         name: 'provider-prospective-customer-details',
         component: () => import('../views/provider/pages/customer/AllCustomers/ProspectiveCustomerDetails.vue')
@@ -94,17 +94,17 @@ const routes = [
         name: 'provider-service-agreements-create',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AgreementCreate.vue')
       },
-       {
+      {
         path: '/provider/customer-service-terms-and-conditions',
         name: 'provider-service-terms-and-conditions',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/TermsAndConditions/TermAndConditionsView.vue')
       },
-       {
+      {
         path: '/provider/customer-service',
         name: 'provider-customer-service',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/Service/Service.vue')
       },
-       {
+      {
         path: '/provider/customer-add-serivice-customer',
         name: 'provider-service-add-serivice-customer',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AddService/AddServiceCustomers.vue')
@@ -115,7 +115,7 @@ const routes = [
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AddService/AddService.vue')
       },
 
-       {
+      {
         path: '/provider/customer-add-terms-customer',
         name: 'provider-service-add-terms-customer',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AddTermsAndConditions/AddTermsAndConditionsCustomers.vue')
@@ -125,9 +125,9 @@ const routes = [
         name: 'provider-service-add-terms',
         component: () => import('../views/provider/pages/customer/ServiceAgreements/AddTermsAndConditions/AddTermsAndConditions.vue')
       },
-    
+
       // Customer Maintenance
- {
+      {
         path: '/provider/customer-maintenance-agreements',
         name: 'provider-maintenance-customers-agreements',
         component: () => import('../views/provider/pages/customer/MaintenanceAgreements/AgreementList.vue')
@@ -159,27 +159,27 @@ const routes = [
         name: 'provider-pools-equipment',
         component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/RegisterEquipmentPools.vue')
       },
-       {
+      {
         path: '/provider/pools-equipment-register/:id',
         name: 'provider-pools-equipment-register',
         component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/RegisterEquipmentToPool.vue')
       },
-       {
+      {
         path: '/provider/equipment-manufacturer',
         name: 'provider-pools-equipment-manufacturer',
         component: () => import('../views/provider/pages/pool/EquimentManagement/EquipmentManufacturer.vue')
       },
-       {
+      {
         path: '/provider/equipment-model',
         name: 'provider-pools-equipment-model',
         component: () => import('../views/provider/pages/pool/EquimentManagement/EquipmentModel.vue')
       },
-       {
+      {
         path: '/provider/equipment-component',
         name: 'provider-pools-equipment-component',
         component: () => import('../views/provider/pages/pool/EquimentManagement/EquipmentComponent.vue')
       },
-         {
+      {
         path: '/provider/equipment-history/:id',
         name: 'provider-pools-equipment-history',
         component: () => import('../views/provider/pages/pool/EquimentManagement/RegisterEquipments/EquipmentHistory.vue')
@@ -236,7 +236,7 @@ const routes = [
         component: () => import('../views/provider/pages/maintenance/MaintenanceList/[status].vue')
       },
 
-       {
+      {
         path: '/provider/maintenance-calendar',
         name: 'provider-maintenance-calendar',
         component: () => import('../views/provider/pages/maintenance/MaintenanceSchedule/CalenderView.vue')
@@ -245,6 +245,23 @@ const routes = [
         path: '/provider/maintenance-list',
         name: 'provider-maintenance-list',
         component: () => import('../views/provider/pages/maintenance/MaintenanceSchedule/ListView.vue')
+      },
+
+      {
+        path: '/provider/create-maintenance-recommendations-pools',
+        name: 'provider-create-maintenance-recommendations-pools',
+        component: () => import('../views/provider/pages/maintenance/CreateMaintenanceRecommendation/CreateMaintenanceRecommendationPools.vue')
+      },
+      {
+        path: '/provider/create-maintenance-recommendations/:id',
+        name: 'provider-create-maintenance-recommendations',
+        component: () => import('../views/provider/pages/maintenance/CreateMaintenanceRecommendation/CreateMaintenanceRecommendation.vue')
+      },
+
+      {
+        path: '/provider/maintenance-recommendations/:id',
+        name: 'provider-maintenance-recommendations',
+        component: () => import('../views/provider/pages/maintenance/MaintenanceRecommendation/MaintenanceRecommendation.vue')
       },
 
 
@@ -351,7 +368,7 @@ const routes = [
         name: 'provider-website-service-import',
         component: () => import('../views/provider/pages/serviceArea/import.vue')
       },
-            {
+      {
         path: '/provider/website/pages/create',
         name: 'provider-website-pages-create',
         component: () => import('../views/provider/pages/webPages/create.vue')
@@ -501,17 +518,17 @@ const routes = [
         component: () => import('../views/customer/pages/ReportDetails.vue')
       },
 
-       {
+      {
         path: '/customer/service-reports/:id',
         name: 'customer-service-reports-details',
         component: () => import('../views/customer/pages/ReportDetails.vue')
       },
-       {
+      {
         path: '/customer/maintenance-recommendations',
         name: 'customer-maintenance-recommendations',
         component: () => import('../views/customer/pages/MyMaintenanceRecommendations/MyMaintenanceRecommendations.vue')
       },
-               {
+      {
         path: '/customer/equipment-history/:id',
         name: 'customer-pools-equipment-history',
         component: () => import('../views/customer/pages/EquipmentHistory.vue')
@@ -530,13 +547,13 @@ const routes = [
         component: () => import('../views/technician/pages/Dashboard/techDashboard.vue')
       },
 
-       {
+      {
         path: '/technician/my-schedules',
         name: 'technician-my-schedules',
         component: () => import('../views/technician/pages/MySchedule/MySchedule.vue')
       },
 
-        {
+      {
         path: '/technician/perform-service/:id',
         name: 'technician-perform-service',
         component: () => import('../views/technician/pages/MySchedule/PerformService.vue')
@@ -577,47 +594,47 @@ const routes = [
     ]
   },
 
-//provider website
-    {
+  //provider website
+  {
     path: '/provider-website',
     component: () => import('../views/provider-website/layout/provider-websiteLayout.vue'),
     children: [
-  // Common
-  {
-    path: '',
-    name: 'provider-website-home',
-    component: () => import('../views/provider-website/common/Home/index.vue'),
-  },
-  {
-    path: '/provider-website/about',
-    name: 'Provider Website About',
-    component: () => import('../views/provider-website/common/AboutUs.vue'),
-  },
-  {
-    path: '/provider-website/features',
-    name: 'Provider Website Features',
-    component: () => import('../views/provider-website/common/Features.vue'),
-  },
-  {
-    path: '/provider-website/blogs',
-    name: 'Provider Website Blogs',
-    component: () => import('../views/provider-website/common/Blogs.vue'),
-  },
-  {
-    path: '/provider-website/join-us',
-    name: 'Provider Website Join Us',
-    component: () => import('../views/provider-website/common/JoinUs.vue'),
-  },
-  {
-    path: '/provider-website/login',
-    name: 'Provider Website login',
-    component: () => import('../views/provider-website/common/csLogin.vue'),
-  },
-{
-    path: '/provider-website/quote',
-    name: 'Provider Website Quote Page',
-    component: () => import('../views/provider-website/common/quote.vue'),
-  },
+      // Common
+      {
+        path: '',
+        name: 'provider-website-home',
+        component: () => import('../views/provider-website/common/Home/index.vue'),
+      },
+      {
+        path: '/provider-website/about',
+        name: 'Provider Website About',
+        component: () => import('../views/provider-website/common/AboutUs.vue'),
+      },
+      {
+        path: '/provider-website/features',
+        name: 'Provider Website Features',
+        component: () => import('../views/provider-website/common/Features.vue'),
+      },
+      {
+        path: '/provider-website/blogs',
+        name: 'Provider Website Blogs',
+        component: () => import('../views/provider-website/common/Blogs.vue'),
+      },
+      {
+        path: '/provider-website/join-us',
+        name: 'Provider Website Join Us',
+        component: () => import('../views/provider-website/common/JoinUs.vue'),
+      },
+      {
+        path: '/provider-website/login',
+        name: 'Provider Website login',
+        component: () => import('../views/provider-website/common/csLogin.vue'),
+      },
+      {
+        path: '/provider-website/quote',
+        name: 'Provider Website Quote Page',
+        component: () => import('../views/provider-website/common/quote.vue'),
+      },
     ]
   },
 

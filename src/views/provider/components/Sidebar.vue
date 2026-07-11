@@ -67,7 +67,7 @@
               <i class="py-1 px-2 rounded-md text-white" :class="`${link.icon}`" :style="{
                 backgroundColor: getMenuColor(menu.title)
               }"></i>
-              <span class="block max-w-[220px] truncate whitespace-nowrap" :title="link.text">
+              <span class="block text-xs max-w-[240px] truncate whitespace-nowrap" :title="link.text">
                 {{ link.text }}
               </span>
             </router-link>
@@ -107,7 +107,7 @@
                   <i class="py-1 px-2 rounded-md text-white text-[5px]" :class="`${link.icon}`" :style="{
                     backgroundColor: getMenuColor(menu.title)
                   }"></i>
-                  <span class="block max-w-[210px]  text-xs truncate whitespace-nowrap" :title="link.text">
+                  <span class="block max-w-[230px]  text-xs truncate whitespace-nowrap" :title="link.text">
                     {{ link.text }}
                   </span>
                 </router-link>
@@ -345,6 +345,9 @@ const menus = [
     icon: 'ri-tools-line',
 
     links: [
+      { to: '/provider/create-maintenance-recommendations-pools', icon: 'ri-check-double-line', text: 'Create Maintenance Recommendation' },
+      { to: '/provider/maintenance-recommendations/pending', icon: 'ri-check-double-line', text: 'Maintenance Recommendation List' },
+      { to: '/provider/maintenance-recommendations/approved', icon: 'ri-check-double-line', text: 'Approved Maintenance Recommendation List' },
       { to: '/provider/schedule-maintenance', icon: 'ri-check-double-line', text: 'Create Schedule Maintenance' },
     ],
     groups: [
