@@ -1056,6 +1056,7 @@ async function fetchServiceHistory() {
     if (!poolEquipmentId.value) return
     loadingHistory.value = true
     try {
+        
         const response = await api().get(`/tenant/pool-equipments/${poolEquipmentId.value}/history`)
         // Fix: response.data.data contains the data
         const data = response.data?.data || {}

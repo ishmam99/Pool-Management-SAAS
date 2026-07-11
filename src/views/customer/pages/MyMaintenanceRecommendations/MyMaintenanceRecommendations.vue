@@ -179,12 +179,12 @@
                   <div class="font-medium text-slate-800">{{ recommendation.pool?.label || 'N/A' }}</div>
                   <div class="text-sm text-slate-400">{{ recommendation.pool?.service_address || '' }}</div>
                 </td>
-                <td class="px-6 border-e border-slate-200 py-4">
+                <td class="px-6 border-e border-slate-200 py-4 capitalize">
                   <span :class="getPriorityBadgeClass(recommendation.priority)">
                     {{ recommendation.priority }}
                   </span>
                 </td>
-                <td class="px-6 border-e border-slate-200 py-4">
+                <td class="px-6 border-e border-slate-200 py-4 capitalize">
                   <span :class="getStatusBadgeClass(recommendation.status)">
                     {{ recommendation.status }}
                   </span>
@@ -239,7 +239,7 @@
 
               <!-- Expandable Row -->
               <tr v-for="recommendation in paginatedData" :key="'expand-' + recommendation.id">
-                <td colspan="10" class="px-0 py-0">
+                <td colspan="11" class="px-0 py-0">
                   <transition
                     enter-active-class="transition-all duration-300 ease-in-out"
                     leave-active-class="transition-all duration-300 ease-in-out"
@@ -260,20 +260,20 @@
                           <table class="min-w-full divide-y divide-slate-100">
                             <thead class="bg-slate-50">
                               <tr>
-                                <th class="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase">Item</th>
-                                <th class="px-4 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase">Type</th>
-                                <th class="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 uppercase">Price</th>
-                                <th class="px-4 py-2.5 text-center text-xs font-semibold text-slate-500 uppercase">Qty</th>
-                                <th class="px-4 py-2.5 text-right text-xs font-semibold text-slate-500 uppercase">Total</th>
+                                <th class="px-4 border-e border-slate-300 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase">Item</th>
+                                <th class="px-4 border-e border-slate-300 py-2.5 text-left text-xs font-semibold text-slate-500 uppercase">Type</th>
+                                <th class="px-4 border-e border-slate-300 py-2.5 text-right text-xs font-semibold text-slate-500 uppercase">Price</th>
+                                <th class="px-4 border-e border-slate-300 py-2.5 text-center text-xs font-semibold text-slate-500 uppercase">Qty</th>
+                                <th class="px-4 border-e border-slate-300 py-2.5 text-right text-xs font-semibold text-slate-500 uppercase">Total</th>
                               </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
                               <tr v-for="(item, index) in recommendation.items" :key="index" class="hover:bg-slate-50">
-                                <td class="px-4 py-2.5 text-sm text-slate-700">{{ item.item_name }}</td>
-                                <td class="px-4 py-2.5 text-sm text-slate-500">{{ item.item_type }}</td>
-                                <td class="px-4 py-2.5 text-sm text-right text-slate-700">{{ formatCurrency(item.price) }}</td>
-                                <td class="px-4 py-2.5 text-sm text-center text-slate-700">{{ item.quantity }}</td>
-                                <td class="px-4 py-2.5 text-sm text-right font-semibold text-slate-800">{{ formatCurrency(item.total_price) }}</td>
+                                <td class="px-4 border-e border-slate-200 py-2.5 text-sm text-slate-700">{{ item.item_name }}</td>
+                                <td class="px-4 border-e border-slate-200 py-2.5 text-sm text-slate-500 capitalize">{{ item.item_type }}</td>
+                                <td class="px-4 border-e border-slate-200 py-2.5 text-sm text-right text-slate-700">{{ formatCurrency(item.price) }}</td>
+                                <td class="px-4 border-e border-slate-200 py-2.5 text-sm text-center text-slate-700">{{ item.quantity }}</td>
+                                <td class="px-4 border-e border-slate-200 py-2.5 text-sm text-right font-semibold text-slate-800">{{ formatCurrency(item.total_price) }}</td>
                               </tr>
                             </tbody>
                             <tfoot class="bg-slate-50">
