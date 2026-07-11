@@ -710,55 +710,56 @@ const closeViewModal = () => {
   viewRecommendation.value = null
   document.body.style.overflow = 'auto'
 }
-
+const loadingAccept = ref(false)
+const currentAcceptId = ref(null)
 // Accept recommendation
 const acceptRecommendation = async (recommendation) => {
-    const result = await Swal.fire({
-        title: 'Accept Recommendation?',
-        text: 'This recommendation will be marked as accepted.',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, Accept',
-        cancelButtonText: 'Cancel',
-        confirmButtonColor: '#16a34a',
-        cancelButtonColor: '#6b7280',
+  const result = await Swal.fire({
+    title: 'Accept Recommendation?',
+    text: 'This recommendation will be marked as accepted.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Accept',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#16a34a',
+    cancelButtonColor: '#6b7280',
+  });
+
+  if (!result.isConfirmed) return;
+
+  loadingAccept.value = true;
+  currentAcceptId.value = recommendation.id;
+
+  try {
+    const formData = new FormData();
+    formData.append('_method', 'PUT');
+    formData.append('status', 'accepted');
+
+    await api().post(`/tenant/equipment-recommendations/${recommendation.id}`, formData);
+
+    await Swal.fire({
+      title: 'Accepted!',
+      text: 'The recommendation has been successfully accepted.',
+      icon: 'success',
+      confirmButtonColor: '#2563eb',
+      timer: 3000,
+      timerProgressBar: true,
     });
 
-    if (!result.isConfirmed) return;
-
-    loadingAccept.value = true;
-    currentAcceptId.value = recommendation.id;
-
-    try {
-        const formData = new FormData();
-        formData.append('_method', 'PUT');
-        formData.append('status', 'accepted');
-
-        await api().post(`/tenant/equipment-recommendations/${recommendation.id}`, formData);
-
-        await Swal.fire({
-            title: 'Accepted!',
-            text: 'The recommendation has been successfully accepted.',
-            icon: 'success',
-            confirmButtonColor: '#2563eb',
-            timer: 3000,
-            timerProgressBar: true,
-        });
-
-        // Reload recommendations
-        await loadRecommendations(pagination.value?.current_page || 1);
-    } catch (error) {
-        console.error('Error accepting recommendation:', error);
-        await Swal.fire({
-            title: 'Error!',
-            text: 'Failed to accept the recommendation. Please try again.',
-            icon: 'error',
-            confirmButtonColor: '#2563eb',
-        });
-    } finally {
-        loadingAccept.value = false;
-        currentAcceptId.value = null;
-    }
+    // Reload – no argument needed
+    await loadRecommendations();
+  } catch (error) {
+    console.error('Error accepting recommendation:', error);
+    await Swal.fire({
+      title: 'Error!',
+      text: 'Failed to accept the recommendation. Please try again.',
+      icon: 'error',
+      confirmButtonColor: '#2563eb',
+    });
+  } finally {
+    loadingAccept.value = false;
+    currentAcceptId.value = null;
+  }
 };
 
 // PDF Generation
