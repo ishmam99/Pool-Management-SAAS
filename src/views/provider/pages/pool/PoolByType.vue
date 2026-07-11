@@ -345,7 +345,9 @@
 import { ref, computed, onMounted, watch, nextTick, defineComponent, h } from 'vue'
 import { Chart, DoughnutController, ArcElement, Tooltip, Legend } from 'chart.js'
 import api from '../../../../services/api.js'
+import { useAuthStore } from '../../../../store/AuthStore.js'
 
+const authStore = useAuthStore()
 Chart.register(DoughnutController, ArcElement, Tooltip, Legend)
 
 // ===== ICON COMPONENTS (inline Heroicons SVG) =====
@@ -487,7 +489,9 @@ async function fetchPools() {
   loading.value = true
   error.value = null
   try {
-    const response = await api().get('/pool-management/pools')
+    const base = '/pool-management/pools';
+    const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base;
+    const response = await api().get(url)
     const data = response.data
     
     // Extract pools array from paginated response
@@ -640,6 +644,10 @@ function formatDate(date) {
     return '—'
   }
 }
+
+watch(() => authStore.tenantId, () => {
+  fetchPools();
+})
 
 // ===== LIFECYCLE =====
 onMounted(async () => {

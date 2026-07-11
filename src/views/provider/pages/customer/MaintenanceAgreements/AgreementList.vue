@@ -348,10 +348,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import api from '../../../../../services/api'
+import { useAuthStore } from '../../../../../store/AuthStore'
 
 // State
+const authStore = useAuthStore()
 const maintenanceAgreements = ref([])
 const allAgreements = ref([])
 const filters = ref({
@@ -480,7 +482,8 @@ const getTerms = (content) => {
 const loadMaintenanceAgreements = async () => {
     loading.value = true
     try {
-        const response = await api().get('/maintenance-agreement-management/agreements')
+        const url = authStore.authType == 'admin' ? `/maintenance-agreement-management/agreements?tenant_id=${authStore.tenantId}` : '/maintenance-agreement-management/agreements'
+        const response = await api().get(url)
         allAgreements.value = response.data.data || []
         maintenanceAgreements.value = allAgreements.value
     } catch (error) {
@@ -490,6 +493,20 @@ const loadMaintenanceAgreements = async () => {
         loading.value = false
     }
 }
+
+// const loadMaintenanceAgreements = async () => {
+//     loading.value = true
+//     try {
+//         const response = await api().get('/maintenance-agreement-management/agreements')
+//         allAgreements.value = response.data.data || []
+//         maintenanceAgreements.value = allAgreements.value
+//     } catch (error) {
+//         console.error('Error loading agreements:', error)
+//         // Show error toast here
+//     } finally {
+//         loading.value = false
+//     }
+// }
 
 const resetFilters = () => {
     filters.value = {
@@ -565,6 +582,10 @@ const nextPage = () => {
         pagination.value.current_page++
     }
 }
+
+watch(() => authStore.tenantId, () => {
+  loadMaintenanceAgreements();
+})
 
 // Lifecycle
 onMounted(() => {

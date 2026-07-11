@@ -1133,12 +1133,13 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted, watch } from 'vue'
 import api from "../../../../services/api.js"
+import { useAuthStore } from '../../../../store/AuthStore.js'
 
 // ===== API INSTANCE =====
 const apiClient = api()
-
+const authStore = useAuthStore()
 // ===== STATE =====
 const pools = ref([])
 const searchQuery = ref('')
@@ -1277,15 +1278,17 @@ function toggleRow(id) {
 // ===== API METHODS =====
 
 // Get all pools
-async function fetchPools() {
+const fetchPools = async () => {
   try {
-    const response = await apiClient.get('/pool-management/pools-advance?with=equipment.manufacturer,equipment.component,equipment.equipmentModel,customer')
-    return response.data.data || response
+    const base = '/pool-management/pools-advance?with=equipment.manufacturer,equipment.component,equipment.equipmentModel,customer';
+    const url = authStore.authType === 'admin' ? `${base}&tenant_id=${authStore.tenantId}` : base;
+    const { data } = await apiClient.get(url);
+    return data.data || data;
   } catch (error) {
-    console.error('Error fetching pools:', error)
-    throw error
+    console.error('Error fetching pools:', error);
+    throw error;
   }
-}
+};
 
 // Create new pool
 async function createPool(data) {
@@ -1514,6 +1517,10 @@ function formatDate(date) {
   const d = new Date(date)
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
+
+watch(() => authStore.tenantId, () => {
+  fetchPools();
+})
 
 // ===== LIFECYCLE =====
 onMounted(() => {

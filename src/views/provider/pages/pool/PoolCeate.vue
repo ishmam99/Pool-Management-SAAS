@@ -269,10 +269,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 import api from '../../../../services/api'
+import { useAuthStore } from '../../../../store/AuthStore'
 
 const router = useRouter()
 
@@ -323,10 +324,12 @@ const getChemicalLabel = (type) => {
     }
     return labels[type] || type
 }
-
+const authStore = useAuthStore() 
 const loadCustomers = async () => {
     try {
-        const response = await api().get('/customer-management/customers-advance?with=pools,agreements')
+        const base = '/customer-management/customers-advance?with=pools,agreements';
+        const url = authStore.authType === 'admin' ? `${base}&tenant_id=${authStore.tenantId}` : base;
+        const response = await api().get(url)
         customers.value = response.data.data || []
     } catch (error) {
         console.error('Failed to load customers:', error)
@@ -440,7 +443,7 @@ const submitPool = async () => {
         })
 
         if (result.isConfirmed) {
-            router.push('/provider/pools')
+            // router.push('/provider/pools')
         } else {
             // Reset form but keep customer selected
             resetForm()
@@ -484,6 +487,11 @@ const resetForm = () => {
     }
     errors.value = {}
 }
+
+watch(() => authStore.tenantId, () => {
+  loadCustomers();
+    // fetchTermTemplates()
+})
 
 // Lifecycle
 onMounted(() => {
