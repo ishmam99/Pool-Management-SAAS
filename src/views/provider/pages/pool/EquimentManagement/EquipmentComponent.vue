@@ -340,7 +340,8 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import api from '../../../../../services/api.js'
-
+import { useAuthStore } from '../../../../../store/AuthStore.js'
+const authStore = useAuthStore()
 // Static reference data
 const componentTypes = [
     { value: 'pump', label: 'Pump' },
@@ -426,7 +427,9 @@ const showToast = (message, type = 'success') => {
 // Data loading
 const loadEquipmentModels = async () => {
     try {
-        const response = await api().get('/tenant/equipment-models')
+        const base = '/tenant/equipment-models'
+        const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base
+        const response = await api().get(url)
         if (response.data?.success) {
             equipmentModels.value = response.data.data || []
         } else {
@@ -445,8 +448,10 @@ const loadComponents = async () => {
         if (filters.value.type) params.type = filters.value.type
         if (filters.value.is_active !== '') params.is_active = filters.value.is_active
         params.with = 'equipmentModel.manufacturer' 
-
-        const response = await api().get('/tenant/equipment-components', { params })
+        const base = '/tenant/equipment-components'
+        const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base
+        // const response = await api().get(url)
+        const response = await api().get(url, { params })
         if (response.data?.success) {
             components.value = response.data.data || []
         } else {
@@ -617,6 +622,11 @@ watch(() => filters.value.type, () => {
 
 watch(() => filters.value.is_active, () => {
     loadComponents()
+})
+
+watch(() => authStore.tenantId, () => {
+  loadComponents();
+  loadEquipmentModels();
 })
 
 // Lifecycle

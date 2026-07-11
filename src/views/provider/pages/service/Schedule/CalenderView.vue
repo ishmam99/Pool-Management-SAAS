@@ -393,9 +393,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import api from '../../../../../services/api.js'
+import { useAuthStore } from '../../../../../store/AuthStore.js'
 
+const authStore = useAuthStore()
 // ─── Date references ────────────────────────────────────────────────────────
 const today = new Date()
 const todayYear = today.getFullYear()
@@ -482,7 +484,10 @@ const stats = computed(() => {
 async function fetchCalendar() {
   loading.value = true
   try {
-    const res = await api().get('/schedule-visit-management/calendar', {
+    const base = '/schedule-visit-management/calendar'
+    const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base
+    // const response = await api().get(url)
+    const res = await api().get(url, {
       params: { month: currentMonth.value, year: currentYear.value }
     })
     calendarData.value = res.data
@@ -638,6 +643,9 @@ function getPriorityColor(priority) {
   return map[p] ?? 'bg-gray-50 text-gray-600 border-gray-200'
 }
 
+watch(() => authStore.tenantId, () => {
+  fetchCalendar();
+})
 // ─── Lifecycle ────────────────────────────────────────────────────────────────
 onMounted(() => {
   fetchCalendar()

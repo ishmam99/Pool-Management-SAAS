@@ -507,9 +507,10 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted, watch } from 'vue'
 import api from "../../../../../services/api.js"
 import { useRouter } from 'vue-router'
+import { useAuthStore } from '../../../../../store/AuthStore.js'
 
 const router = useRouter()
 
@@ -622,11 +623,14 @@ function toggleRow(id) {
 }
 
 // ===== API METHODS =====
-
+const authStore = useAuthStore()
 // Get all pools
 async function fetchPools() {
     try {
-        const response = await apiClient.get('/pool-management/pools-advance?with=equipment,customer')
+        const base = '/pool-management/pools-advance?with=equipment,customer'
+        const url = authStore.authType === 'admin' ? `${base}&tenant_id=${authStore.tenantId}` : base
+        // const response = await api().get(url)
+        const response = await apiClient.get(url)
         return response.data.data || response
     } catch (error) {
         console.error('Error fetching pools:', error)
@@ -861,6 +865,10 @@ function formatDate(date) {
     const d = new Date(date)
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
 }
+
+watch(() => authStore.tenantId, () => {
+  loadPools();
+})
 
 // ===== LIFECYCLE =====
 onMounted(() => {

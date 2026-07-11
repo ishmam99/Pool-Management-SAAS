@@ -478,7 +478,9 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import api from '../../../../../services/api.js';
 import Swal from 'sweetalert2';
+import { useAuthStore } from '../../../../../store/AuthStore.js';
 
+const authStore = useAuthStore();
 // ----- DATA -----
 const visits = ref([]);
 const technicians = ref([]);
@@ -513,7 +515,10 @@ const selectedWorkOrder = ref(null);
 // ----- API FUNCTIONS -----
 const fetchTechnicians = async () => {
   try {
-    const response = await api().get(`/user-management/technicians`);
+    const base = '/user-management/technicians'
+        const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base
+        const response = await api().get(url)
+    // const response = await api().get(`/user-management/technicians`);
     technicians.value = response.data;
   } catch (error) {
     console.error('Error fetching technicians:', error);
@@ -524,7 +529,10 @@ const fetchTechnicians = async () => {
 const fetchVisits = async (page = 1) => {
   loading.value = true;
   try {
-    const response = await api().get(`/schedule-visit-management/visits`, {
+    const base = '/schedule-visit-management/visits'
+        const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base
+        // const response = await api().get(url)
+    const response = await api().get(url, {
       params: { page }
     });
 
@@ -875,6 +883,11 @@ const saveVisit = async () => {
 onMounted(async () => {
   await Promise.all([fetchTechnicians(), fetchVisits(1)]);
 });
+
+watch(() => authStore.tenantId, () => {
+  fetchVisits();
+  fetchTechnicians();
+})
 
 // ----- WATCHERS -----
 watch([activeTab, filterTechnician, filterPriority, sortKey], () => {

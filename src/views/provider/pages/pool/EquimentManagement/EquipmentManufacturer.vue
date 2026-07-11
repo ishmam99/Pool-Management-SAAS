@@ -383,6 +383,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import api from '../../../../../services/api.js'
+import { useAuthStore } from '../../../../../store/AuthStore.js'
 
 // ==================== State ====================
 const manufacturers = ref([])
@@ -524,7 +525,7 @@ const closeDeleteDialog = () => {
     selectedManufacturerId.value = null
     deleteError.value = ''
 }
-
+const authStore = useAuthStore() 
 // ==================== API Calls ====================
 const fetchManufacturers = async () => {
     loading.value = true
@@ -536,8 +537,9 @@ const fetchManufacturers = async () => {
         if (currentStatusFilter.value !== null) {
             params.is_active = currentStatusFilter.value
         }
-        
-        const response = await api().get('/tenant/equipment-manufacturers', { params })
+        const base = '/tenant/equipment-manufacturers';
+        const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base;
+        const response = await api().get(url, { params })
         manufacturers.value = response.data.data || []
     } catch (error) {
         console.error('Error fetching manufacturers:', error)
@@ -644,7 +646,9 @@ const showToast = (message, type = 'success') => {
     console.log(`[${type.toUpperCase()}]`, message)
     // Example: window.dispatchEvent(new CustomEvent('toast', { detail: { message, type } }))
 }
-
+watch(() => authStore.tenantId, () => {
+  fetchManufacturers();
+})
 // ==================== Lifecycle Hooks ====================
 onMounted(() => {
     fetchManufacturers()

@@ -442,8 +442,10 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import api from '../../../../../services/api.js'
+import { useAuthStore } from '../../../../../store/AuthStore.js'
 
 // State
+const authStore = useAuthStore()
 const manufacturers = ref([])
 const models = ref([])
 const selectedManufacturerId = ref('')
@@ -495,7 +497,9 @@ const showToast = (message, type = 'success') => {
 
 const loadManufacturers = async () => {
     try {
-        const response = await api().get('/tenant/equipment-manufacturers')
+        const base = '/tenant/equipment-manufacturers'
+        const url = authStore.authType === 'admin' ? `${base}?tenant_id=${authStore.tenantId}` : base
+        const response = await api().get(url)
         if (response.data?.success) {
             manufacturers.value = response.data.data || []
         } else {
@@ -599,7 +603,9 @@ const openViewComponents = async (model) => {
     components.value = []
     
     try {
-        const response = await api().get(`/tenant/equipment-models/${model.id}/components`)
+        const base = '/tenant/equipment-models'
+        const url = authStore.authType === 'admin' ? `${base}/${model.id}/components?tenant_id=${authStore.tenantId}` : `${base}/${model.id}/components`
+        const response = await api().get(url)
         if (response.data?.success) {
             components.value = response.data.data || []
         }
@@ -722,6 +728,11 @@ watch(selectedManufacturerId, () => {
 
 watch(selectedStatus, () => {
     loadModels()
+})
+
+watch(() => authStore.tenantId, () => {
+  loadManufacturers();
+  openViewComponents(currentModel.value);
 })
 
 watch(searchQuery, (newVal, oldVal) => {
