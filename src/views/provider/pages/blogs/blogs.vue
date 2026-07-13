@@ -71,7 +71,7 @@
           <tr>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categories</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
@@ -82,12 +82,14 @@
           <tr v-for="(post, index) in posts" :key="post.id">
             <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
             <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-900">{{ post.title }}</td>
-            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ getCategoryName(post.category_id) }}
+            <td class="px-6 border-e border-slate-300 py-4 text-sm text-gray-900">
+              <span v-for="cat in (post.categories || [])" :key="cat.id" class="inline-block bg-blue-100 text-blue-800 rounded-full px-2 py-0.5 text-xs mr-1 mb-1">
+                {{ cat.name }}
+              </span>
             </td>
             <td class="px-6 border-e border-slate-300 py-4 text-sm text-gray-900">
-              <span v-for="tagId in (post.tags || [])" :key="tagId" class="inline-block bg-gray-200 rounded-full px-2 py-0.5 text-xs mr-1 mb-1">
-                {{ getTagName(tagId) }}
+              <span v-for="tag in (post.tags || [])" :key="tag.id" class="inline-block bg-gray-200 rounded-full px-2 py-0.5 text-xs mr-1 mb-1">
+                {{ tag.name }}
               </span>
             </td>
             <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap">
@@ -149,7 +151,6 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-              <!-- Quill Editor Container -->
               <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
                 <div ref="createEditorContainer" class="quill-editor"></div>
               </div>
@@ -161,13 +162,23 @@
                 <img :src="createForm.imagePreview" alt="Preview" class="h-24 w-auto object-cover rounded border" />
               </div>
             </div>
+            <!-- Categories (multiple) -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select v-model="createForm.category_id" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select Category</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-              </select>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Categories</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
+                <label v-for="cat in categories" :key="cat.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                  <input 
+                    type="checkbox" 
+                    :value="cat.id" 
+                    v-model="createForm.category_ids" 
+                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                  <span class="text-sm text-gray-700">{{ cat.name }}</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Select one or more categories.</p>
             </div>
+            <!-- Tags (multiple) -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
@@ -233,7 +244,6 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-              <!-- Quill Editor Container -->
               <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
                 <div ref="editEditorContainer" class="quill-editor"></div>
               </div>
@@ -250,13 +260,23 @@
                 <p class="text-xs text-gray-500 mt-1">New image preview</p>
               </div>
             </div>
+            <!-- Categories (multiple) -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select v-model="editForm.category_id" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select Category</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-              </select>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Categories</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
+                <label v-for="cat in categories" :key="cat.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                  <input 
+                    type="checkbox" 
+                    :value="cat.id" 
+                    v-model="editForm.category_ids" 
+                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                  <span class="text-sm text-gray-700">{{ cat.name }}</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Select one or more categories.</p>
             </div>
+            <!-- Tags (multiple) -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
@@ -315,7 +335,7 @@ const success = ref('');
 const filters = reactive({
   search: '',
   status: '',
-  category_id: '',
+  category_id: '',    // Keep as single value for filtering
   tag_id: '',
 });
 
@@ -331,7 +351,7 @@ const createForm = reactive({
   title: '',
   content: '',
   excerpt: '',
-  category_id: '',
+  category_ids: [],   // Array of category IDs
   tag_ids: [],
   status: 'draft',
   imageFile: null,
@@ -348,7 +368,7 @@ const editForm = reactive({
   title: '',
   content: '',
   excerpt: '',
-  category_id: '',
+  category_ids: [],   // Array of category IDs
   tag_ids: [],
   status: 'draft',
   imageFile: null,
@@ -362,16 +382,8 @@ const editEditorContainer = ref(null);
 let createQuill = null;
 let editQuill = null;
 
-// ---------------------- Helper: get names from IDs ----------------------
-const getCategoryName = (id) => {
-  if (!id) return '-';
-  const found = categories.value.find(c => c.id === id);
-  return found ? found.name : '-';
-};
-const getTagName = (id) => {
-  const found = tags.value.find(t => t.id === id);
-  return found ? found.name : id;
-};
+// ---------------------- Helper: get category/tag names ----------------------
+// (No longer needed for single category, we display arrays directly)
 
 // ---------------------- Fetch Posts ----------------------
 const fetchPosts = async (page = 1) => {
@@ -382,7 +394,7 @@ const fetchPosts = async (page = 1) => {
       page,
       per_page: 10,
       ...filters,
-      with: 'tags,category',
+      with: 'tags,categories', // Include both relations
     };
     Object.keys(params).forEach(key => {
       if (params[key] === '' || params[key] === null || params[key] === undefined) {
@@ -471,12 +483,10 @@ const initCreateEditor = () => {
     readOnly: false,
   });
 
-  // Set initial content (if any)
   if (createForm.content) {
     createQuill.root.innerHTML = createForm.content;
   }
 
-  // Sync content to createForm on change
   createQuill.on('text-change', () => {
     if (createQuill) {
       const content = createQuill.root.innerHTML;
@@ -508,12 +518,10 @@ const initEditEditor = () => {
     readOnly: false,
   });
 
-  // Set initial content (from editForm)
   if (editForm.content) {
     editQuill.root.innerHTML = editForm.content;
   }
 
-  // Sync content to editForm on change
   editQuill.on('text-change', () => {
     if (editQuill) {
       const content = editQuill.root.innerHTML;
@@ -522,7 +530,6 @@ const initEditEditor = () => {
   });
 };
 
-// Destroy Quill instances (cleanup)
 const destroyCreateEditor = () => {
   if (createQuill) {
     createQuill = null;
@@ -557,11 +564,10 @@ const handleEditImage = (e) => {
 
 // ---------------------- Create ----------------------
 const openCreateModal = () => {
-  // Reset form
   createForm.title = '';
   createForm.content = '';
   createForm.excerpt = '';
-  createForm.category_id = '';
+  createForm.category_ids = [];
   createForm.tag_ids = [];
   createForm.status = 'draft';
   createForm.imageFile = null;
@@ -569,7 +575,6 @@ const openCreateModal = () => {
   createError.value = '';
   showCreateModal.value = true;
 
-  // Initialize editor after modal is rendered
   nextTick(() => {
     initCreateEditor();
   });
@@ -586,7 +591,6 @@ const createPost = async () => {
   createError.value = '';
   createLoading.value = true;
   try {
-    // Ensure content is synced
     if (createQuill) {
       const content = createQuill.root.innerHTML;
       createForm.content = content === '<p><br></p>' ? '' : content;
@@ -596,8 +600,15 @@ const createPost = async () => {
     formData.append('title', createForm.title);
     formData.append('content', createForm.content || '');
     formData.append('excerpt', createForm.excerpt || '');
-    formData.append('category_id', createForm.category_id || '');
     formData.append('status', createForm.status);
+
+    // Append categories as array
+    if (createForm.category_ids.length) {
+      createForm.category_ids.forEach(id => {
+        formData.append('categories[]', id);
+      });
+    }
+    // Append tags as array
     if (createForm.tag_ids.length) {
       createForm.tag_ids.forEach(id => {
         formData.append('tags[]', id);
@@ -636,7 +647,8 @@ const openEditModal = async (post) => {
     editForm.title = data.title;
     editForm.content = data.content || '';
     editForm.excerpt = data.excerpt || '';
-    editForm.category_id = data.category_id || '';
+    // Set category_ids from the categories relation
+    editForm.category_ids = data.categories ? data.categories.map(c => c.id) : [];
     editForm.tag_ids = data.tags ? data.tags.map(t => t.id) : [];
     editForm.status = data.status;
     editForm.existing_image = data.featured_image || '';
@@ -646,7 +658,6 @@ const openEditModal = async (post) => {
     editSuccess.value = '';
     showEditModal.value = true;
 
-    // Initialize editor after modal is rendered and content is set
     await nextTick();
     initEditEditor();
   } catch (err) {
@@ -668,7 +679,6 @@ const updatePost = async () => {
   editSuccess.value = '';
   editLoading.value = true;
   try {
-    // Sync content
     if (editQuill) {
       const content = editQuill.root.innerHTML;
       editForm.content = content === '<p><br></p>' ? '' : content;
@@ -678,8 +688,12 @@ const updatePost = async () => {
     formData.append('title', editForm.title);
     formData.append('content', editForm.content || '');
     formData.append('excerpt', editForm.excerpt || '');
-    formData.append('category_id', editForm.category_id || '');
     formData.append('status', editForm.status);
+    if (editForm.category_ids.length) {
+      editForm.category_ids.forEach(id => {
+        formData.append('categories[]', id);
+      });
+    }
     if (editForm.tag_ids.length) {
       editForm.tag_ids.forEach(id => {
         formData.append('tags[]', id);
