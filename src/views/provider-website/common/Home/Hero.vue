@@ -18,16 +18,30 @@
         <!-- Hero Content -->
         <div class="flex-1 space-y-8 text-center lg:text-left text-white">
           <h1 class="text-4xl font-bold leading-tight sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl">
-            <!-- Aqua Clean Pools -->
             <span class="block text-transparent bg-gradient-to-r from-amber-300 via-rose-300 to-pink-300 bg-clip-text">
-              Aqua Clean Pools
+              {{ websiteStore.siteName }}
             </span>
           </h1>
-          <p class="max-w-xl mx-auto text-lg text-white/90 lg:mx-0 lg:text-xl">
-            Manage pools, customers, maintenance schedules, and services from one powerful platform designed for modern pool businesses.
+          <p v-if="websiteStore.tagline" class="max-w-xl mx-auto text-lg text-white/90 lg:mx-0 lg:text-xl">
+            {{ websiteStore.tagline }}
           </p>
           <div class="flex flex-col items-center gap-4 sm:flex-row lg:justify-start">
-             <button
+            <a
+              v-if="websiteStore.phone"
+              :href="websiteStore.phoneHref"
+              class="px-10 py-4 text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500 hover:shadow-xl hover:scale-105 hover:shadow-sky-500/40"
+            >
+              Call Now
+            </a>
+            <router-link
+              v-if="websiteStore.showContact"
+              to="/provider-website/join-us"
+              class="px-10 py-4 text-base font-semibold text-white transition-all duration-300 rounded-xl border-2 border-white/60 hover:bg-white/10"
+            >
+              Contact Us
+            </router-link>
+            <button
+              v-else
               @click="handleQuoteRequest"
               class="px-10 py-4 text-base font-semibold text-white transition-all duration-300 rounded-xl bg-gradient-to-r from-sky-500 via-cyan-500 to-emerald-500 hover:shadow-xl hover:scale-105 hover:shadow-sky-500/40"
             >
@@ -75,6 +89,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
+import { useWebsiteStore } from '../../store/websiteStore.js'
 // ─── Import images ──────────────────────────────────────────
 import img1 from '../../../../assets/provider/img1.jpg'
 import img2 from '../../../../assets/provider/img2.jpg'
@@ -84,6 +99,7 @@ import img5 from '../../../../assets/provider/img5.jpg'
 import img6 from '../../../../assets/provider/img6.jpg'
 import img7 from '../../../../assets/provider/img7.jpg'
 const router = useRouter()
+const websiteStore = useWebsiteStore()
 const slides = [
   { image: img1 },
   { image: img2 },

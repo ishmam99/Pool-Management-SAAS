@@ -166,13 +166,14 @@
           class="group bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden border border-slate-100"
           >
           <!-- Blog Image -->
+          <router-link :to="`/provider-website/blogs/${blog.id}`">
           <div class="relative h-52 overflow-hidden bg-gradient-to-br from-sky-100 to-cyan-50">
             <img
             :src="blog.image"
             :alt="blog.title"
             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
-            <span class="absolute top-3 left-3 bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
+            <span v-if="blog.category" class="absolute top-3 left-3 bg-gradient-to-r from-sky-600 to-cyan-500 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-lg">
               {{ blog.category }}
             </span>
             <div class="absolute bottom-3 left-3 flex items-center gap-3 bg-black/50 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full">
@@ -196,21 +197,22 @@
             <div class="flex items-center justify-between border-t border-slate-100 pt-4">
               <div class="flex items-center gap-2.5">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-sky-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold">
-                  {{ blog.author.charAt(0) }}
+                  {{ (blog.author || 'A').charAt(0) }}
                 </div>
                 <div>
-                  <p class="text-xs font-semibold text-slate-800">{{ blog.author }}</p>
+                  <p class="text-xs font-semibold text-slate-800">{{ blog.author || 'Admin' }}</p>
                   <p class="text-[10px] text-slate-400">{{ blog.date }}</p>
                 </div>
               </div>
-              <a href="#" class="text-sky-600 hover:text-blue-600 transition-colors text-sm font-semibold group/read flex items-center">
+              <span class="text-sky-600 text-sm font-semibold group-hover:text-blue-600 flex items-center">
                 Read More
-                <svg class="w-4 h-4 ml-1 transition-transform group-hover/read:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                 </svg>
-              </a>
+              </span>
             </div>
           </div>
+          </router-link>
         </div>
       </div>
     </div>
@@ -458,8 +460,24 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import img7 from '../../../assets/provider/img7.jpg'
+import { tenantWebsiteApi, normalizeList } from '../../../services/tenantWebsiteApi.js'
+import { formatDate } from '../utils/formatters.js'
+
+const loading = ref(true)
+
+const mapPost = (post) => ({
+  id: post.id,
+  title: post.title,
+  description: post.excerpt || '',
+  category: post.categories?.[0]?.name || post.categories?.[0] || '',
+  categoryId: post.categories?.[0]?.id || post.categories?.[0] || 'all',
+  image: post.featured_image_url || img7,
+  date: formatDate(post.published_at),
+  author: post.author?.name || post.author || 'Admin',
+  readTime: post.reading_time || 5,
+})
 
 // ─── Categories ──────────────────────────────────────────────────
 const categories = ref([
@@ -475,162 +493,31 @@ const categories = ref([
 ])
 
 // ─── Blog Posts ──────────────────────────────────────────────────
-const blogs = ref([
-  {
-    id: 1,
-    title: 'How Often Should You Clean Your Swimming Pool?',
-    description: 'Learn the recommended cleaning schedule to keep your water healthy and sparkling all season long.',
-    category: 'Pool Cleaning',
-    categoryId: 'cleaning',
-    image: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'December 18, 2024',
-    author: 'Sarah Johnson',
-    readTime: 5,
-  },
-  {
-    id: 2,
-    title: '7 Signs Your Pool Needs Professional Maintenance',
-    description: 'Discover the warning signs before small issues become expensive repairs that could have been avoided.',
-    category: 'Maintenance',
-    categoryId: 'cleaning',
-    image: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'December 15, 2024',
-    author: 'Michael Chen',
-    readTime: 6,
-  },
-  {
-    id: 3,
-    title: 'The Complete Guide to Pool Water Chemistry',
-    description: 'Everything homeowners should know about chlorine, pH, alkalinity, and water balance for safe swimming.',
-    category: 'Water Chemistry',
-    categoryId: 'chemistry',
-    image: 'https://images.unsplash.com/photo-1589739900243-4b52cd9dd6df?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'December 12, 2024',
-    author: 'Emily Rodriguez',
-    readTime: 9,
-  },
-  {
-    id: 4,
-    title: 'How To Prepare Your Pool For Summer',
-    description: 'Get your pool ready for swimming season with these professional preparation tips and checklists.',
-    category: 'Seasonal Tips',
-    categoryId: 'seasonal',
-    image: 'https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'December 10, 2024',
-    author: 'David Thompson',
-    readTime: 7,
-  },
-  {
-    id: 5,
-    title: 'How To Lower Pool Maintenance Costs',
-    description: 'Simple habits that reduce chemical use, save energy, and extend equipment life for long-term savings.',
-    category: 'Energy Savings',
-    categoryId: 'energy',
-    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'December 8, 2024',
-    author: 'Lisa Park',
-    readTime: 5,
-  },
-  {
-    id: 6,
-    title: 'Should You Repair or Replace Your Pool Pump?',
-    description: 'Understand when repairs make sense and when investing in a new pump saves money in the long run.',
-    category: 'Equipment Care',
-    categoryId: 'equipment',
-    image: 'https://images.unsplash.com/photo-1589739900243-4b52cd9dd6df?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'December 5, 2024',
-    author: 'James Wilson',
-    readTime: 6,
-  },
-  {
-    id: 7,
-    title: '5 Common Pool Problems And How To Prevent Them',
-    description: 'Cloudy water, green algae, broken filters, leaks, and poor circulation — solved with expert tips.',
-    category: 'Pool Cleaning',
-    categoryId: 'cleaning',
-    image: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'December 3, 2024',
-    author: 'Maria Garcia',
-    readTime: 8,
-  },
-  {
-    id: 8,
-    title: 'Residential vs Commercial Pool Maintenance',
-    description: 'Why commercial pools require different care schedules, inspections, and service protocols.',
-    category: 'Commercial Pools',
-    categoryId: 'commercial',
-    image: 'https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'November 30, 2024',
-    author: 'Alex Turner',
-    readTime: 7,
-  },
-  {
-    id: 9,
-    title: 'The Benefits Of Weekly Professional Pool Service',
-    description: 'Why routine maintenance keeps your pool healthier, reduces repair costs, and extends equipment life.',
-    category: 'Pool Cleaning',
-    categoryId: 'cleaning',
-    image: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'November 28, 2024',
-    author: 'Rachel Adams',
-    readTime: 5,
-  },
-  {
-    id: 10,
-    title: 'Best Pool Cleaning Equipment For Homeowners',
-    description: 'A buyer\'s guide to brushes, vacuums, skimmers, and robotic cleaners for every pool type.',
-    category: 'Buying Guides',
-    categoryId: 'buying',
-    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&h=400&fit=crop&crop=center&auto=format',
-    date: 'November 25, 2024',
-    author: 'Sarah Johnson',
-    readTime: 6,
-  },
-])
+const blogs = ref([])
+
+const loadBlogs = async () => {
+  loading.value = true
+  try {
+    const res = await tenantWebsiteApi.getBlog({ per_page: 50 })
+    blogs.value = normalizeList(res).map(mapPost)
+    if (blogs.value.length) {
+      popularPosts.value = blogs.value.slice(0, 3).map((b) => ({ id: b.id, title: b.title, date: b.date, image: b.image }))
+      recentPosts.value = blogs.value.slice(0, 3).map((b) => ({ id: b.id, title: b.title, date: b.date, image: b.image }))
+    }
+  } catch (e) {
+    console.error(e)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(loadBlogs)
 
 // ─── Popular Posts ──────────────────────────────────────────────
-const popularPosts = ref([
-  {
-    id: 1,
-    title: 'How Often Should You Clean Your Swimming Pool?',
-    date: 'December 18, 2024',
-    image: 'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=120&h=120&fit=crop&crop=center&auto=format',
-  },
-  {
-    id: 3,
-    title: 'The Complete Guide to Pool Water Chemistry',
-    date: 'December 12, 2024',
-    image: 'https://images.unsplash.com/photo-1589739900243-4b52cd9dd6df?w=120&h=120&fit=crop&crop=center&auto=format',
-  },
-  {
-    id: 4,
-    title: 'How To Prepare Your Pool For Summer',
-    date: 'December 10, 2024',
-    image: 'https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?w=120&h=120&fit=crop&crop=center&auto=format',
-  },
-])
+const popularPosts = ref([])
 
 // ─── Recent Posts ──────────────────────────────────────────────
-const recentPosts = ref([
-  {
-    id: 8,
-    title: 'Residential vs Commercial Pool Maintenance',
-    date: 'November 30, 2024',
-    image: 'https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?w=120&h=120&fit=crop&crop=center&auto=format',
-  },
-  {
-    id: 9,
-    title: 'The Benefits Of Weekly Professional Pool Service',
-    date: 'November 28, 2024',
-    image: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=120&h=120&fit=crop&crop=center&auto=format',
-  },
-  {
-    id: 10,
-    title: 'Best Pool Cleaning Equipment For Homeowners',
-    date: 'November 25, 2024',
-    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=120&h=120&fit=crop&crop=center&auto=format',
-  },
-])
+const recentPosts = ref([])
 
 // ─── Seasonal Tips ─────────────────────────────────────────────
 const seasonalTips = ref([

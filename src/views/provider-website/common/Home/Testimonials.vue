@@ -24,7 +24,7 @@
       </div>
 
       <!-- Testimonials Grid -->
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div v-if="testimonials.length" class="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         <div
           v-for="(testimonial, index) in testimonials"
           :key="testimonial.id"
@@ -43,7 +43,14 @@
           <div class="flex items-center gap-4 mb-4 relative z-10">
             <div class="relative">
               <div class="absolute inset-0 rounded-full bg-gradient-to-br from-sky-400/20 to-cyan-400/20 blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+              <img
+                v-if="testimonial.photo"
+                :src="testimonial.photo"
+                :alt="testimonial.name"
+                class="relative w-14 h-14 rounded-full object-cover shadow-lg transition-all duration-300 group-hover:scale-110"
+              />
               <div
+                v-else
                 class="relative w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg transition-all duration-300 group-hover:scale-110"
                 :style="{ background: testimonial.gradient }"
               >
@@ -64,7 +71,7 @@
 
           <!-- Star Rating -->
           <div class="flex mb-3 relative z-10">
-            <i v-for="i in 5" :key="i" class="ri-star-fill text-amber-400 text-sm"></i>
+            <i v-for="i in (testimonial.rating || 5)" :key="i" class="ri-star-fill text-amber-400 text-sm"></i>
           </div>
 
           <!-- Quote -->
@@ -95,51 +102,39 @@
 </template>
 
 <script setup>
-// ─── Testimonials Data ──────────────────────────────────────────
-const testimonials = [
-  {
-    id: 1,
-    name: 'Sarah Mitchell',
-    role: 'Homeowner, Luxury Estate',
-    gradient: 'linear-gradient(135deg, #0284C7, #22D3EE)',
-    quote: 'Aqua Clean Pools has completely transformed our backyard pool experience. The weekly service is flawless, and our water has never been clearer. Highly recommend!',
-  },
-  {
-    id: 2,
-    name: 'James Rodriguez',
-    role: 'Property Manager, Oceanview Apartments',
-    gradient: 'linear-gradient(135deg, #10B981, #34D399)',
-    quote: 'Managing a commercial pool used to be a headache. Aqua Clean Pools handles everything—testing, cleaning, repairs—so we can focus on our residents. Exceptional service.',
-  },
-  {
-    id: 3,
-    name: 'Lisa Thompson',
-    role: 'HOA Board President, Lakeside Community',
-    gradient: 'linear-gradient(135deg, #6366F1, #818CF8)',
-    quote: 'Our community pool has never looked better. The team is professional, punctual, and truly cares about water quality. A game-changer for our neighborhood.',
-  },
-  {
-    id: 4,
-    name: 'David Chen',
-    role: 'Hotel General Manager, The Grand Resort',
-    gradient: 'linear-gradient(135deg, #F59E0B, #FBBF24)',
-    quote: 'Guest satisfaction is our top priority, and Aqua Clean Pools ensures our pool is always pristine. Their responsiveness and attention to detail are unmatched.',
-  },
-  {
-    id: 5,
-    name: 'Emily Davis',
-    role: 'Homeowner, Vacation Property',
-    gradient: 'linear-gradient(135deg, #EC4899, #F472B6)',
-    quote: 'We only use our pool during summer vacations, but Aqua Clean Pools keeps it perfect year-round. Arriving to a crystal-clear pool is pure luxury.',
-  },
-  {
-    id: 6,
-    name: 'Robert Martinez',
-    role: 'Facilities Director, City Sports Complex',
-    gradient: 'linear-gradient(135deg, #8B5CF6, #A78BFA)',
-    quote: 'We manage multiple pools for public use, and Aqua Clean Pools delivers consistent, reliable service every time. Their expertise gives us total confidence.',
-  },
+import { ref, onMounted } from 'vue'
+import { tenantWebsiteApi, normalizeList } from '../../../../services/tenantWebsiteApi.js'
+
+const gradients = [
+  'linear-gradient(135deg, #0284C7, #22D3EE)',
+  'linear-gradient(135deg, #10B981, #34D399)',
+  'linear-gradient(135deg, #6366F1, #818CF8)',
+  'linear-gradient(135deg, #F59E0B, #FBBF24)',
+  'linear-gradient(135deg, #EC4899, #F472B6)',
+  'linear-gradient(135deg, #8B5CF6, #A78BFA)',
 ]
+
+const testimonials = ref([])
+
+onMounted(async () => {
+  try {
+    const data = await tenantWebsiteApi.getTestimonials()
+    const items = normalizeList(data).slice(0, 6)
+    if (items.length) {
+      testimonials.value = items.map((t, i) => ({
+        id: t.id || i,
+        name: t.customer_name,
+        role: 'Verified Customer',
+        gradient: gradients[i % gradients.length],
+        quote: t.content,
+        rating: t.rating,
+        photo: t.customer_photo_url,
+      }))
+    }
+  } catch (e) {
+    console.error(e)
+  }
+})
 </script>
 
 <style scoped>

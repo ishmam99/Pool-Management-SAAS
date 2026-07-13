@@ -123,8 +123,9 @@
         <div class="flex flex-col lg:flex-row items-center gap-16">
           <div class="lg:w-1/2 space-y-6">
             <span class="text-sky-600 font-semibold text-sm tracking-widest uppercase">About Us</span>
-            <h2 class="text-3xl md:text-4xl font-bold text-slate-900">About Aqua Clean Pools</h2>
-            <div class="space-y-4 text-slate-600 leading-relaxed">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-900">{{ aboutPage?.title || 'About Aqua Clean Pools' }}</h2>
+            <div v-if="aboutPage?.content" class="prose-website text-slate-600 leading-relaxed" v-html="aboutPage.content" />
+            <div v-else class="space-y-4 text-slate-600 leading-relaxed">
               <p>
                 Aqua Clean Pools is a locally trusted pool maintenance company dedicated to keeping your swimming pool crystal clear, healthy, and worry-free. With over 15 years of experience, our certified technicians provide dependable weekly service that you can count on.
               </p>
@@ -597,7 +598,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { tenantWebsiteApi } from '../../../services/tenantWebsiteApi.js'
+
+const aboutPage = ref(null)
+
+onMounted(async () => {
+  try {
+    aboutPage.value = await tenantWebsiteApi.getPage('about')
+  } catch (e) {
+    console.error(e)
+  }
+})
 
 // ─── Services ──────────────────────────────────────────────────────
 const services = ref([
