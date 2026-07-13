@@ -41,7 +41,8 @@
             </svg>
           </a>
           <a
-          href="tel:+15551234567"
+          v-if="websiteStore.phone"
+          :href="websiteStore.phoneHref"
           class="inline-flex items-center px-8 py-3.5 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 hover:-translate-y-0.5 transition-all duration-300"
           >
           Call Now
@@ -474,7 +475,8 @@
           </div>
         </div>
         <a
-        href="tel:+15551234567"
+        v-if="websiteStore.phone"
+        :href="websiteStore.phoneHref"
         class="flex-shrink-0 px-8 py-3.5 bg-white text-rose-600 font-bold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300"
         >
         Call Now
@@ -584,7 +586,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import Swal from 'sweetalert2'
+import { useWebsiteStore } from '../store/websiteStore.js'
+import { tenantWebsiteApi, normalizeList, getApiErrorMessage } from '../../../services/tenantWebsiteApi.js'
+
+const websiteStore = useWebsiteStore()
+const submitting = ref(false)
 
 // ─── Form Data ──────────────────────────────────────────────────────
 const form = ref({
@@ -659,14 +667,24 @@ const reasons = [
 ]
 
 // ─── Service Areas ─────────────────────────────────────────────────
-const serviceAreas = [
+const serviceAreas = ref([
   'Residential Pools',
   'Hotels',
   'HOAs',
   'Apartments',
   'Commercial Pools',
   'Luxury Homes',
-]
+])
+
+onMounted(async () => {
+  try {
+    const data = await tenantWebsiteApi.getServiceAreas()
+    const areas = normalizeList(data).map((a) => a.name || a.city || a.title || a)
+    if (areas.length) serviceAreas.value = areas
+  } catch (e) {
+    console.error(e)
+  }
+})
 
 // ─── Steps ─────────────────────────────────────────────────────────
 const steps = [
@@ -697,11 +715,27 @@ const steps = [
 ]
 
 // ─── Form Submission ─────────────────────────────────────────────
-const submitForm = () => {
-  console.log('Form submitted:', form.value)
-  showSuccess.value = true
-  // Reset form
-  // form.value = { fullName: '', email: '', phone: '', address: '', propertyType: '', serviceNeeded: '', poolType: '', serviceDate: '', contactMethod: '', message: '' }
+const submitForm = async () => {
+  submitting.value = true
+  try {
+    const res = await tenantWebsiteApi.submitContact({
+      name: form.value.fullName,
+      email: form.value.email,
+      phone: form.value.phone,
+      message: form.value.message || `Property: ${form.value.propertyType}. Pool: ${form.value.poolType}. Service: ${form.value.serviceNeeded}. Preferred contact: ${form.value.contactMethod}. Address: ${form.value.address}.`,
+      service_interest: form.value.serviceNeeded,
+    })
+    showSuccess.value = true
+    await Swal.fire({
+      icon: 'success',
+      title: 'Message Sent',
+      text: res?.message || 'Your message has been sent.',
+    })
+  } catch (e) {
+    await Swal.fire({ icon: 'error', title: 'Error', text: getApiErrorMessage(e, 'Failed to send message.') })
+  } finally {
+    submitting.value = false
+  }
 }
 
 const closeModal = () => {

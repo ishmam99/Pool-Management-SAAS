@@ -16,6 +16,8 @@
         </p>
       </div>
 
+      <div v-if="servicesPage?.content" class="max-w-4xl mx-auto mb-16 prose-website bg-white rounded-2xl p-8 shadow-sm border border-slate-100" v-html="servicesPage.content" />
+
       <!-- ============================================================ -->
       <!-- SERVICE CARDS GRID                                            -->
       <!-- ============================================================ -->
@@ -197,6 +199,19 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { tenantWebsiteApi } from '../../../services/tenantWebsiteApi.js'
+
+const servicesPage = ref(null)
+
+onMounted(async () => {
+  try {
+    servicesPage.value = await tenantWebsiteApi.getPage('services')
+  } catch (e) {
+    console.error(e)
+  }
+})
+
 // ─── Service Cards Data ─────────────────────────────────────────────
 const services = [
 {
