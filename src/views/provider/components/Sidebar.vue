@@ -193,12 +193,12 @@ const menuColors = {
   'Website Management': '#ca8a04',               // Yellow
 
   // Blank menu items (10 total)
-  'Pages': '#d946ef',               // Fuchsia
+  'Website Pages': '#d946ef',               // Fuchsia
   'Media Library': '#0891b2',               // Cyan
   'Interactions': '#7c3aed',               // Violet
   'Equipment Management': '#db2777',               // Pink
-  'Blank 5': '#f97316',               // Orange
-  'Blank 6': '#059669',               // Emerald
+  'Service Area': '#f97316',               // Orange
+  'Media Management': '#059669',               // Emerald
   'Blank 7': '#dc2626',               // Red
   'Blank 8': '#4f46e5',               // Indigo
   'Blank 9': '#0d9488',               // Teal
@@ -454,30 +454,30 @@ const menus = [
     {
       key: 'website-pages',
       icon: 'ri-file-copy-line',
-      title: 'Pages',
+      title: 'Website Pages',
       links: [
-        { to: '/provider/website/pages/view', icon: 'ri-file-list-line', text: 'All Pages' },
-        { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Page' },
+        { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Website Page' },
+        { to: '/provider/website/pages/view', icon: 'ri-file-list-line', text: 'All WebsitePages' },
       ]
     },
     {
       key: 'website-blog',
       icon: 'ri-edit-2-line',
-      title: 'Blog',
+      title: 'Blogs',
       links: [
-        { to: '/provider/website/category/create', icon: 'ri-folder-2-line', text: 'Categories' },
-        { to: '/provider/website/tags/create', icon: 'ri-price-tag-3-line', text: 'Tags' },
-        { to: '/provider/website/blogs/create', icon: 'ri-article-line', text: 'Blog Posts' },
-        // { to: '/provider/website/blog/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
+        { to: '/provider/website/category/create', icon: 'ri-folder-2-line', text: 'Create Categories' },
+        { to: '/provider/website/tags/create', icon: 'ri-price-tag-3-line', text: 'Create Tags' },
+        { to: '/provider/website/blogss/create', icon: 'ri-article-line', text: 'CreateBlogs Posts' },
+        // { to: '/provider/website/blogs/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
       ]
     },
     {
       key: 'website-media',
       icon: 'ri-image-line',
-      title: 'Media Library',
+      title: 'Media Management',
       links: [
+        { to: '/provider/website/media/create', icon: 'ri-upload-2-line', text: 'Upload New Media' },
         { to: '/provider/website/media/list', icon: 'ri-image-2-line', text: 'All Media' },
-        { to: '/provider/website/media/create', icon: 'ri-upload-2-line', text: 'Upload New' },
       ]
     },
     {
@@ -485,7 +485,7 @@ const menus = [
       icon: 'ri-chat-4-line',
       title: 'Interactions',
       links: [
-        { to: '/provider/website/interactions/contactForms', icon: 'ri-mail-send-line', text: 'Contact Forms' },
+        { to: '/provider/website/interactions/contactForms', icon: 'ri-mail-send-line', text: 'Contact Forms Request' },
         { to: '/provider/website/interactions/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
         { to: '/provider/website/interactions/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
       ]

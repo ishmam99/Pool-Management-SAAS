@@ -1,10 +1,12 @@
 import axios from 'axios'
+import { useAuthStore } from '../store/AuthStore'
 
 const baseURL = `${import.meta.env.VITE_BASE_URL}/api`
+const authStore = useAuthStore()
 
 const client = axios.create({
   baseURL,
-  headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+  headers: { Accept: 'application/json', 'Content-Type': 'application/json', Authorization: `Bearer ${authStore.token}` },
 })
 
 const unwrap = (response) => response.data?.data ?? response.data

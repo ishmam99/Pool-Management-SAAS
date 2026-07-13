@@ -662,6 +662,11 @@ const routes = [
         name: 'Provider Website Quote Page',
         component: () => import('../views/provider-website/common/quote.vue'),
       },
+       {
+        path: '/provider-website/dynamic-page/:id',
+        name: 'Provider Website Dynamic Page',
+        component: () => import('../views/provider-website/pages/DynamicPages/[id].vue'),
+      },
     ],
   },
 
