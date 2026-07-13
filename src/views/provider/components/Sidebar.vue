@@ -467,7 +467,7 @@ const menus = [
       links: [
         { to: '/provider/website/category/create', icon: 'ri-folder-2-line', text: 'Create Categories' },
         { to: '/provider/website/tags/create', icon: 'ri-price-tag-3-line', text: 'Create Tags' },
-        { to: '/provider/website/blogss/create', icon: 'ri-article-line', text: 'CreateBlogs Posts' },
+        { to: '/provider/website/blogs/create', icon: 'ri-article-line', text: 'Create Blogs Posts' },
         // { to: '/provider/website/blogs/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
       ]
     },
