@@ -18,18 +18,17 @@
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Page Type *</label>
         <select v-model="form.page_type" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="custom">Custom</option>
-          <option value="home">Home</option>
-          <option value="about">About</option>
-          <option value="services">Services</option>
+          <option value="about">About Us</option>
           <option value="pricing">Pricing</option>
-          <option value="contact">Contact</option>
+          <option value="services">Services</option>
         </select>
       </div>
 
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-        <textarea v-model="form.content" rows="8" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Page content..."></textarea>
+        <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+          <div ref="editorContainer" class="quill-editor"></div>
+        </div>
       </div>
 
       <div>
@@ -64,8 +63,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue';
+import { ref, reactive, onMounted, computed, onBeforeUnmount, nextTick, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 import api from '../../../../services/api.js';
 
 const route = useRoute();
@@ -73,6 +74,8 @@ const router = useRouter();
 const loading = ref(false);
 const error = ref('');
 const success = ref('');
+const editorContainer = ref(null);
+let quillEditor = null;
 
 const pageId = computed(() => route.params.id);
 const isEdit = computed(() => !!pageId.value);
@@ -86,6 +89,64 @@ const form = reactive({
   status: 'draft',
 });
 
+// Initialize Quill editor
+const initEditor = () => {
+  if (!editorContainer.value) return;
+  
+  // Check if editor already exists
+  if (quillEditor) {
+    // quillEditor.destroy();
+    quillEditor = null;
+  }
+
+  // Quill toolbar configuration
+  const toolbarOptions = [
+    [{ header: [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ align: [] }],
+    ['link', 'image', 'video'],
+    ['clean']
+  ];
+
+  quillEditor = new Quill(editorContainer.value, {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions,
+      clipboard: {
+        matchVisual: true // Preserve formatting when pasting
+      }
+    },
+    placeholder: 'Write your page content here...',
+    readOnly: false,
+  });
+
+  // Set initial content
+  if (form.content) {
+    quillEditor.root.innerHTML = form.content;
+  }
+
+  // Update form.content when editor content changes
+  quillEditor.on('text-change', () => {
+    if (quillEditor) {
+      // Get HTML content and store in form
+      const content = quillEditor.root.innerHTML;
+      form.content = content === '<p><br></p>' ? '' : content;
+    }
+  });
+};
+
+// Watch for content changes from API
+watch(() => form.content, (newContent) => {
+  if (quillEditor && newContent !== undefined && newContent !== null) {
+    const currentContent = quillEditor.root.innerHTML;
+    // Only update if different to avoid loops
+    if (currentContent !== newContent) {
+      quillEditor.root.innerHTML = newContent;
+    }
+  }
+});
+
 const loadPage = async () => {
   if (!isEdit.value) return;
   try {
@@ -96,6 +157,12 @@ const loadPage = async () => {
         form[key] = data[key];
       }
     });
+    
+    // Update editor content after form is populated
+    await nextTick();
+    if (quillEditor && form.content) {
+      quillEditor.root.innerHTML = form.content;
+    }
   } catch (err) {
     error.value = 'Failed to load page data.';
     console.error(err);
@@ -108,6 +175,12 @@ const submitForm = async () => {
   loading.value = true;
 
   try {
+    // Ensure editor content is synced to form.content before submit
+    if (quillEditor) {
+      const content = quillEditor.root.innerHTML;
+      form.content = content === '<p><br></p>' ? '' : content;
+    }
+    
     const payload = { ...form };
     if (isEdit.value) {
       // Use POST with _method: 'PUT'
@@ -125,9 +198,9 @@ const submitForm = async () => {
       success.value = 'Page created successfully!';
     }
     // Redirect after short delay
-    // setTimeout(() => {
-    //   router.push('/provider/pages');
-    // }, 1500);
+    setTimeout(() => {
+      router.push('/provider/website/pages/view');
+    }, 1500);
   } catch (err) {
     if (err.response?.data?.errors) {
       const errors = err.response.data.errors;
@@ -141,7 +214,106 @@ const submitForm = async () => {
   }
 };
 
-onMounted(() => {
-  loadPage();
+onMounted(async () => {
+  await loadPage();
+  await nextTick();
+  initEditor();
+});
+
+onBeforeUnmount(() => {
+  // Clean up editor on component unmount
+  if (quillEditor) {
+    // quillEditor.destroy();
+    quillEditor = null;
+  }
 });
 </script>
+
+<style scoped>
+/* Quill editor custom styles */
+:deep(.quill-editor) {
+  min-height: 300px;
+}
+
+:deep(.ql-container) {
+  min-height: 300px;
+  border: none !important;
+  border-radius: 0 !important;
+  font-size: 16px;
+}
+
+:deep(.ql-toolbar) {
+  border: none !important;
+  border-bottom: 1px solid #e5e7eb !important;
+  border-radius: 0 !important;
+  background-color: #f9fafb;
+}
+
+:deep(.ql-editor) {
+  min-height: 300px;
+  padding: 1rem;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+:deep(.ql-editor p) {
+  margin-bottom: 0.75rem;
+}
+
+:deep(.ql-editor h1) {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1.5rem 0 1rem 0;
+}
+
+:deep(.ql-editor h2) {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1.25rem 0 0.75rem 0;
+}
+
+:deep(.ql-editor h3) {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem 0;
+}
+
+:deep(.ql-editor ul) {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+:deep(.ql-editor ol) {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+:deep(.ql-editor a) {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+:deep(.ql-editor blockquote) {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #6b7280;
+}
+
+:deep(.ql-editor img) {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  :deep(.ql-toolbar) {
+    flex-wrap: wrap;
+  }
+  
+  :deep(.ql-toolbar .ql-formats) {
+    margin-right: 0.5rem;
+  }
+}
+</style>

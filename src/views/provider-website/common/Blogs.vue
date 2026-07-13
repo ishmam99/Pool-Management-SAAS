@@ -30,17 +30,7 @@
         <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
           Discover professional advice on pool cleaning, water chemistry, seasonal maintenance, equipment care, and everything you need to keep your swimming pool crystal clear all year long.
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-          <button class="group px-8 py-3.5 bg-white text-sky-700 font-semibold rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
-            Schedule Pool Service
-            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-            </svg>
-          </button>
-          <button class="px-8 py-3.5 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300">
-            Request Free Estimate
-          </button>
-        </div>
+       
       </div>
     </section>
 
