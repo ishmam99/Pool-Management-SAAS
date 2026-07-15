@@ -36,7 +36,7 @@ const roleConfig = computed(() => {
       logoutEndpoint: "/user-management/logout",
       dashboard: "/provider/dashboard",
       userType: "provider",
-      email: "owner@aquacleanpools.com"
+      email: "parrapools@gmail.com"
     },
     customer: {
       title: "Customer",
