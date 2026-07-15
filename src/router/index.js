@@ -325,25 +325,35 @@ const routes = [
       },
 
       // Billing
-      {
+      // {
+      //   path: '/provider/billing/invoices',
+      //   name: 'provider-billing-invoices',
+      //   component: () => import('../views/provider/pages/billing/InvoiceList.vue')
+      // },
+      // {
+      //   path: '/provider/billing/invoices/create',
+      //   name: 'provider-billing-invoice-create',
+      //   component: () => import('../views/provider/pages/billing/InvoiceCreate.vue')
+      // },
+      // {
+      //   path: '/provider/billing/payments',
+      //   name: 'provider-billing-payments',
+      //   component: () => import('../views/provider/pages/billing/PaymentsList.vue')
+      // },
+      // {
+      //   path: '/provider/billing/payment-methods',
+      //   name: 'provider-billing-payment-methods',
+      //   component: () => import('../views/provider/pages/billing/PaymentMethods.vue')
+      // },
+        {
+        path: '/provider/billing/billings',
+        name: 'provider-billing-billings',
+        component: () => import('../views/provider/pages/billing/MyBillings.vue')
+      },
+        {
         path: '/provider/billing/invoices',
         name: 'provider-billing-invoices',
-        component: () => import('../views/provider/pages/billing/InvoiceList.vue')
-      },
-      {
-        path: '/provider/billing/invoices/create',
-        name: 'provider-billing-invoice-create',
-        component: () => import('../views/provider/pages/billing/InvoiceCreate.vue')
-      },
-      {
-        path: '/provider/billing/payments',
-        name: 'provider-billing-payments',
-        component: () => import('../views/provider/pages/billing/PaymentsList.vue')
-      },
-      {
-        path: '/provider/billing/payment-methods',
-        name: 'provider-billing-payment-methods',
-        component: () => import('../views/provider/pages/billing/PaymentMethods.vue')
+        component: () => import('../views/provider/pages/billing/MyInvoices.vue')
       },
 
       // Website

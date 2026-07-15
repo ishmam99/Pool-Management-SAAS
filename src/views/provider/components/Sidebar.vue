@@ -414,27 +414,30 @@ const menus = [
     id: 'billing',
     title: 'Billing',
     icon: 'ri-bank-card-line',
-    groups: [
-      {
-        key: 'billing-invoice',
-        icon: 'ri-file-text-line',
-        title: 'Invoice',
-        links: [
-          { to: '/provider/billing/invoices/create', icon: 'ri-add-circle-line', text: 'Create Invoice' },
-          { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Invoice List' },
-        ]
-      },
-      {
-        key: 'billing-payments',
-        icon: 'ri-money-dollar-circle-line',
-        title: 'Payments',
-        links: [
-          { to: '/provider/billing/payments', icon: 'ri-money-dollar-circle-line', text: 'Payment List' },
-          { to: '/provider/billing/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' },
-        ]
-      },
-    ],
-    links: []
+    // groups: [
+    //   {
+    //     key: 'billing-invoice',
+    //     icon: 'ri-file-text-line',
+    //     title: 'Invoice',
+    //     links: [
+    //       { to: '/provider/billing/invoices/create', icon: 'ri-add-circle-line', text: 'Create Invoice' },
+    //       { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Invoice List' },
+    //     ]
+    //   },
+    //   {
+    //     key: 'billing-payments',
+    //     icon: 'ri-money-dollar-circle-line',
+    //     title: 'Payments',
+    //     links: [
+    //       { to: '/provider/billing/payments', icon: 'ri-money-dollar-circle-line', text: 'Payment List' },
+    //       { to: '/provider/billing/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' },
+    //     ]
+    //   },
+    // ],
+    links: [
+      { to: '/provider/billing/billings', icon: 'ri-money-dollar-circle-line', text: 'My Billings' },
+          { to: '/provider/billing/invoices', icon: 'ri-bank-card-line', text: 'My Invoices' },
+    ]
   },
   {
   id: 'website-management',
