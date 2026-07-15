@@ -593,6 +593,8 @@ const routes = [
       { path: '/admin/tenants/domains/verify', name: 'admin-tenants-domain-verify', component: () => import('../views/admin/pages/tenants/VerifyDomain.vue') },
       { path: '/admin/tenants/:id/edit', name: 'admin-tenants-edit', component: () => import('../views/admin/pages/tenants/TenantForm.vue') },
       { path: '/admin/tenants/:id', name: 'admin-tenants-details', component: () => import('../views/admin/pages/tenants/TenantDetails.vue') },
+      { path: '/admin/tenant-subscriptions-settings', name: 'admin-tenant-subscriptions-settings', component: () => import('../views/admin/pages/tenants/TenantSubcriptionSettings.vue') },
+
       // Subscription plans
       { path: '/admin/subscription-plans', name: 'admin-subscription-plans', component: () => import('../views/admin/pages/subscriptions/PlanList.vue') },
       { path: '/admin/subscription-plans/create', name: 'admin-subscription-plans-create', component: () => import('../views/admin/pages/subscriptions/PlanForm.vue') },
@@ -601,6 +603,10 @@ const routes = [
       { path: '/admin/tenant-subscriptions', name: 'admin-tenant-subscriptions', component: () => import('../views/admin/pages/subscriptions/SubscriptionList.vue') },
       { path: '/admin/tenant-subscriptions/create', name: 'admin-tenant-subscriptions-create', component: () => import('../views/admin/pages/subscriptions/SubscriptionForm.vue') },
       { path: '/admin/tenant-subscriptions/:id/edit', name: 'admin-tenant-subscriptions-edit', component: () => import('../views/admin/pages/subscriptions/SubscriptionForm.vue') },
+      // Billing
+      { path: '/admin/all-invoices', name: 'admin-all-invoices', component: () => import('../views/admin/pages/Billing/AllInvoices.vue') },
+      { path: '/admin/revenue-statistics', name: 'admin-revenue-statistics', component: () => import('../views/admin/pages/Billing/RevenueStatistics.vue') },
+
     ]
   },
 
@@ -671,6 +677,11 @@ const routes = [
         path: '/provider-website/quote',
         name: 'Provider Website Quote Page',
         component: () => import('../views/provider-website/common/quote.vue'),
+      },
+           {
+        path: '/provider-website/gallery',
+        name: 'Provider Website Gallery',
+        component: () => import('../views/provider-website/pages/Gallery.vue'),
       },
        {
         path: '/provider-website/dynamic-page/:id',

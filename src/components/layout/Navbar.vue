@@ -405,7 +405,6 @@ const closeMobileMenu = () => {
 
 // Provider Layout toggle – saves to store
 const setLayout = (layout) => {
-  console.log('🔄 Provider setLayout called with:', layout);
   selectedLayout.value = layout;
   authStore.layout = layout;
   // If switching to general, clear customer selection
@@ -432,7 +431,6 @@ const setLayout = (layout) => {
 
 // Toggle the Select Customer dropdown
 const toggleSelectCustomerDropdown = async () => {
-  console.log('🔄 toggleSelectCustomerDropdown called');
   if (!isCustomerDropdownOpen.value) {
     if (selectedLayout.value !== 'customer') {
       setLayout('customer');
@@ -449,68 +447,52 @@ const toggleSelectCustomerDropdown = async () => {
 
 // Fetch customers (Provider)
 const fetchCustomers = async () => {
-  console.log('🔄 fetchCustomers called');
-  console.log('📊 authStore.userType:', authStore.userType);
-  console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
 
   isLoadingCustomers.value = true;
   customerLoading.value = true;
   try {
     const response = await api().get('/customer-management/customers-active');
     customers.value = response.data.data || [];
-    console.log('✅ Customers fetched:', customers.value.length);
-    console.log('📋 First customer:', customers.value[0]);
 
     if (customers.value.length > 0) {
       const storedId = authStore.customerId;
-      console.log('📌 storedId from authStore:', storedId);
 
       if (storedId) {
         // Try to find the stored customer
         const found = customers.value.find(c => String(c.id) === String(storedId));
-        console.log('🔎 Looking for storedId:', storedId, 'Found:', found ? found.contact_name : 'Not found');
 
         if (found) {
           selectedCustomer.value = found;
           // Make sure authStore has the correct ID
           authStore.customerId = found.id;
-          console.log('✅ Selected customer from storedId:', found.contact_name);
         } else {
           // If stored ID not found, select first customer
           selectedCustomer.value = customers.value[0];
           authStore.customerId = customers.value[0].id;
-          console.log('⚠️ storedId not found, selected first customer:', customers.value[0].contact_name);
         }
       } else {
         // No stored ID, select first customer
         selectedCustomer.value = customers.value[0];
         authStore.customerId = customers.value[0].id;
-        console.log('ℹ️ No storedId, selected first customer:', customers.value[0].contact_name);
       }
     } else {
       selectedCustomer.value = null;
       authStore.customerId = null;
-      console.log('⚠️ No customers available');
     }
 
     isDataLoaded.value = true;
   } catch (error) {
-    console.error('❌ Failed to fetch customers:', error);
   } finally {
     customerLoading.value = false;
     isLoadingCustomers.value = false;
-    console.log('📊 Final state - selectedCustomer:', selectedCustomer.value?.contact_name);
-    console.log('📊 Final state - authStore.customerId:', authStore.customerId);
 
     // Force update after data is loaded
     await nextTick();
-    console.log('📊 After nextTick - selectedCustomer:', selectedCustomer.value?.contact_name);
   }
 };
 
 // Select a customer – saves to store and navigates
 const selectCustomer = (customer) => {
-  console.log('🔄 selectCustomer called with:', customer.contact_name);
   selectedCustomer.value = customer;
   authStore.customerId = customer.id;
   // Ensure layout is customer
@@ -523,7 +505,6 @@ const selectCustomer = (customer) => {
 
 // Clear customer selection – resets to general layout
 const clearCustomerSelection = () => {
-  console.log('🔄 clearCustomerSelection called');
   selectedCustomer.value = null;
   authStore.customerId = null;
   isCustomerDropdownOpen.value = false;
@@ -554,51 +535,36 @@ const filteredCustomers = computed(() => {
 
 // Display customer name computed
 const displayCustomerName = computed(() => {
-  console.log('🔍 displayCustomerName computed called');
-  console.log('📊 selectedCustomer.value:', selectedCustomer.value);
-  console.log('🆔 authStore.customerId:', authStore.customerId);
-  console.log('📋 customers.value.length:', customers.value.length);
-  console.log('📌 isDataLoaded:', isDataLoaded.value);
-  console.log('📌 isLoadingCustomers:', isLoadingCustomers.value);
 
   // If customers are still loading, show loading text
   if (isLoadingCustomers.value && customers.value.length === 0) {
-    console.log('⏳ Customers are loading...');
     return 'Loading...';
   }
 
   // If data is loaded and we have no customers
   if (isDataLoaded.value && customers.value.length === 0) {
-    console.log('ℹ️ No customers available');
     return 'No Customers';
   }
 
   if (selectedCustomer.value) {
-    console.log('✅ selectedCustomer found:', selectedCustomer.value.contact_name);
     return selectedCustomer.value.contact_name;
   }
 
   // Try to find by ID if selectedCustomer is null but authStore has ID
   if (authStore.customerId && customers.value.length > 0) {
-    console.log('🔎 Searching for customer with ID:', authStore.customerId);
     const found = customers.value.find(c => {
       const match = String(c.id) === String(authStore.customerId);
-      console.log(`   Comparing c.id: ${c.id} (${typeof c.id}) with authStore.customerId: ${authStore.customerId} (${typeof authStore.customerId}) => ${match}`);
       return match;
     });
 
     if (found) {
-      console.log('✅ Found customer by ID:', found.contact_name);
       selectedCustomer.value = found; // Update selectedCustomer
       return found.contact_name;
     } else {
-      console.log('❌ No customer found with ID:', authStore.customerId);
     }
   } else {
-    console.log('⚠️ No authStore.customerId or no customers available');
   }
 
-  console.log('❌ Returning "Select Customer"');
   return 'Select Customer';
 });
 
@@ -606,7 +572,6 @@ const displayCustomerName = computed(() => {
 
 // Admin Layout toggle – saves to store
 const setAdminLayout = (layout) => {
-  console.log('🔄 Admin setAdminLayout called with:', layout);
   selectedAdminLayout.value = layout;
   localStorage.setItem(ADMIN_LAYOUT_KEY, layout) 
   authStore.adminLayout = layout;
@@ -615,9 +580,7 @@ const setAdminLayout = (layout) => {
     isTenantDropdownOpen.value = false;
     router.push("/admin/dashboard");
   } else {
-    // Tenant layout - navigate to provider dashboard
     if (authStore.tenantId) {
-      // Try to find tenant by ID
       const found = tenants.value.find(t => String(t.id) === String(authStore.tenantId));
       if (found) {
         selectedTenant.value = found;
@@ -635,7 +598,6 @@ const setAdminLayout = (layout) => {
 
 // Toggle the Select Tenant dropdown
 const toggleSelectTenantDropdown = async () => {
-  console.log('🔄 toggleSelectTenantDropdown called');
   if (!isTenantDropdownOpen.value) {
     if (selectedAdminLayout.value !== 'tenant') {
       setAdminLayout('tenant');
@@ -652,68 +614,48 @@ const toggleSelectTenantDropdown = async () => {
 
 // Fetch tenants (Admin)
 const fetchTenants = async () => {
-  console.log('🔄 fetchTenants called');
-  console.log('📊 authStore.authType:', authStore.authType);
-  console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
 
   isLoadingTenants.value = true;
   tenantLoading.value = true;
   try {
-    const response = await api().get('/tenant/tenants');
+    const response = await api().get('/tenant/tenants?status=active');
     tenants.value = response.data.data || [];
-    console.log('✅ Tenants fetched:', tenants.value.length);
-    console.log('📋 First tenant:', tenants.value[0]);
 
     if (tenants.value.length > 0) {
       const storedId = authStore.tenantId;
-      console.log('📌 storedId from authStore:', storedId);
 
       if (storedId) {
-        // Try to find the stored tenant
         const found = tenants.value.find(t => String(t.id) === String(storedId));
-        console.log('🔎 Looking for storedId:', storedId, 'Found:', found ? found.company_name : 'Not found');
 
         if (found) {
           selectedTenant.value = found;
-          // Make sure authStore has the correct ID
           authStore.tenantId = found.id;
-          console.log('✅ Selected tenant from storedId:', found.company_name);
         } else {
-          // If stored ID not found, select first tenant
           selectedTenant.value = tenants.value[0];
           authStore.tenantId = tenants.value[0].id;
-          console.log('⚠️ storedId not found, selected first tenant:', tenants.value[0].company_name);
         }
       } else {
-        // No stored ID, select first tenant
         selectedTenant.value = tenants.value[0];
         authStore.tenantId = tenants.value[0].id;
-        console.log('ℹ️ No storedId, selected first tenant:', tenants.value[0].company_name);
       }
     } else {
       selectedTenant.value = null;
       authStore.tenantId = null;
-      console.log('⚠️ No tenants available');
     }
 
     isTenantDataLoaded.value = true;
   } catch (error) {
-    console.error('❌ Failed to fetch tenants:', error);
   } finally {
     tenantLoading.value = false;
     isLoadingTenants.value = false;
-    console.log('📊 Final state - selectedTenant:', selectedTenant.value?.company_name);
-    console.log('📊 Final state - authStore.tenantId:', authStore.tenantId);
 
     // Force update after data is loaded
     await nextTick();
-    console.log('📊 After nextTick - selectedTenant:', selectedTenant.value?.company_name);
   }
 };
 
 // Select a tenant – saves to store and navigates
 const selectTenant = (tenant) => {
-  console.log('🔄 selectTenant called with:', tenant.company_name);
   selectedTenant.value = tenant;
   authStore.tenantId = tenant.id;
   // Ensure layout is tenant
@@ -726,7 +668,6 @@ const selectTenant = (tenant) => {
 
 // Clear tenant selection – resets to general layout
 const clearTenantSelection = () => {
-  console.log('🔄 clearTenantSelection called');
   selectedTenant.value = null;
   authStore.tenantId = null;
   isTenantDropdownOpen.value = false;
@@ -746,51 +687,36 @@ const filteredTenants = computed(() => {
 
 // Display tenant name computed
 const displayTenantName = computed(() => {
-  console.log('🔍 displayTenantName computed called');
-  console.log('📊 selectedTenant.value:', selectedTenant.value);
-  console.log('🆔 authStore.tenantId:', authStore.tenantId);
-  console.log('📋 tenants.value.length:', tenants.value.length);
-  console.log('📌 isTenantDataLoaded:', isTenantDataLoaded.value);
-  console.log('📌 isLoadingTenants:', isLoadingTenants.value);
 
   // If tenants are still loading, show loading text
   if (isLoadingTenants.value && tenants.value.length === 0) {
-    console.log('⏳ Tenants are loading...');
     return 'Loading...';
   }
 
   // If data is loaded and we have no tenants
   if (isTenantDataLoaded.value && tenants.value.length === 0) {
-    console.log('ℹ️ No tenants available');
     return 'No Tenants';
   }
 
   if (selectedTenant.value) {
-    console.log('✅ selectedTenant found:', selectedTenant.value.company_name);
     return selectedTenant.value.company_name;
   }
 
   // Try to find by ID if selectedTenant is null but authStore has ID
   if (authStore.tenantId && tenants.value.length > 0) {
-    console.log('🔎 Searching for tenant with ID:', authStore.tenantId);
     const found = tenants.value.find(t => {
       const match = String(t.id) === String(authStore.tenantId);
-      console.log(`   Comparing t.id: ${t.id} (${typeof t.id}) with authStore.tenantId: ${authStore.tenantId} (${typeof authStore.tenantId}) => ${match}`);
       return match;
     });
 
     if (found) {
-      console.log('✅ Found tenant by ID:', found.company_name);
-      selectedTenant.value = found; // Update selectedTenant
+      selectedTenant.value = found; 
       return found.company_name;
     } else {
-      console.log('❌ No tenant found with ID:', authStore.tenantId);
     }
   } else {
-    console.log('⚠️ No authStore.tenantId or no tenants available');
   }
 
-  console.log('❌ Returning "Select Tenant"');
   return 'Select Tenant';
 });
 
@@ -842,26 +768,17 @@ const handleLogout = async () => {
 
 // ============ WATCHES ============
 
-// Watch for customers changes and set selected customer (Provider)
 watch(() => customers.value, (newCustomers, oldCustomers) => {
-  console.log('🔄 customers.value changed');
-  console.log('   Old length:', oldCustomers?.length || 0);
-  console.log('   New length:', newCustomers.length);
 
   if (newCustomers.length > 0 && authStore.customerId) {
     const found = newCustomers.find(c => String(c.id) === String(authStore.customerId));
     if (found) {
-      console.log('✅ Setting selectedCustomer from watch:', found.contact_name);
       selectedCustomer.value = found;
     } else if (!selectedCustomer.value) {
-      // If no selected customer and we have customers, select the first one
-      console.log('ℹ️ No matching customer found, selecting first');
       selectedCustomer.value = newCustomers[0];
       authStore.customerId = newCustomers[0].id;
     }
   } else if (newCustomers.length > 0 && !selectedCustomer.value) {
-    // If we have customers but no selectedCustomer, select first
-    console.log('ℹ️ No authStore.customerId but we have customers, selecting first');
     selectedCustomer.value = newCustomers[0];
     authStore.customerId = newCustomers[0].id;
   }
@@ -869,55 +786,38 @@ watch(() => customers.value, (newCustomers, oldCustomers) => {
 
 // Watch for authStore.customerId changes (Provider)
 watch(() => authStore.customerId, (newId, oldId) => {
-  console.log('🔄 watch: authStore.customerId changed');
-  console.log('   Old ID:', oldId);
-  console.log('   New ID:', newId);
-  console.log('   customers.value.length:', customers.value.length);
 
   if (newId && customers.value.length > 0) {
     // Use strict equality with type conversion
     const found = customers.value.find(c => {
       const match = String(c.id) === String(newId);
-      console.log(`   Comparing c.id: ${c.id} (${typeof c.id}) with newId: ${newId} (${typeof newId}) => ${match}`);
       return match;
     });
 
     if (found) {
-      console.log('✅ Found customer in watch:', found.contact_name);
       selectedCustomer.value = found;
     } else {
-      console.log('❌ Customer not found in watch, selecting first available');
       selectedCustomer.value = customers.value[0] || null;
       if (selectedCustomer.value) {
         authStore.customerId = selectedCustomer.value.id;
       }
     }
   } else if (!newId) {
-    console.log('⚠️ newId is null/undefined, setting selectedCustomer to null');
     selectedCustomer.value = null;
   }
 }, { immediate: true });
 
-// Watch for tenants changes and set selected tenant (Admin)
 watch(() => tenants.value, (newTenants, oldTenants) => {
-  console.log('🔄 tenants.value changed');
-  console.log('   Old length:', oldTenants?.length || 0);
-  console.log('   New length:', newTenants.length);
 
   if (newTenants.length > 0 && authStore.tenantId) {
     const found = newTenants.find(t => String(t.id) === String(authStore.tenantId));
     if (found) {
-      console.log('✅ Setting selectedTenant from watch:', found.company_name);
       selectedTenant.value = found;
     } else if (!selectedTenant.value) {
-      // If no selected tenant and we have tenants, select the first one
-      console.log('ℹ️ No matching tenant found, selecting first');
       selectedTenant.value = newTenants[0];
       authStore.tenantId = newTenants[0].id;
     }
   } else if (newTenants.length > 0 && !selectedTenant.value) {
-    // If we have tenants but no selectedTenant, select first
-    console.log('ℹ️ No authStore.tenantId but we have tenants, selecting first');
     selectedTenant.value = newTenants[0];
     authStore.tenantId = newTenants[0].id;
   }
@@ -925,69 +825,49 @@ watch(() => tenants.value, (newTenants, oldTenants) => {
 
 // Watch for authStore.tenantId changes (Admin)
 watch(() => authStore.tenantId, (newId, oldId) => {
-  console.log('🔄 watch: authStore.tenantId changed');
-  console.log('   Old ID:', oldId);
-  console.log('   New ID:', newId);
-  console.log('   tenants.value.length:', tenants.value.length);
 
   if (newId && tenants.value.length > 0) {
     // Use strict equality with type conversion
     const found = tenants.value.find(t => {
       const match = String(t.id) === String(newId);
-      console.log(`   Comparing t.id: ${t.id} (${typeof t.id}) with newId: ${newId} (${typeof newId}) => ${match}`);
       return match;
     });
 
     if (found) {
-      console.log('✅ Found tenant in watch:', found.company_name);
       selectedTenant.value = found;
     } else {
-      console.log('❌ Tenant not found in watch, selecting first available');
       selectedTenant.value = tenants.value[0] || null;
       if (selectedTenant.value) {
         authStore.tenantId = selectedTenant.value.id;
       }
     }
   } else if (!newId) {
-    console.log('⚠️ newId is null/undefined, setting selectedTenant to null');
     selectedTenant.value = null;
   }
 }, { immediate: true });
 
-// Watch for authStore.adminLayout changes
 watch(() => authStore.adminLayout, (newLayout) => {
-  console.log('🔄 authStore.adminLayout changed:', newLayout);
   selectedAdminLayout.value = newLayout;
 });
 
 // ============ MOUNTED ============
 
 onMounted(async () => {
-  console.log('🔧 Navbar mounted');
-  console.log('📊 authStore.authType:', authStore.authType);
-  console.log('📊 authStore.isAuthenticated:', authStore.isAuthenticated);
-  console.log('📊 authStore.customerId:', authStore.customerId);
-  console.log('📊 authStore.tenantId:', authStore.tenantId);
 
   // Set provider layout
   authStore.layout = authStore.layout ?? 'general';
   selectedLayout.value = authStore.layout;
 
-  // Set admin layout
   authStore.adminLayout = authStore.adminLayout ?? 'general';
   selectedAdminLayout.value = authStore.adminLayout;
 
-  // Fetch data based on auth type
   if (authStore.isAuthenticated) {
     if (authStore.authType === 'provider') {
-      console.log('✅ User is provider, fetching customers...');
       await fetchCustomers();
     } else if (authStore.authType === 'admin') {
-      console.log('✅ User is admin, fetching tenants...');
       await fetchTenants();
     }
   } else {
-    console.log('⚠️ User is not authenticated, skipping data fetch');
   }
 
   document.addEventListener('keydown', handleEscape);
@@ -998,9 +878,7 @@ onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside);
 });
 
-// Watch for authType changes
 watch(() => authStore.authType, (newType) => {
-  console.log('🔄 authStore.authType changed:', newType);
   if (newType === 'provider') {
     fetchCustomers();
   } else if (newType === 'admin') {
@@ -1008,20 +886,16 @@ watch(() => authStore.authType, (newType) => {
   }
 });
 
-// Watch for changes in authStore.layout (Provider)
 watch(() => authStore.layout, (newLayout) => {
-  console.log('🔄 authStore.layout changed:', newLayout);
   selectedLayout.value = newLayout;
 });
 
-// Also watch layout changes from other components (Provider)
 watch(() => authStore.layout, (newLayout) => {
   selectedLayout.value = newLayout;
 });
 </script>
 
 <style scoped>
-/* Animations */
 @keyframes slideDown {
   from {
     opacity: 0;

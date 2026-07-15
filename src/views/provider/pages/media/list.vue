@@ -3,7 +3,8 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
       <h1 class="text-2xl font-bold text-gray-800">Media Library</h1>
-      <router-link to="/provider/website/media/create" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+      <router-link to="/provider/website/media/create"
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
         + Upload New
       </router-link>
     </div>
@@ -16,31 +17,7 @@
       {{ success }}
     </div>
 
-    <!-- Filters -->
-    <div class="bg-white rounded-xl shadow p-4 mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-          <input v-model="filters.search" type="text" placeholder="Search by file name..." class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" @input="applyFilters" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">File Type</label>
-          <select v-model="filters.type" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" @change="applyFilters">
-            <option value="">All Types</option>
-            <option value="image">Image</option>
-            <option value="video">Video</option>
-            <option value="document">Document</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="flex items-end gap-2">
-          <button @click="resetFilters" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Reset</button>
-          <button v-if="selectedIds.length > 0" @click="confirmBulkDelete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-            Delete Selected ({{ selectedIds.length }})
-          </button>
-        </div>
-      </div>
-    </div>
+
 
     <!-- Loading -->
     <div v-if="loading" class="text-center py-10">
@@ -50,7 +27,8 @@
 
     <!-- Empty State -->
     <div v-else-if="mediaItems.length === 0" class="text-center py-10 bg-white rounded-xl shadow">
-      <p class="text-gray-500">No media found. <router-link to="/provider/media/upload" class="text-blue-600 hover:underline">Upload your first file</router-link></p>
+      <p class="text-gray-500">No media found. <router-link to="/provider/media/upload"
+          class="text-blue-600 hover:underline">Upload your first file</router-link></p>
     </div>
 
     <!-- Table -->
@@ -59,13 +37,12 @@
         <thead class="bg-gray-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <input type="checkbox" @change="toggleSelectAll" :checked="allSelected" class="w-4 h-4 text-blue-600 rounded" />
+              <input type="checkbox" @change="toggleSelectAll" :checked="allSelected"
+                class="w-4 h-4 text-blue-600 rounded" />
             </th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preview</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File Name</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Folder</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File Size</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded By</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
@@ -76,15 +53,16 @@
               <input type="checkbox" v-model="selectedIds" :value="media.id" class="w-4 h-4 text-blue-600 rounded" />
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <img v-if="media.type === 'image'" :src="media.thumbnail_url || media.url" alt="Preview" class="w-12 h-12 object-cover rounded-lg border" />
-              <div v-else class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border text-gray-500 text-xs">
-                {{ media.type || 'file' }}
+              <img v-if="media.mime_type?.startsWith('image/')" :src="media.url"
+                class="w-12 h-12 object-cover rounded-lg border" />
+
+              <div v-else
+                class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border text-gray-500 text-xs">
+                {{ media.type || 'File' }}
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ media.file_name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ media.folder || '/' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ media.filename }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatFileSize(media.file_size) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ media.uploaded_by || 'N/A' }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(media.created_at) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
               <button @click="openEditModal(media)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
@@ -97,14 +75,17 @@
       <!-- Pagination -->
       <div class="px-6 py-4 flex items-center justify-between border-t border-gray-200">
         <div class="text-sm text-gray-500">
-          Showing {{ (meta.current_page - 1) * meta.per_page + 1 }} to {{ Math.min(meta.current_page * meta.per_page, meta.total) }} of {{ meta.total }} results
+          Showing {{ (meta.current_page - 1) * meta.per_page + 1 }} to {{ Math.min(meta.current_page * meta.per_page,
+            meta.total) }} of {{ meta.total }} results
         </div>
         <div class="flex gap-2">
-          <button @click="changePage(meta.current_page - 1)" :disabled="meta.current_page <= 1" class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button @click="changePage(meta.current_page - 1)" :disabled="meta.current_page <= 1"
+            class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
             Previous
           </button>
           <span class="px-3 py-1 border rounded bg-blue-50 text-blue-700">{{ meta.current_page }}</span>
-          <button @click="changePage(meta.current_page + 1)" :disabled="meta.current_page >= meta.last_page" class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          <button @click="changePage(meta.current_page + 1)" :disabled="meta.current_page >= meta.last_page"
+            class="px-3 py-1 border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
             Next
           </button>
         </div>
@@ -112,7 +93,8 @@
     </div>
 
     <!-- ==================== EDIT MODAL (Update Folder) ==================== -->
-    <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" @click.self="closeEditModal">
+    <div v-if="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      @click.self="closeEditModal">
       <div class="bg-white rounded-xl shadow-lg w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-xl font-semibold text-gray-800">Edit Media</h2>
@@ -138,15 +120,19 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Folder</label>
-              <input v-model="editForm.folder" type="text" placeholder="/folder/subfolder" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              <input v-model="editForm.folder" type="text" placeholder="/folder/subfolder"
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
             </div>
           </div>
           <div class="flex gap-3 mt-6">
-            <button type="submit" :disabled="editLoading" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
-              <span v-if="editLoading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+            <button type="submit" :disabled="editLoading"
+              class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+              <span v-if="editLoading"
+                class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               {{ editLoading ? 'Saving...' : 'Update' }}
             </button>
-            <button type="button" @click="closeEditModal" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
+            <button type="button" @click="closeEditModal"
+              class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">Cancel</button>
           </div>
         </form>
       </div>
@@ -160,6 +146,20 @@ import api from '../../../../services/api.js';
 import Swal from 'sweetalert2';
 
 // ---------------------- List State ----------------------
+
+const isImage = (media) => {
+  if (!media?.url) return false
+
+  // Check MIME type
+  if (media.type?.startsWith('image/')) return true
+
+  // Check generic type
+  if (media.type === 'image') return true
+
+  // Check file extension
+  return /\.(jpg|jpeg|png|gif|webp|svg|bmp|avif)$/i.test(media.url)
+}
+
 const mediaItems = ref([]);
 const meta = ref({
   current_page: 1,

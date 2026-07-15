@@ -145,8 +145,8 @@ const customerInitials = computed(() => {
 const menuColors = {
     'Dashboard': '#0ea5e9',
     'Admin Management': '#8b5cf6',
-    'Tenant Management': '#14b8a6',
-    'Subscription Management': '#f97316',
+    'Service Provider Management': '#14b8a6',
+    'Billing Management': '#f97316',
 }
 
 // Function to get menu color with fallback
@@ -202,55 +202,49 @@ const menus = [
     },
     {
         id: 'tenant-management',
-        title: 'Tenant Management',
+        title: 'Service Provider Management',
         icon: 'ri-building-line',
-        groups: [
-            {
-                key: 'tenant-basic',
-                title: 'Tenant Management',
-                icon: 'ri-building-4-line',
-                links: [
-                    { to: '/admin/tenants', icon: 'ri-list-check', text: 'Tenant List' },
-                    { to: '/admin/tenants/create', icon: 'ri-building-add-line', text: 'Create Tenant' }
-                ]
-            },
-            {
-                key: 'tenant-domain',
-                title: 'Domain Management',
-                icon: 'ri-global-line',
-                links: [
-                    { to: '/admin/tenants/domains/add', icon: 'ri-add-circle-line', text: 'Add Custom Domain' },
-                    { to: '/admin/tenants/domains/verify', icon: 'ri-check-double-line', text: 'Verify Domain' }
-                ]
-            }
+        links: [
+            { to: '/admin/tenants/create', icon: 'ri-user-add-line', text: 'Create Service Provider' },
+            { to: '/admin/tenants', icon: 'ri-building-4-line', text: 'Service Provider List' },
+            { to: '/admin/tenant-subscriptions-settings', icon: 'ri-settings-4-line', text: 'Subscription Settings' },
         ]
     },
-
     {
-        id: 'subscription-management',
-        title: 'Subscription Management',
-        icon: 'ri-money-dollar-circle-line',
-        groups: [
-            {
-                key: 'subscription-plans',
-                title: 'Subscription Plans',
-                icon: 'ri-list-settings-line',
-                links: [
-                    { to: '/admin/subscription-plans', icon: 'ri-list-check', text: 'Plan List' },
-                    { to: '/admin/subscription-plans/create', icon: 'ri-add-circle-line', text: 'Create Plan' }
-                ]
-            },
-            {
-                key: 'tenant-subscriptions',
-                title: 'Tenant Subscriptions',
-                icon: 'ri-user-community-line',
-                links: [
-                    { to: '/admin/tenant-subscriptions', icon: 'ri-list-check', text: 'Subscription List' },
-                    { to: '/admin/tenant-subscriptions/create', icon: 'ri-add-circle-line', text: 'Create Subscription' }
-                ]
-            }
+        id: 'billing-management',
+        title: 'Billing Management',
+        icon: 'ri-receipt-line',
+        links: [
+            { to: '/admin/all-invoices', icon: 'ri-file-list-3-line', text: 'All Invoices' },
+            { to: '/admin/revenue-statistics', icon: 'ri-line-chart-line', text: 'Revenue Statistics' },
         ]
     }
+
+    // {
+    //     id: 'subscription-management',
+    //     title: 'Subscription Management',
+    //     icon: 'ri-money-dollar-circle-line',
+    //     groups: [
+    //         {
+    //             key: 'subscription-plans',
+    //             title: 'Subscription Plans',
+    //             icon: 'ri-list-settings-line',
+    //             links: [
+    //                 { to: '/admin/subscription-plans', icon: 'ri-list-check', text: 'Plan List' },
+    //                 { to: '/admin/subscription-plans/create', icon: 'ri-add-circle-line', text: 'Create Plan' }
+    //             ]
+    //         },
+    //         {
+    //             key: 'tenant-subscriptions',
+    //             title: 'Tenant Subscriptions',
+    //             icon: 'ri-user-community-line',
+    //             links: [
+    //                 { to: '/admin/tenant-subscriptions', icon: 'ri-list-check', text: 'Subscription List' },
+    //                 { to: '/admin/tenant-subscriptions/create', icon: 'ri-add-circle-line', text: 'Create Subscription' }
+    //             ]
+    //         }
+    //     ]
+    // }
 ]
 </script>
 

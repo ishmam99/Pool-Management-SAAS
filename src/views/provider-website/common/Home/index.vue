@@ -1,6 +1,7 @@
 <template>
   <main class="overflow-hidden">
     <Hero />
+    <ServiceArea />
     <Statistics />
     <Features />
     <Solutions />
@@ -14,6 +15,7 @@
 <script setup>
 import { useWebsiteStore } from '../../store/websiteStore.js'
 import Hero from './Hero.vue'
+import ServiceArea from './ServiceArea.vue'
 import Statistics from './Statistics.vue'
 import Features from './Features.vue'
 import Solutions from './Solutions.vue'
