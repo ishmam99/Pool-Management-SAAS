@@ -7,12 +7,12 @@
           <div>
             <h1 class="text-4xl font-extrabold tracking-tight flex items-center gap-3">
               <i class="ri-building-2-line"></i>
-              Tenant List
+              Service Provider List
             </h1>
-            <p class="mt-2 max-w-2xl text-white/80 font-medium">Manage platform tenants, view company details, and take action from a fresh new admin panel.</p>
+            <p class="mt-2 max-w-2xl text-white/80 font-medium">Manage platform service providers, view company details, and take action from a fresh new admin panel.</p>
           </div>
           <router-link to="/admin/tenants/create" class="inline-flex items-center gap-2 rounded-2xl bg-white/20 backdrop-blur-sm px-6 py-3.5 text-sm font-semibold text-white shadow-lg ring-1 ring-white/30 hover:bg-white/30 hover:ring-white/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl">
-            <i class="ri-building-add-line text-lg"></i> Create Tenant
+            <i class="ri-building-add-line text-lg"></i> Create Service Provider
           </router-link>
         </div>
 
