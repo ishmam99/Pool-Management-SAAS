@@ -8,19 +8,16 @@ import { useAuthStore } from "../../store/AuthStore.js";
 const router = useRouter();
 const authStore = useAuthStore();
 
+// --- Reactive state ---
 const password = ref("12345678");
 const loading = ref(false);
 const showPassword = ref(false);
 const isFocused = ref(false);
 
-// Active tab state - default to tenant (Service Provider)
+// Active tab – default: tenant (Service Provider)
 const activeTab = ref("tenant");
 
-// Set active tab
-const setActiveTab = (tab) => {
-  activeTab.value = tab;
-};
-
+// --- Role configuration ---
 const roleConfig = computed(() => {
   const configs = {
     tenant: {
@@ -72,9 +69,15 @@ const roleConfig = computed(() => {
   return configs[activeTab.value] || configs.tenant;
 });
 
-// Create a computed property for email that updates when roleConfig changes
-const email = computed(() => roleConfig.value.email);
+// --- Email is now a writable ref (editable) ---
+const email = ref(roleConfig.value.email);
 
+// --- Watch activeTab to reset email to the default for that role ---
+watch(activeTab, () => {
+  email.value = roleConfig.value.email;
+}, { immediate: true });
+
+// --- Tabs for UI ---
 const tabs = [
   {
     id: "tenant",
@@ -96,6 +99,12 @@ const tabs = [
   },
 ];
 
+// --- Set active tab ---
+const setActiveTab = (tab) => {
+  activeTab.value = tab;
+};
+
+// --- Login handler ---
 const handleLogin = async () => {
   // Validation
   if (!email.value || !password.value) {
@@ -263,7 +272,7 @@ const handleLogin = async () => {
   }
 };
 
-// Handle logout function (can be used elsewhere)
+// --- Logout handler (can be used elsewhere) ---
 const handleLogout = async () => {
   try {
     const config = roleConfig.value;
