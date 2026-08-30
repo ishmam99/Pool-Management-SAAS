@@ -50,7 +50,7 @@ export const adminApi = {
   deletePlan: (id) => api().delete(`subscription/plans/${id}`).then(unwrap),
 
   // Tenant subscriptions
-  getSubscriptions: (params) => api().get('subscription/tenant-subscriptions', { params }).then(paginated),
+  getSubscriptions: (params) => api().get('admin/tenant-subscriptions', { params }).then(paginated),
   createSubscription: (payload) => api().post('subscription/tenant-subscriptions', payload).then(unwrap),
   updateSubscription: (id, payload) => api().put(`subscription/tenant-subscriptions/${id}`, payload).then(unwrap),
   cancelSubscription: (id) => api().delete(`subscription/tenant-subscriptions/${id}/cancel`).then(unwrap),

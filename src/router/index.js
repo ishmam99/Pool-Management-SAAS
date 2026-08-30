@@ -9,7 +9,12 @@ import Features from '../views/common/Features.vue'
 import JoinUs from '../views/common/JoinUs.vue'
 
 
-
+const BillingDashboard = () => import('../views/provider/pages/subscription/BillingDashboard.vue');
+const SubscriptionPlans = () => import('../views/provider/pages/subscription/SubscriptionPlans.vue');
+const MySubscriptions = () => import('../views/provider/pages/subscription/MySubscriptions.vue');
+const InvoicesList = () => import('../views/provider/pages/subscription/InvoicesList.vue');
+const InvoiceDetail = () => import('../views/provider/pages/subscription/InvoiceDetail.vue');
+const PaymentMethods = () => import('../views/provider/pages/subscription/PaymentMethods.vue');
 const routes = [
 
   // Common
@@ -61,7 +66,44 @@ const routes = [
         name: 'provider-dashboard',
         component: () => import('../views/provider/dashboard.vue')
       },
-
+      
+      {
+        path: 'billing/subscription/dashboard',
+        name: 'tenant.billing.dashboard',
+        component: BillingDashboard,
+        meta: { title: 'Billing Dashboard' }
+      },
+      {
+        path: 'billing/subscription/plans',
+        name: 'tenant.plans',
+        component:  SubscriptionPlans,
+        meta: { title: 'Subscription Plans' }
+      },
+      {
+        path: 'billing/subscription/my-subscriptions',
+        name: 'tenant.subscriptions',
+        component: MySubscriptions,
+        meta: { title: 'My Subscriptions' }
+      },
+      {
+        path: 'billing/subscription/invoices',
+        name: 'tenant.invoices',
+        component: InvoicesList,
+        meta: { title: 'Invoices' }
+      },
+      {
+        path: 'billing/subscription/invoices/:id',
+        name: 'tenant.invoice.detail',
+        component: InvoiceDetail,
+        meta: { title: 'Invoice Details' }
+      },
+      {
+        path: 'billing/subscription/payment-methods',
+        name: 'tenant.payment-methods',
+        component: PaymentMethods,
+        meta: { title: 'Payment Methods' }
+      }
+    ,
       // Customer
       {
         path: '/provider/customers/:id',
@@ -582,6 +624,60 @@ const routes = [
         name: 'admin-dashboard',
         component: () => import('../views/admin/pages/Dashboard/adminDashboard.vue')
       },
+      {
+            path: 'subscription/dashboard',
+            name: 'admin.subscription.dashboard',
+            component: () => import('@/views/admin/pages/subscriptions/SubscriptionDashboard.vue'),
+            meta: { title: 'Subscription Dashboard' }
+        },
+        {
+            path: 'subscription/plans',
+            name: 'admin.subscription.plans',
+            component: () => import('@/views/admin/pages/subscriptions/PlansManagement.vue'),
+            meta: { title: 'Manage Plans' }
+        },
+        {
+            path: 'subscription/plans/create',
+            name: 'admin.subscription.plans.create',
+            component: () => import('@/views/admin/pages/subscriptions/PlanCreate.vue'),
+            meta: { title: 'Create Plan' }
+        },
+        {
+            path: 'subscription/plans/:id/edit',
+            name: 'admin.subscription.plans.edit',
+            component: () => import('@/views/admin/pages/subscriptions/PlanEdit.vue'),
+            meta: { title: 'Edit Plan' }
+        },
+        {
+            path: 'subscription/tenants',
+            name: 'admin.subscription.tenants',
+            component: () => import('@/views/admin/pages/subscriptions/TenantsManagement.vue'),
+            meta: { title: 'Tenants' }
+        },
+        {
+            path: 'subscription/tenants/create',
+            name: 'admin.subscription.tenants.create',
+            component: () => import('@/views/admin/pages/subscriptions/TenantSubscriptionCreate.vue'),
+            meta: { title: 'Create Subscription' }
+        },
+        {
+            path: 'subscription/tenants/:id/edit',
+            name: 'admin.subscription.tenants.edit',
+            component: () => import('@/views/admin/pages/subscriptions/TenantSubscriptionEdit.vue'),
+            meta: { title: 'Edit Subscription' }
+        },
+        {
+            path: 'subscription/invoices',
+            name: 'admin.subscription.invoices',
+            component: () => import('@/views/admin/pages/subscriptions/InvoicesManagement.vue'),
+            meta: { title: 'Invoices' }
+        },
+        {
+            path: 'subscription/billing-config',
+            name: 'admin.subscription.billing-config',
+            component: () => import('@/views/admin/pages/subscriptions/BillingConfig.vue'),
+            meta: { title: 'Billing Config' }
+        },
       // Admins
       { path: '/admin/admins', name: 'admin-admins', component: () => import('../views/admin/pages/admins/AdminList.vue') },
       { path: '/admin/admins/create', name: 'admin-admins-create', component: () => import('../views/admin/pages/admins/AdminForm.vue') },

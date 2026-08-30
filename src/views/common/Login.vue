@@ -48,7 +48,7 @@ const roleConfig = computed(() => {
       logoutEndpoint: "/customer-portal/logout",
       dashboard: "/customer/dashboard",
       userType: "customer",
-      email: "patricia.brown23@example.com"
+      email: "azmainiqbal@gmail.com"
     },
     technician: {
       title: "Technician",
