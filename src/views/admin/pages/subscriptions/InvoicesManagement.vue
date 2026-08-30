@@ -28,19 +28,19 @@
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                     <p class="text-sm text-gray-500">Total Amount</p>
-                    <p class="text-2xl font-bold text-gray-900">${{ (summary.total_amount || 0).toFixed(2) }}</p>
+                    <p class="text-2xl font-bold text-gray-900">${{ (summary.total_amount || 0) }}</p>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                     <p class="text-sm text-gray-500">Paid</p>
-                    <p class="text-2xl font-bold text-green-600">${{ (summary.paid_amount || 0).toFixed(2) }}</p>
+                    <p class="text-2xl font-bold text-green-600">${{ (summary.paid_amount || 0) }}</p>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                     <p class="text-sm text-gray-500">Pending</p>
-                    <p class="text-2xl font-bold text-amber-600">${{ (summary.pending_amount || 0).toFixed(2) }}</p>
+                    <p class="text-2xl font-bold text-amber-600">${{ (summary.pending_amount || 0) }}</p>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
                     <p class="text-sm text-gray-500">Overdue</p>
-                    <p class="text-2xl font-bold text-red-600">${{ (summary.overdue_amount || 0).toFixed(2) }}</p>
+                    <p class="text-2xl font-bold text-red-600">${{ (summary.overdue_amount || 0) }}</p>
                 </div>
             </div>
         </div>
@@ -143,43 +143,43 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
+                        <thead class="bg-sky-50">
                             <tr>
-                                <th class="px-3 py-3 text-left">
+                                <th class="px-3 py-3 border-e border-slate-300 text-left">
                                     <input type="checkbox" v-model="selectAll" 
                                            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenant</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Invoice</th>
+                                <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tenant</th>
+                                <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                                <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                                <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 border-e border-slate-300 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Due Date</th>
+                                <th class="px-6 py-3 border-e border-slate-300 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="invoice in invoices" :key="invoice.id" class="hover:bg-gray-50 transition-colors">
-                                <td class="px-3 py-4">
+                                <td class="px-3 py-4 border-e border-slate-200">
                                     <input type="checkbox" v-model="selectedInvoices" :value="invoice.id"
                                            class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
                                 </td>
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 border-e border-slate-200">
                                     <div>
                                         <p class="text-sm font-medium text-gray-900">{{ invoice.invoice_number }}</p>
                                         <p class="text-xs text-gray-500">#{{ invoice.id }}</p>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <p class="text-sm text-gray-900">{{ invoice.tenant?.name || 'N/A' }}</p>
+                                <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
+                                    <p class="text-sm text-gray-900">{{ invoice.tenant?.company_name || 'N/A' }}</p>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                     <p class="text-sm text-gray-600">{{ invoice.billing_period }}</p>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                     <p class="text-sm font-semibold text-gray-900">${{ parseFloat(invoice.total).toFixed(2) }}</p>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                                <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                     <span :class="{
                                         'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium': true,
                                         'bg-green-100 text-green-800': invoice.status === 'paid',
@@ -191,11 +191,11 @@
                                         {{ invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1) }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap text-sm text-gray-500">
                                     {{ formatDate(invoice.due_date) }}
                                     <span v-if="isOverdue(invoice)" class="text-red-600 ml-1">(Overdue)</span>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex items-center justify-end gap-2">
                                         <button @click="viewInvoice(invoice)" 
                                                 class="text-indigo-600 hover:text-indigo-900 transition-colors">
@@ -346,7 +346,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { adminApi } from '@/api/admin/subscription.js';
 import Swal from 'sweetalert2';
 
