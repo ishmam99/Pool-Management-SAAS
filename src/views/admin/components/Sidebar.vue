@@ -211,40 +211,61 @@ const menus = [
         ]
     },
     {
+        id: 'subscription-management',
+        title: 'Subscription Management',
+        icon: 'ri-money-dollar-circle-line',
+        groups: [
+            {
+                key: 'subscription-plans',
+                title: 'Subscription Plans',
+                icon: 'ri-list-settings-line',
+                links: [
+                    { to: '/admin/subscription/plans', icon: 'ri-list-check', text: 'Plan List' },
+                    { to: '/admin/subscription/plans/create', icon: 'ri-add-circle-line', text: 'Create Plan' }
+                ]
+            },
+            {
+                key: 'tenant-subscriptions',
+                title: 'Tenant Subscriptions',
+                icon: 'ri-user-community-line',
+                links: [
+                    { to: '/admin/subscription/tenants', icon: 'ri-list-check', text: 'Subscription List' },
+                    { to: '/admin/subscription/tenants/create', icon: 'ri-add-circle-line', text: 'Create Subscription' }
+                ]
+            },
+            {
+                key: 'billing-config',
+                title: 'Billing Configuration',
+                icon: 'ri-settings-4-line',
+                links: [
+                    { to: '/admin/subscription/billing-config', icon: 'ri-settings-3-line', text: 'Configure Billing' }
+                ]
+            }
+        ]
+    },
+    {
         id: 'billing-management',
         title: 'Billing Management',
         icon: 'ri-receipt-line',
-        links: [
-            { to: '/admin/all-invoices', icon: 'ri-file-list-3-line', text: 'All Invoices' },
-            { to: '/admin/revenue-statistics', icon: 'ri-line-chart-line', text: 'Revenue Statistics' },
+        groups: [
+            {
+                key: 'invoices',
+                title: 'Invoices',
+                icon: 'ri-file-text-line',
+                links: [
+                    { to: '/admin/subscription/invoices', icon: 'ri-file-list-3-line', text: 'All Invoices' }
+                ]
+            },
+            {
+                key: 'revenue',
+                title: 'Revenue',
+                icon: 'ri-line-chart-line',
+                links: [
+                    { to: '/admin/subscription/dashboard', icon: 'ri-bar-chart-2-line', text: 'Revenue Statistics' }
+                ]
+            }
         ]
     }
-
-    // {
-    //     id: 'subscription-management',
-    //     title: 'Subscription Management',
-    //     icon: 'ri-money-dollar-circle-line',
-    //     groups: [
-    //         {
-    //             key: 'subscription-plans',
-    //             title: 'Subscription Plans',
-    //             icon: 'ri-list-settings-line',
-    //             links: [
-    //                 { to: '/admin/subscription-plans', icon: 'ri-list-check', text: 'Plan List' },
-    //                 { to: '/admin/subscription-plans/create', icon: 'ri-add-circle-line', text: 'Create Plan' }
-    //             ]
-    //         },
-    //         {
-    //             key: 'tenant-subscriptions',
-    //             title: 'Tenant Subscriptions',
-    //             icon: 'ri-user-community-line',
-    //             links: [
-    //                 { to: '/admin/tenant-subscriptions', icon: 'ri-list-check', text: 'Subscription List' },
-    //                 { to: '/admin/tenant-subscriptions/create', icon: 'ri-add-circle-line', text: 'Create Subscription' }
-    //             ]
-    //         }
-    //     ]
-    // }
 ]
 </script>
 

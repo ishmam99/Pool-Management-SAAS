@@ -113,8 +113,6 @@
                 </router-link>
               </div>
             </template>
-
-
           </div>
         </div>
       </div>
@@ -183,26 +181,32 @@ const menuColors = {
   'Maintenance Agreements': '#8E790D',
 
   // Service Management
-  'Service Schedule': '#16a34a',      // Green
-  'Perform Service': '#2563eb',       // Blue
-  'Invoice': '#a855f7',               // Purple
-  'Maintenace List': '#f43f5e',               // Rose
-  'Maintenace Schedule': '#f97316',               // Orange
-  'All Customer': '#0f766e',               // Teal
-  'Blog': '#7c3aed',               // Indigo
-  'Website Management': '#ca8a04',               // Yellow
+  'Service Schedule': '#16a34a',
+  'Perform Service': '#2563eb',
+  'Invoice': '#a855f7',
+  'Maintenace List': '#f43f5e',
+  'Maintenace Schedule': '#f97316',
+  'All Customer': '#0f766e',
+  'Blog': '#7c3aed',
+  'Website Management': '#ca8a04',
 
   // Blank menu items (10 total)
-  'Website Pages': '#d946ef',               // Fuchsia
-  'Media Library': '#0891b2',               // Cyan
-  'Interactions': '#7c3aed',               // Violet
-  'Equipment Management': '#db2777',               // Pink
-  'Service Area': '#f97316',               // Orange
-  'Media Management': '#059669',               // Emerald
-  'Blank 7': '#dc2626',               // Red
-  'Blank 8': '#4f46e5',               // Indigo
-  'Blank 9': '#0d9488',               // Teal
-  'Blank 10': '#64748b',              // Slate
+  'Website Pages': '#d946ef',
+  'Media Library': '#0891b2',
+  'Interactions': '#7c3aed',
+  'Equipment Management': '#db2777',
+  'Service Area': '#f97316',
+  'Media Management': '#059669',
+  'Blank 7': '#dc2626',
+  'Blank 8': '#4f46e5',
+  'Blank 9': '#0d9488',
+  'Blank 10': '#64748b',
+
+  // Subscription specific colors
+  'My Subscriptions': '#8b5cf6',
+  'Subscription Plans': '#06b6d4',
+  'Billing Dashboard': '#0ea5e9',
+  'Payment Methods': '#10b981',
 }
 
 // Function to get menu color with fallback
@@ -246,7 +250,6 @@ const menus = [
 
     links: [
       { to: '/provider/customer-create', icon: 'ri-user-add-line', text: 'Add New Customer' },
-
     ],
     groups: [
       {
@@ -268,7 +271,6 @@ const menus = [
           { to: '/provider/customer-add-terms-customer', icon: 'ri-file-add-line', text: 'Add Terms and Conditions' },
           { to: '/provider/customer-service', icon: 'ri-file-add-line', text: 'Create Service' },
           { to: '/provider/customer-service-terms-and-conditions', icon: 'ri-file-add-line', text: 'Create Terms and Conditions' },
-          // { to: '/provider/customer-service-agreements-create', icon: 'ri-file-add-line', text: 'Create Agreement' },
           { to: '/provider/customer-service-agreements', icon: 'ri-file-text-line', text: 'Service Agreements' },
         ]
       },
@@ -281,7 +283,6 @@ const menus = [
           { to: '/provider/customer-maintenance-agreements', icon: 'ri-file-text-line', text: 'Maintenance Agreements' },
         ]
       }
-
     ]
   },
   {
@@ -294,12 +295,10 @@ const menus = [
         icon: 'ri-file-copy-line',
         title: 'Equipment Management',
         links: [
-
           { to: '/provider/equipment-manufacturer', icon: 'ri-tools-line', text: 'Equipment Manufacturer' },
           { to: '/provider/equipment-model', icon: 'ri-tools-line', text: 'Equipment Model' },
           { to: '/provider/equipment-component', icon: 'ri-tools-line', text: 'Equipment Components' },
           { to: '/provider/pools-equipment', icon: 'ri-tools-line', text: 'Register Equipment to Pools' },
-
         ]
       }
     ],
@@ -307,9 +306,6 @@ const menus = [
       { to: '/provider/pools-create', icon: 'ri-list-unordered', text: 'Add Pools' },
       { to: '/provider/pools', icon: 'ri-list-unordered', text: 'All Pools' },
       { to: '/provider/pools-types', icon: 'ri-grid-line', text: 'By Type' },
-
-
-      // { to: '/provider/pools-map', icon: 'ri-map-2-line', text: 'Pool Map View' }
     ]
   },
   {
@@ -335,15 +331,12 @@ const menus = [
           { to: '/provider/services-perform-service-today', icon: 'ri-file-text-line', text: 'Perform Service Today' },
         ]
       }
-
     ],
-
   },
   {
     id: 'maintenance-management',
     title: 'Maintenance Management',
     icon: 'ri-tools-line',
-
     links: [
       { to: '/provider/create-maintenance-recommendations-pools', icon: 'ri-check-double-line', text: 'Create Maintenance Recommendation' },
       { to: '/provider/maintenance-recommendations/pending', icon: 'ri-check-double-line', text: 'Maintenance Recommendation List' },
@@ -367,12 +360,11 @@ const menus = [
         links: [
           { to: '/provider/maintenance/repair', icon: 'ri-error-warning-line', text: 'Repair Maintenance' },
           { to: '/provider/maintenance/installation', icon: 'ri-error-warning-line', text: 'Installation Maintenance' },
-          { to: '/provider/maintenance/requested', icon: 'ri-mail-send-line', text: 'Requested Maintenance' }, // inspection
-          { to: '/provider/maintenance/recommended', icon: 'ri-lightbulb-line', text: 'Recommended Maintenance' }, // one time
-          { to: '/provider/maintenance/emergency', icon: 'ri-alarm-warning-line', text: 'Emergency Maintenance' } // emergency
+          { to: '/provider/maintenance/requested', icon: 'ri-mail-send-line', text: 'Requested Maintenance' },
+          { to: '/provider/maintenance/recommended', icon: 'ri-lightbulb-line', text: 'Recommended Maintenance' },
+          { to: '/provider/maintenance/emergency', icon: 'ri-alarm-warning-line', text: 'Emergency Maintenance' }
         ]
       }
-
     ],
   },
   {
@@ -397,24 +389,15 @@ const menus = [
       { to: '/provider/water-quality/dosing', icon: 'ri-calculator-line', text: 'Dosing Calculator' }
     ]
   },
-  // {
-  //   id: 'inventory',
-  //   title: 'Inventory',
-  //   icon: 'ri-store-3-fill',
-  //   groups: [],
-  //   links: [
-  //     { to: '/provider/inventory/warehouse', icon: 'ri-building-4-line', text: 'Warehouse' },
-  //     { to: '/provider/inventory/truck-stock', icon: 'ri-truck-line', text: 'Truck Stock' },
-  //     { to: '/provider/inventory/purchase-orders', icon: 'ri-file-list-3-line', text: 'Purchase Orders' },
-  //     { to: '/provider/inventory/suppliers', icon: 'ri-store-3-line', text: 'Suppliers' },
-  //     { to: '/provider/inventory/low-stock', icon: 'ri-alert-line', text: 'Low Stock Alerts' }
-  //   ]
-  // },
+  // =============================================
+  // UPDATED BILLING SECTION WITH SUBSCRIPTION
+  // =============================================
   {
     id: 'billing',
     title: 'Billing',
     icon: 'ri-bank-card-line',
     groups: [
+      // === INVOICE GROUP ===
       {
         key: 'billing-invoice',
         icon: 'ri-file-text-line',
@@ -424,6 +407,7 @@ const menus = [
           { to: '/provider/billing/invoices', icon: 'ri-file-list-line', text: 'Invoice List' },
         ]
       },
+      // === PAYMENTS GROUP ===
       {
         key: 'billing-payments',
         icon: 'ri-money-dollar-circle-line',
@@ -433,69 +417,103 @@ const menus = [
           { to: '/provider/billing/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' },
         ]
       },
+      // === SUBSCRIPTION GROUP - NEW ===
+      {
+        key: 'billing-subscription',
+        icon: 'ri-subscription-line',
+        title: 'Subscription',
+        links: [
+          { 
+            to: '/provider/billing/subscription/dashboard', 
+            icon: 'ri-dashboard-3-line', 
+            text: 'Billing Dashboard' 
+          },
+          { 
+            to: '/provider/billing/subscription/plans', 
+            icon: 'ri-list-check-2', 
+            text: 'Subscription Plans' 
+          },
+          { 
+            to: '/provider/billing/subscription/my-subscriptions', 
+            icon: 'ri-file-list-3-line', 
+            text: 'My Subscriptions' 
+          },
+          { 
+            to: '/provider/billing/subscription/invoices', 
+            icon: 'ri-file-text-line', 
+            text: 'Invoices' 
+          },
+          { 
+            to: '/provider/billing/subscription/payment-methods', 
+            icon: 'ri-bank-card-2-line', 
+            text: 'Payment Methods' 
+          },
+        ]
+      }
     ],
     links: []
   },
+  // =============================================
+  // END OF UPDATED BILLING SECTION
+  // =============================================
   {
-  id: 'website-management',
-  title: 'Website Management',
-  icon: 'ri-global-line',
-  groups: [
-        {
-      key: 'service-area',
-      icon: 'ri-file-copy-line',
-      title: 'Service Area',
-      links: [
-        { to: '/provider/website/service/create', icon: 'ri-file-list-line', text: 'Create Service Area' },
-        { to: '/provider/website/service/view', icon: 'ri-file-add-line', text: 'View Service Area' },
-        { to: '/provider/website/service/import', icon: 'ri-file-add-line', text: 'Import Service Area' },
-      ]
-    },
-    {
-      key: 'website-pages',
-      icon: 'ri-file-copy-line',
-      title: 'Website Pages',
-      links: [
-        { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Website Page' },
-        { to: '/provider/website/pages/view', icon: 'ri-file-list-line', text: 'All WebsitePages' },
-      ]
-    },
-    {
-      key: 'website-blog',
-      icon: 'ri-edit-2-line',
-      title: 'Blogs',
-      links: [
-        { to: '/provider/website/category/create', icon: 'ri-folder-2-line', text: 'Create Categories' },
-        { to: '/provider/website/tags/create', icon: 'ri-price-tag-3-line', text: 'Create Tags' },
-        { to: '/provider/website/blogs/create', icon: 'ri-article-line', text: 'Create Blogs Posts' },
-        // { to: '/provider/website/blogs/posts/create', icon: 'ri-file-add-line', text: 'Add New Post' },
-      ]
-    },
-    {
-      key: 'website-media',
-      icon: 'ri-image-line',
-      title: 'Media Management',
-      links: [
-        { to: '/provider/website/media/create', icon: 'ri-upload-2-line', text: 'Upload New Media' },
-        { to: '/provider/website/media/list', icon: 'ri-image-2-line', text: 'All Media' },
-      ]
-    },
-    {
-      key: 'website-interactions',
-      icon: 'ri-chat-4-line',
-      title: 'Interactions',
-      links: [
-        { to: '/provider/website/interactions/contactForms', icon: 'ri-mail-send-line', text: 'Contact Forms Request' },
-        { to: '/provider/website/interactions/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
-        { to: '/provider/website/interactions/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
-      ]
-    }
-  ],
-  links: [
-    { to: '/provider/website/settings', icon: 'ri-settings-3-line', text: 'Website Settings' },
-    // { to: '/provider/website/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
-  ]
-},
+    id: 'website-management',
+    title: 'Website Management',
+    icon: 'ri-global-line',
+    groups: [
+      {
+        key: 'service-area',
+        icon: 'ri-file-copy-line',
+        title: 'Service Area',
+        links: [
+          { to: '/provider/website/service/create', icon: 'ri-file-list-line', text: 'Create Service Area' },
+          { to: '/provider/website/service/view', icon: 'ri-file-add-line', text: 'View Service Area' },
+          { to: '/provider/website/service/import', icon: 'ri-file-add-line', text: 'Import Service Area' },
+        ]
+      },
+      {
+        key: 'website-pages',
+        icon: 'ri-file-copy-line',
+        title: 'Website Pages',
+        links: [
+          { to: '/provider/website/pages/create', icon: 'ri-file-add-line', text: 'Add New Website Page' },
+          { to: '/provider/website/pages/view', icon: 'ri-file-list-line', text: 'All WebsitePages' },
+        ]
+      },
+      {
+        key: 'website-blog',
+        icon: 'ri-edit-2-line',
+        title: 'Blogs',
+        links: [
+          { to: '/provider/website/category/create', icon: 'ri-folder-2-line', text: 'Create Categories' },
+          { to: '/provider/website/tags/create', icon: 'ri-price-tag-3-line', text: 'Create Tags' },
+          { to: '/provider/website/blogs/create', icon: 'ri-article-line', text: 'Create Blogs Posts' },
+        ]
+      },
+      {
+        key: 'website-media',
+        icon: 'ri-image-line',
+        title: 'Media Management',
+        links: [
+          { to: '/provider/website/media/create', icon: 'ri-upload-2-line', text: 'Upload New Media' },
+          { to: '/provider/website/media/list', icon: 'ri-image-2-line', text: 'All Media' },
+        ]
+      },
+      {
+        key: 'website-interactions',
+        icon: 'ri-chat-4-line',
+        title: 'Interactions',
+        links: [
+          { to: '/provider/website/interactions/contactForms', icon: 'ri-mail-send-line', text: 'Contact Forms Request' },
+          { to: '/provider/website/interactions/testimonials', icon: 'ri-star-line', text: 'Testimonials' },
+          { to: '/provider/website/interactions/faqs', icon: 'ri-question-answer-line', text: 'FAQs' },
+        ]
+      }
+    ],
+    links: [
+      { to: '/provider/website/settings', icon: 'ri-settings-3-line', text: 'Website Settings' },
+    ]
+  },
   {
     id: 'communication',
     title: 'Communication',
@@ -504,21 +522,8 @@ const menus = [
     links: [
       { to: '/provider/communication/inbox', icon: 'ri-mail-line', text: 'Inbox' },
       { to: '/provider/communication/notifications', icon: 'ri-notification-3-line', text: 'Notifications' },
-      // { to: '/provider/communication/templates', icon: 'ri-file-copy-line', text: 'Templates' },
-      // { to: '/provider/communication/bulk', icon: 'ri-send-plane-line', text: 'Bulk Send' }
     ]
   },
-  // {
-  //   id: 'customer-portal',
-  //   title: 'Customer Portal',
-  //   icon: 'ri-global-line',
-  //   groups: [],
-  //   links: [
-  //     { to: '/provider/portal/branding', icon: 'ri-palette-line', text: 'Branding' },
-  //     { to: '/provider/portal/content', icon: 'ri-edit-2-line', text: 'Content' },
-  //     { to: '/provider/portal/preview', icon: 'ri-eye-line', text: 'Preview' }
-  //   ]
-  // },
   {
     id: 'reports',
     title: 'Reports',
@@ -526,10 +531,7 @@ const menus = [
     groups: [],
     links: [
       { to: '/provider/reports/revenue', icon: 'ri-money-dollar-box-line', text: 'Revenue' },
-      // { to: '/provider/reports/ar-aging', icon: 'ri-time-line', text: 'AR Aging' },
       { to: '/provider/reports/technician-performance', icon: 'ri-user-star-line', text: 'Technician Performance' },
-      // { to: '/provider/reports/route-efficiency', icon: 'ri-road-map-line', text: 'Route Efficiency' },
-      // { to: '/provider/reports/tax', icon: 'ri-taxi-line', text: 'Tax Reports' }
     ]
   },
   {
@@ -550,24 +552,8 @@ const menus = [
     groups: [],
     links: [
       { to: '/provider/company/profile', icon: 'ri-store-line', text: 'Profile' },
-      // { to: '/provider/company/pricing', icon: 'ri-price-tag-3-line', text: 'Pricing' },
-      // { to: '/provider/company/service-areas', icon: 'ri-map-pin-2-line', text: 'Service Areas' },
-      // { to: '/provider/company/subscription', icon: 'ri-subscription-line', text: 'Subscription' }
     ]
-  },
-  // {
-  //   id: 'settings',
-  //   title: 'Settings',
-  //   icon: 'ri-settings-3-line',
-  //   groups: [],
-  //   links: [
-  //     { to: '/provider/settings/general', icon: 'ri-settings-2-line', text: 'General' },
-  //     { to: '/provider/settings/email-sms', icon: 'ri-mail-send-line', text: 'Email / SMS' },
-  //     { to: '/provider/settings/tax', icon: 'ri-taxi-line', text: 'Tax' },
-  //     { to: '/provider/settings/payment-gateway', icon: 'ri-bank-card-line', text: 'Payment Gateway' },
-  //     { to: '/provider/settings/import-export', icon: 'ri-upload-download-line', text: 'Import / Export' }
-  //   ]
-  // }
+  }
 ]
 
 onMounted(() => {
