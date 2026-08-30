@@ -71,7 +71,7 @@
           <tr>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+            <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categories</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tags</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
             <th class="px-6 border-e border-slate-300 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated At</th>
@@ -82,12 +82,14 @@
           <tr v-for="(post, index) in posts" :key="post.id">
             <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-500">{{ index + 1 }}</td>
             <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-900">{{ post.title }}</td>
-            <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ getCategoryName(post.category_id) }}
+            <td class="px-6 border-e border-slate-300 py-4 text-sm text-gray-900">
+              <span v-for="cat in (post.categories || [])" :key="cat.id" class="inline-block bg-blue-100 text-blue-800 rounded-full px-2 py-0.5 text-xs mr-1 mb-1">
+                {{ cat.name }}
+              </span>
             </td>
             <td class="px-6 border-e border-slate-300 py-4 text-sm text-gray-900">
-              <span v-for="tagId in (post.tags || [])" :key="tagId" class="inline-block bg-gray-200 rounded-full px-2 py-0.5 text-xs mr-1 mb-1">
-                {{ getTagName(tagId) }}
+              <span v-for="tag in (post.tags || [])" :key="tag.id" class="inline-block bg-gray-200 rounded-full px-2 py-0.5 text-xs mr-1 mb-1">
+                {{ tag.name }}
               </span>
             </td>
             <td class="px-6 border-e border-slate-300 py-4 whitespace-nowrap">
@@ -149,7 +151,9 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-              <textarea v-model="createForm.content" rows="6" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+              <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                <div ref="createEditorContainer" class="quill-editor"></div>
+              </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Featured Image</label>
@@ -158,28 +162,38 @@
                 <img :src="createForm.imagePreview" alt="Preview" class="h-24 w-auto object-cover rounded border" />
               </div>
             </div>
+            <!-- Categories (multiple) -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select v-model="createForm.category_id" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select Category</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-              </select>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Categories</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
+                <label v-for="cat in categories" :key="cat.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                  <input 
+                    type="checkbox" 
+                    :value="cat.id" 
+                    v-model="createForm.category_ids" 
+                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                  <span class="text-sm text-gray-700">{{ cat.name }}</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Select one or more categories.</p>
             </div>
+            <!-- Tags (multiple) -->
             <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
-    <label v-for="tag in tags" :key="tag.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
-      <input 
-        type="checkbox" 
-        :value="tag.id" 
-        v-model="createForm.tag_ids" 
-        class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-      />
-      <span class="text-sm text-gray-700">{{ tag.name }}</span>
-    </label>
-  </div>
-  <p class="text-xs text-gray-500 mt-1">Select one or more tags.</p>
-</div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
+                <label v-for="tag in tags" :key="tag.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                  <input 
+                    type="checkbox" 
+                    :value="tag.id" 
+                    v-model="createForm.tag_ids" 
+                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                  <span class="text-sm text-gray-700">{{ tag.name }}</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Select one or more tags.</p>
+            </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select v-model="createForm.status" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -230,7 +244,9 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-              <textarea v-model="editForm.content" rows="6" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+              <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                <div ref="editEditorContainer" class="quill-editor"></div>
+              </div>
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Featured Image</label>
@@ -244,28 +260,38 @@
                 <p class="text-xs text-gray-500 mt-1">New image preview</p>
               </div>
             </div>
+            <!-- Categories (multiple) -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <select v-model="editForm.category_id" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Select Category</option>
-                <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-              </select>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Categories</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
+                <label v-for="cat in categories" :key="cat.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                  <input 
+                    type="checkbox" 
+                    :value="cat.id" 
+                    v-model="editForm.category_ids" 
+                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                  <span class="text-sm text-gray-700">{{ cat.name }}</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Select one or more categories.</p>
             </div>
+            <!-- Tags (multiple) -->
             <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-  <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
-    <label v-for="tag in tags" :key="tag.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
-      <input 
-        type="checkbox" 
-        :value="tag.id" 
-        v-model="editForm.tag_ids" 
-        class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-      />
-      <span class="text-sm text-gray-700">{{ tag.name }}</span>
-    </label>
-  </div>
-  <p class="text-xs text-gray-500 mt-1">Select one or more tags.</p>
-</div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-2 bg-gray-50 p-3 rounded-lg border border-gray-300">
+                <label v-for="tag in tags" :key="tag.id" class="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                  <input 
+                    type="checkbox" 
+                    :value="tag.id" 
+                    v-model="editForm.tag_ids" 
+                    class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
+                  <span class="text-sm text-gray-700">{{ tag.name }}</span>
+                </label>
+              </div>
+              <p class="text-xs text-gray-500 mt-1">Select one or more tags.</p>
+            </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
               <select v-model="editForm.status" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -288,9 +314,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import api from '../../../../services/api.js';
 import Swal from 'sweetalert2';
+import Quill from 'quill';
+import 'quill/dist/quill.snow.css';
 
 // ---------------------- List State ----------------------
 const posts = ref([]);
@@ -307,7 +335,7 @@ const success = ref('');
 const filters = reactive({
   search: '',
   status: '',
-  category_id: '',
+  category_id: '',    // Keep as single value for filtering
   tag_id: '',
 });
 
@@ -323,7 +351,7 @@ const createForm = reactive({
   title: '',
   content: '',
   excerpt: '',
-  category_id: '',
+  category_ids: [],   // Array of category IDs
   tag_ids: [],
   status: 'draft',
   imageFile: null,
@@ -340,7 +368,7 @@ const editForm = reactive({
   title: '',
   content: '',
   excerpt: '',
-  category_id: '',
+  category_ids: [],   // Array of category IDs
   tag_ids: [],
   status: 'draft',
   imageFile: null,
@@ -348,16 +376,14 @@ const editForm = reactive({
   existing_image: '',
 });
 
-// ---------------------- Helper: get names from IDs ----------------------
-const getCategoryName = (id) => {
-  if (!id) return '-';
-  const found = categories.value.find(c => c.id === id);
-  return found ? found.name : '-';
-};
-const getTagName = (id) => {
-  const found = tags.value.find(t => t.id === id);
-  return found ? found.name : id;
-};
+// ---------------------- Quill Editor Refs ----------------------
+const createEditorContainer = ref(null);
+const editEditorContainer = ref(null);
+let createQuill = null;
+let editQuill = null;
+
+// ---------------------- Helper: get category/tag names ----------------------
+// (No longer needed for single category, we display arrays directly)
 
 // ---------------------- Fetch Posts ----------------------
 const fetchPosts = async (page = 1) => {
@@ -368,7 +394,7 @@ const fetchPosts = async (page = 1) => {
       page,
       per_page: 10,
       ...filters,
-      with: 'tags,category', // Include related tags and category
+      with: 'tags,categories', // Include both relations
     };
     Object.keys(params).forEach(key => {
       if (params[key] === '' || params[key] === null || params[key] === undefined) {
@@ -433,6 +459,89 @@ const formatDate = (date) => {
   });
 };
 
+// ---------------------- Quill Editor Initialization ----------------------
+const initCreateEditor = () => {
+  if (!createEditorContainer.value) return;
+  if (createQuill) {
+    createQuill = null;
+  }
+  const toolbarOptions = [
+    [{ header: [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ align: [] }],
+    ['link', 'image', 'video'],
+    ['clean']
+  ];
+  createQuill = new Quill(createEditorContainer.value, {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions,
+      clipboard: { matchVisual: true }
+    },
+    placeholder: 'Write your post content here...',
+    readOnly: false,
+  });
+
+  if (createForm.content) {
+    createQuill.root.innerHTML = createForm.content;
+  }
+
+  createQuill.on('text-change', () => {
+    if (createQuill) {
+      const content = createQuill.root.innerHTML;
+      createForm.content = content === '<p><br></p>' ? '' : content;
+    }
+  });
+};
+
+const initEditEditor = () => {
+  if (!editEditorContainer.value) return;
+  if (editQuill) {
+    editQuill = null;
+  }
+  const toolbarOptions = [
+    [{ header: [1, 2, 3, false] }],
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ list: 'ordered' }, { list: 'bullet' }],
+    [{ align: [] }],
+    ['link', 'image', 'video'],
+    ['clean']
+  ];
+  editQuill = new Quill(editEditorContainer.value, {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions,
+      clipboard: { matchVisual: true }
+    },
+    placeholder: 'Write your post content here...',
+    readOnly: false,
+  });
+
+  if (editForm.content) {
+    editQuill.root.innerHTML = editForm.content;
+  }
+
+  editQuill.on('text-change', () => {
+    if (editQuill) {
+      const content = editQuill.root.innerHTML;
+      editForm.content = content === '<p><br></p>' ? '' : content;
+    }
+  });
+};
+
+const destroyCreateEditor = () => {
+  if (createQuill) {
+    createQuill = null;
+  }
+};
+
+const destroyEditEditor = () => {
+  if (editQuill) {
+    editQuill = null;
+  }
+};
+
 // ---------------------- Image Handlers ----------------------
 const handleCreateImage = (e) => {
   const file = e.target.files[0];
@@ -458,37 +567,53 @@ const openCreateModal = () => {
   createForm.title = '';
   createForm.content = '';
   createForm.excerpt = '';
-  createForm.category_id = '';
+  createForm.category_ids = [];
   createForm.tag_ids = [];
   createForm.status = 'draft';
   createForm.imageFile = null;
   createForm.imagePreview = '';
   createError.value = '';
   showCreateModal.value = true;
+
+  nextTick(() => {
+    initCreateEditor();
+  });
 };
 
 const closeCreateModal = () => {
   showCreateModal.value = false;
   createLoading.value = false;
   createError.value = '';
+  destroyCreateEditor();
 };
 
 const createPost = async () => {
   createError.value = '';
   createLoading.value = true;
   try {
+    if (createQuill) {
+      const content = createQuill.root.innerHTML;
+      createForm.content = content === '<p><br></p>' ? '' : content;
+    }
+
     const formData = new FormData();
     formData.append('title', createForm.title);
     formData.append('content', createForm.content || '');
     formData.append('excerpt', createForm.excerpt || '');
-    formData.append('category_id', createForm.category_id || '');
     formData.append('status', createForm.status);
-    // Append tags as JSON array (or as comma-separated)
+
+    // Append categories as array
+    if (createForm.category_ids.length) {
+      createForm.category_ids.forEach(id => {
+        formData.append('categories[]', id);
+      });
+    }
+    // Append tags as array
     if (createForm.tag_ids.length) {
-  createForm.tag_ids.forEach(id => {
-    formData.append('tags[]', id);
-  });
-}
+      createForm.tag_ids.forEach(id => {
+        formData.append('tags[]', id);
+      });
+    }
     if (createForm.imageFile) {
       formData.append('featured_image', createForm.imageFile);
     }
@@ -515,7 +640,6 @@ const createPost = async () => {
 
 // ---------------------- Edit ----------------------
 const openEditModal = async (post) => {
-  // Fetch full post details to ensure we have all fields including tags
   try {
     const response = await api().get(`/tenant/website/blog/${post.id}`);
     const data = response.data.data;
@@ -523,7 +647,8 @@ const openEditModal = async (post) => {
     editForm.title = data.title;
     editForm.content = data.content || '';
     editForm.excerpt = data.excerpt || '';
-    editForm.category_id = data.category_id || '';
+    // Set category_ids from the categories relation
+    editForm.category_ids = data.categories ? data.categories.map(c => c.id) : [];
     editForm.tag_ids = data.tags ? data.tags.map(t => t.id) : [];
     editForm.status = data.status;
     editForm.existing_image = data.featured_image || '';
@@ -532,6 +657,9 @@ const openEditModal = async (post) => {
     editError.value = '';
     editSuccess.value = '';
     showEditModal.value = true;
+
+    await nextTick();
+    initEditEditor();
   } catch (err) {
     error.value = 'Could not load post details.';
     console.error(err);
@@ -543,6 +671,7 @@ const closeEditModal = () => {
   editLoading.value = false;
   editError.value = '';
   editSuccess.value = '';
+  destroyEditEditor();
 };
 
 const updatePost = async () => {
@@ -550,21 +679,30 @@ const updatePost = async () => {
   editSuccess.value = '';
   editLoading.value = true;
   try {
+    if (editQuill) {
+      const content = editQuill.root.innerHTML;
+      editForm.content = content === '<p><br></p>' ? '' : content;
+    }
+
     const formData = new FormData();
     formData.append('title', editForm.title);
     formData.append('content', editForm.content || '');
     formData.append('excerpt', editForm.excerpt || '');
-    formData.append('category_id', editForm.category_id || '');
     formData.append('status', editForm.status);
+    if (editForm.category_ids.length) {
+      editForm.category_ids.forEach(id => {
+        formData.append('categories[]', id);
+      });
+    }
     if (editForm.tag_ids.length) {
-  editForm.tag_ids.forEach(id => {
-    formData.append('tags[]', id);
-  });
-}
+      editForm.tag_ids.forEach(id => {
+        formData.append('tags[]', id);
+      });
+    }
     if (editForm.imageFile) {
       formData.append('featured_image', editForm.imageFile);
     }
-    formData.append('_method', 'PUT'); // override
+    formData.append('_method', 'PUT');
 
     await api().post(`/tenant/website/blog/${editForm.id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -620,4 +758,19 @@ onMounted(async () => {
   await fetchCategoriesAndTags();
   await fetchPosts(1);
 });
+
+onBeforeUnmount(() => {
+  destroyCreateEditor();
+  destroyEditEditor();
+});
 </script>
+
+<style scoped>
+/* Optional: set a minimum height for the editor */
+:deep(.quill-editor) {
+  min-height: 100px;
+}
+.quill-editor .ql-editor {
+  min-height: 300px;
+}
+</style>
