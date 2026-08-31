@@ -522,7 +522,7 @@ const fetchStats = async () => {
 
   try {
     const response = await api().get('/admin/billing/stats')
-    const payload = response.data
+    const payload = response.subscriptions.data
 
     if (payload && payload.success && payload.data) {
       stats.value = payload.data

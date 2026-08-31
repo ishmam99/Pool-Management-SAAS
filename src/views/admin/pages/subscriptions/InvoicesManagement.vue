@@ -5,7 +5,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Invoices</h1>
-                    <p class="text-sm text-gray-500 mt-1">Manage all tenant invoices</p>
+                    <p class="text-sm text-gray-500 mt-1">Manage all Service Provider invoices</p>
                 </div>
                 <div class="mt-4 sm:mt-0 flex gap-3">
                     <button @click="refreshData" 

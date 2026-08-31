@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-white">
+    <div class=" px-4 sm:px-6 lg:px-8 py-8 bg-white">
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-2xl font-semibold text-slate-800">Subscription Settings</h1>
@@ -322,7 +322,7 @@ const loadBillingConfig = async (tenantId) => {
 
     loadingConfig.value = true
     try {
-        const response = await api().get(`/admin/tenants/${tenantId}/billing-config`)
+        const response = await api().get(`/admin/tenants/${tenantId}/billing/config`)
 
         // Store the full response data
         billingData.value = response.data.data || response.data
@@ -403,7 +403,7 @@ const handleSave = async () => {
                 : { per_pool_price: Number(form.subscription_price) }),
         }
 
-        await api().post(`/admin/tenants/${selectedTenantId.value}/billing-config`, payload)
+        await api().post(`/admin/tenants/${selectedTenantId.value}/billing/config`, payload)
 
         // Reload billing configuration
         await loadBillingConfig(selectedTenantId.value)
