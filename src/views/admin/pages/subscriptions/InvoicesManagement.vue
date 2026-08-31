@@ -251,7 +251,7 @@
         </div>
 
         <!-- View Invoice Modal -->
-        <div v-if="selectedInvoice" class="fixed inset-0 z-50 overflow-y-auto" @click.self="selectedInvoice = null">
+        <!-- <div v-if="selectedInvoice" class="fixed inset-0 z-50 overflow-y-auto" @click.self="selectedInvoice = null">
             <div class="flex items-center justify-center min-h-screen px-4">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
                 <div class="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
@@ -341,14 +341,23 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> -->
+         <InvoiceViewer 
+            v-if="selectedInvoice"
+            :invoice="selectedInvoice"
+            @close="selectedInvoice = null"
+            @download="handleDownload"
+            @pay="handlePay"
+            @remind="handleRemind"
+        />
+   </div>
 </template>
 
 <script setup>
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { adminApi } from '@/api/admin/subscription.js';
 import Swal from 'sweetalert2';
+import InvoiceViewer from '../../components/InvoiceViewer.vue';
 
 const loading = ref(false);
 const invoices = ref([]);
