@@ -48,7 +48,7 @@
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
         </svg>
         <h3 class="mt-3 text-sm font-medium text-red-800">Unable to load revenue statistics.</h3>
-        <p class="mt-1 text-sm text-red-600">Please try again.</p>
+        <p class="mt-1 text-sm text-red-600">{{ error }}</p>
         <button
           @click="fetchStats"
           class="mt-4 inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
@@ -100,7 +100,7 @@
           <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-base font-semibold text-gray-900">Billing Model Distribution</h3>
-              <span class="text-xs font-medium text-gray-400">{{ stats?.total_tenants }} tenants</span>
+              <span class="text-xs font-medium text-gray-400">{{ stats?.tenants?.total || 0 }} tenants</span>
             </div>
             <div class="relative h-72">
               <div v-if="loading" class="absolute inset-0 bg-gray-100 rounded-lg animate-pulse"></div>
@@ -115,7 +115,7 @@
           <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
             <div class="flex items-center justify-between mb-4">
               <h3 class="text-base font-semibold text-gray-900">Pool Statistics</h3>
-              <span class="text-xs font-medium text-gray-400">Managed vs Billable</span>
+              <span class="text-xs font-medium text-gray-400">Total, active, and inactive pools</span>
             </div>
             <div class="relative h-72">
               <div v-if="loading" class="absolute inset-0 bg-gray-100 rounded-lg animate-pulse"></div>
@@ -123,24 +123,133 @@
             </div>
           </div>
 
-          <!-- Current Billing Period Card -->
-          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col justify-between">
-            <div>
-              <h3 class="text-base font-semibold text-gray-900 mb-1">Current Billing Period</h3>
-              <p class="text-sm text-gray-500 mb-6">Active billing cycle currently in progress.</p>
+          <!-- Invoice Statistics -->
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-base font-semibold text-gray-900">Invoice Statistics</h3>
+              <span class="text-xs font-medium text-gray-400">Current period</span>
             </div>
-            <div class="flex items-center justify-center flex-1">
-              <div class="text-center">
-                <div class="mx-auto w-14 h-14 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-3">
-                  <svg class="w-7 h-7 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+            <div class="space-y-3">
+              <div v-if="loading" class="space-y-3">
+                <div v-for="i in 5" :key="i" class="h-4 bg-gray-100 rounded animate-pulse"></div>
+              </div>
+              <div v-else>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="bg-gray-50 rounded-lg p-3">
+                    <p class="text-xs text-gray-500">This Month</p>
+                    <p class="text-lg font-bold text-gray-900">{{ stats?.invoices?.total_this_month ?? 0 }}</p>
+                  </div>
+                  <div class="bg-gray-50 rounded-lg p-3">
+                    <p class="text-xs text-gray-500">This Year</p>
+                    <p class="text-lg font-bold text-gray-900">{{ stats?.invoices?.total_this_year ?? 0 }}</p>
+                  </div>
+                  <div class="bg-gray-50 rounded-lg p-3">
+                    <p class="text-xs text-gray-500">Pending</p>
+                    <p class="text-lg font-bold text-yellow-600">{{ stats?.invoices?.pending_count ?? 0 }}</p>
+                  </div>
+                  <div class="bg-gray-50 rounded-lg p-3">
+                    <p class="text-xs text-gray-500">Overdue</p>
+                    <p class="text-lg font-bold text-red-600">{{ stats?.invoices?.overdue_count ?? 0 }}</p>
+                  </div>
+                  <div class="bg-gray-50 rounded-lg p-3 col-span-2">
+                    <p class="text-xs text-gray-500">Paid</p>
+                    <p class="text-lg font-bold text-green-600">{{ stats?.invoices?.paid_count ?? 0 }}</p>
+                  </div>
                 </div>
-                <p v-if="loading" class="h-6 w-32 bg-gray-100 rounded animate-pulse mx-auto"></p>
-                <p v-else class="text-xl font-bold text-gray-900">{{ stats?.current_period || '—' }}</p>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Growth Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Tenant Growth -->
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-base font-semibold text-gray-900 mb-4">Tenant Growth</h3>
+            <div v-if="loading" class="space-y-2">
+              <div class="h-6 bg-gray-100 rounded animate-pulse w-3/4"></div>
+              <div class="h-4 bg-gray-100 rounded animate-pulse w-1/2"></div>
+            </div>
+            <div v-else class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-500">Current</p>
+                <p class="text-2xl font-bold text-gray-900">{{ stats?.growth?.tenant_growth?.current ?? 0 }}</p>
+                <p class="text-sm text-gray-500 mt-2">Previous: {{ stats?.growth?.tenant_growth?.previous ?? 0 }}</p>
+              </div>
+              <div class="text-right">
+                <span 
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold"
+                  :class="(stats?.growth?.tenant_growth?.growth_percentage ?? 0) >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                >
+                  {{ (stats?.growth?.tenant_growth?.growth_percentage ?? 0) >= 0 ? '+' : '' }}{{ stats?.growth?.tenant_growth?.growth_percentage ?? 0 }}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revenue Growth -->
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <h3 class="text-base font-semibold text-gray-900 mb-4">Revenue Growth</h3>
+            <div v-if="loading" class="space-y-2">
+              <div class="h-6 bg-gray-100 rounded animate-pulse w-3/4"></div>
+              <div class="h-4 bg-gray-100 rounded animate-pulse w-1/2"></div>
+            </div>
+            <div v-else class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-500">Current Year Revenue</p>
+                <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(stats?.growth?.revenue_growth?.current_year_revenue) }}</p>
+                <p class="text-sm text-gray-500 mt-2">Previous Year: {{ formatCurrency(stats?.growth?.revenue_growth?.previous_year_revenue) }}</p>
+              </div>
+              <div class="text-right">
+                <span 
+                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold"
+                  :class="(stats?.growth?.revenue_growth?.growth_percentage ?? 0) >= 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                >
+                  {{ (stats?.growth?.revenue_growth?.growth_percentage ?? 0) >= 0 ? '+' : '' }}{{ stats?.growth?.revenue_growth?.growth_percentage ?? 0 }}%
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+          <h3 class="text-base font-semibold text-gray-900 mb-4">Recent Billing Activity</h3>
+          <div v-if="loading" class="space-y-3">
+            <div v-for="i in 3" :key="i" class="h-12 bg-gray-100 rounded animate-pulse"></div>
+          </div>
+          <div v-else-if="stats?.recent_activity?.length">
+            <div class="divide-y divide-gray-100">
+              <div 
+                v-for="activity in stats.recent_activity" 
+                :key="activity.invoice_number"
+                class="py-3 flex items-center justify-between hover:bg-gray-50 px-2 rounded-lg transition-colors"
+              >
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">{{ activity.invoice_number }}</p>
+                  <p class="text-xs text-gray-500">Tenant: {{ activity.tenant_name || '—' }}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-semibold text-gray-900">{{ formatCurrency(activity.total) }}</p>
+                  <div class="flex items-center gap-2 justify-end mt-0.5">
+                    <span 
+                      class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+                      :class="{
+                        'bg-yellow-100 text-yellow-800': activity.status === 'pending',
+                        'bg-green-100 text-green-800': activity.status === 'paid',
+                        'bg-red-100 text-red-800': activity.status === 'overdue',
+                        'bg-gray-100 text-gray-600': !['pending', 'paid', 'overdue'].includes(activity.status)
+                      }"
+                    >
+                      {{ activity.status }}
+                    </span>
+                    <span class="text-xs text-gray-400">{{ formatDate(activity.created_at) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p v-else class="text-sm text-gray-400">No recent billing activity.</p>
         </div>
 
         <!-- Revenue Insights -->
@@ -216,11 +325,13 @@ const toNumber = (val) => {
   return isNaN(n) ? 0 : n
 }
 
+// Centralized currency formatter - USD with 2 decimal places
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
   }).format(toNumber(amount))
 }
 
@@ -230,21 +341,42 @@ const formatCurrencyShort = (amount) => {
     style: 'currency',
     currency: 'USD',
     notation: n >= 1000 ? 'compact' : 'standard',
-    maximumFractionDigits: 1
+    maximumFractionDigits: n >= 1000 ? 1 : 2,
+    minimumFractionDigits: n >= 1000 ? 1 : 2
   }).format(n)
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return '—'
+  try {
+    const date = new Date(dateString)
+    // Check if date is valid and not in the invalid range
+    if (isNaN(date.getTime()) || date.getFullYear() < 0 || date.getFullYear() > 9999) {
+      return '—'
+    }
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }).format(date)
+  } catch {
+    return '—'
+  }
 }
 
 // -------------------- Icons (inline render functions) --------------------
 const iconPaths = {
   tenants: 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4.13a4 4 0 10-8 0 4 4 0 008 0zm6 4a4 4 0 10-8 0 4 4 0 008 0zM8 12a4 4 0 10-8 0 4 4 0 008 0z',
-  subscription: 'M17 9V7a4 4 0 00-8 0v2M5 9h14l1 12H4L5 9z',
-  perPool: 'M4 7h16M4 12h16M4 17h16',
+  activeTenants: 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-4.13a4 4 0 10-8 0 4 4 0 008 0zm6 4a4 4 0 10-8 0 4 4 0 008 0zM8 12a4 4 0 10-8 0 4 4 0 008 0z',
   invoiced: 'M9 7h6m-6 4h6m-6 4h4M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z',
   collected: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V6m0 10v-2m0-8a9 9 0 100 18 9 9 0 000-18z',
   pending: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
   overdue: 'M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z',
-  poolsManaged: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4',
-  billablePools: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+  poolsTotal: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
+  poolsActive: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
 }
 
 const StatIcon = defineComponent({
@@ -310,15 +442,14 @@ const summaryCards = computed(() => {
   if (!stats.value) return []
   const s = stats.value
   return [
-    { label: 'Total Tenants', value: s.total_tenants ?? 0, icon: iconPaths.tenants },
-    { label: 'Subscription Tenants', value: s.subscription_tenants ?? 0, icon: iconPaths.subscription },
-    { label: 'Per Pool Tenants', value: s.per_pool_tenants ?? 0, icon: iconPaths.perPool },
-    { label: 'Total Invoiced This Month', value: formatCurrency(s.total_invoiced_this_month), icon: iconPaths.invoiced },
-    { label: 'Total Collected', value: formatCurrency(s.total_collected_this_month), icon: iconPaths.collected },
-    { label: 'Pending Amount', value: formatCurrency(s.pending_amount), icon: iconPaths.pending },
-    { label: 'Overdue Amount', value: formatCurrency(s.overdue_amount), icon: iconPaths.overdue },
-    { label: 'Total Pools Managed', value: s.total_pools_managed ?? 0, icon: iconPaths.poolsManaged },
-    { label: 'Total Billable Pools', value: s.total_billable_pools ?? 0, icon: iconPaths.billablePools }
+    { label: 'Total Tenants', value: s.tenants?.total ?? 0, icon: iconPaths.tenants },
+    { label: 'Active Tenants', value: s.tenants?.active ?? 0, icon: iconPaths.activeTenants },
+    { label: 'Total Invoiced This Month', value: formatCurrency(s.revenue?.monthly?.invoiced), icon: iconPaths.invoiced },
+    { label: 'Total Collected This Month', value: formatCurrency(s.revenue?.monthly?.collected), icon: iconPaths.collected },
+    { label: 'Pending Amount', value: formatCurrency(s.revenue?.monthly?.pending), icon: iconPaths.pending },
+    { label: 'Overdue Amount', value: formatCurrency(s.revenue?.outstanding?.overdue), icon: iconPaths.overdue },
+    { label: 'Total Pools', value: s.pools?.total ?? 0, icon: iconPaths.poolsTotal },
+    { label: 'Active Pools', value: s.pools?.active ?? 0, icon: iconPaths.poolsActive }
   ]
 })
 
@@ -327,20 +458,33 @@ const insights = computed(() => {
   const s = stats.value
   const list = []
 
-  if (toNumber(s.pending_amount) > 0) {
+  if (toNumber(s.revenue?.monthly?.pending) > 0) {
     list.push('There are outstanding invoices awaiting payment.')
   }
 
-  if (toNumber(s.total_collected_this_month) === 0) {
+  if (toNumber(s.revenue?.monthly?.collected) === 0) {
     list.push('No payments have been collected during the current billing period.')
   }
 
-  if (toNumber(s.overdue_amount) > 0) {
+  if (toNumber(s.revenue?.outstanding?.overdue) > 0) {
     list.push('Some invoices are overdue and require follow-up.')
   }
 
-  if (toNumber(s.total_billable_pools) < toNumber(s.total_pools_managed)) {
-    list.push('Some managed pools are currently outside the billable pool count.')
+  if (toNumber(s.pools?.inactive) > 0) {
+    list.push('Some pools are currently inactive.')
+  }
+
+  // Check billing model distribution insight
+  const subscription = toNumber(s.tenants?.by_billing_model?.subscription)
+  const perPool = toNumber(s.tenants?.by_billing_model?.per_pool)
+  const hybrid = toNumber(s.tenants?.by_billing_model?.hybrid)
+  
+  if (perPool > 0 && subscription === 0 && hybrid === 0) {
+    list.push('All tenants are using the Per Pool billing model.')
+  } else if (subscription > 0 && perPool === 0 && hybrid === 0) {
+    list.push('All tenants are using the Subscription billing model.')
+  } else if (hybrid > 0 && subscription === 0 && perPool === 0) {
+    list.push('All tenants are using the Hybrid billing model.')
   }
 
   return list
@@ -353,10 +497,10 @@ const buildRevenueChart = () => {
 
   const s = stats.value
   const dataPoints = [
-    toNumber(s.total_invoiced_this_month),
-    toNumber(s.total_collected_this_month),
-    toNumber(s.pending_amount),
-    toNumber(s.overdue_amount)
+    toNumber(s.revenue?.monthly?.invoiced),
+    toNumber(s.revenue?.monthly?.collected),
+    toNumber(s.revenue?.monthly?.pending),
+    toNumber(s.revenue?.outstanding?.overdue)
   ]
 
   revenueChartInstance = new Chart(revenueChartRef.value, {
@@ -406,16 +550,20 @@ const buildBillingModelChart = () => {
   if (billingModelChartInstance) billingModelChartInstance.destroy()
 
   const s = stats.value
-  const dataPoints = [toNumber(s.subscription_tenants), toNumber(s.per_pool_tenants)]
+  const dataPoints = [
+    toNumber(s.tenants?.by_billing_model?.subscription),
+    toNumber(s.tenants?.by_billing_model?.per_pool),
+    toNumber(s.tenants?.by_billing_model?.hybrid)
+  ]
 
   billingModelChartInstance = new Chart(billingModelChartRef.value, {
     type: 'doughnut',
     data: {
-      labels: ['Subscription', 'Per Pool'],
+      labels: ['Subscription', 'Per Pool', 'Hybrid'],
       datasets: [
         {
           data: dataPoints,
-          backgroundColor: ['#3b82f6', '#a855f7'],
+          backgroundColor: ['#3b82f6', '#a855f7', '#ec4899'],
           borderWidth: 0,
           hoverOffset: 6
         }
@@ -446,17 +594,21 @@ const buildPoolChart = () => {
   if (poolChartInstance) poolChartInstance.destroy()
 
   const s = stats.value
-  const dataPoints = [toNumber(s.total_pools_managed), toNumber(s.total_billable_pools)]
+  const dataPoints = [
+    toNumber(s.pools?.total),
+    toNumber(s.pools?.active),
+    toNumber(s.pools?.inactive)
+  ]
 
   poolChartInstance = new Chart(poolChartRef.value, {
     type: 'bar',
     data: {
-      labels: ['Total Pools Managed', 'Total Billable Pools'],
+      labels: ['Total Pools', 'Active Pools', 'Inactive Pools'],
       datasets: [
         {
           label: 'Pools',
           data: dataPoints,
-          backgroundColor: ['#6366f1', '#14b8a6'],
+          backgroundColor: ['#6366f1', '#10b981', '#ef4444'],
           borderRadius: 8,
           maxBarThickness: 56
         }
@@ -491,7 +643,6 @@ const buildPoolChart = () => {
 
 const renderCharts = async () => {
   await nextTick()
-  // Guard: bail if refs somehow aren't attached yet
   if (!revenueChartRef.value || !billingModelChartRef.value || !poolChartRef.value) {
     return
   }
@@ -499,6 +650,7 @@ const renderCharts = async () => {
   buildBillingModelChart()
   buildPoolChart()
 }
+
 const destroyCharts = () => {
   if (revenueChartInstance) {
     revenueChartInstance.destroy()
@@ -522,26 +674,51 @@ const fetchStats = async () => {
 
   try {
     const response = await api().get('/admin/billing/stats')
-    const payload = response.subscriptions.data
+    
+    // The API returns: { success: true, message: "...", data: { ... } }
+    // We need to extract the inner data object
+    let payload = null
+    
+    if (response && response.data && response.data.success && response.data.data) {
+      // Response wrapped in data property
+      payload = response.data.data
+    } else if (response && response.success && response.data) {
+      // Response directly has success and data
+      payload = response.data
+    } else if (response && response.data) {
+      // Response has data property
+      payload = response.data
+    } else {
+      // Response is the payload itself
+      payload = response
+    }
 
+    // If payload has success and data, extract the inner data
     if (payload && payload.success && payload.data) {
       stats.value = payload.data
+    } else if (payload && payload.data) {
+      // If payload has data but no success flag
+      stats.value = payload.data
+    } else if (payload) {
+      // Use payload directly
+      stats.value = payload
     } else {
       stats.value = null
+      error.value = 'Invalid response structure received from server.'
     }
   } catch (err) {
+    console.error('Failed to load dashboard data:', err)
     error.value = err.message || 'Failed to load revenue statistics.'
     stats.value = null
   } finally {
     loading.value = false
   }
 
-  // Only attempt to render charts once loading is false and
-  // the v-else canvas elements have actually mounted.
   if (stats.value) {
     await renderCharts()
   }
 }
+
 // -------------------- Lifecycle --------------------
 onMounted(() => {
   fetchStats()

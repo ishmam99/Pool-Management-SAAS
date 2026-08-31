@@ -264,7 +264,7 @@ const menus = [
                 title: 'Revenue',
                 icon: 'ri-line-chart-line',
                 links: [
-                    { to: '/admin/subscription/dashboard', icon: 'ri-bar-chart-2-line', text: 'Revenue Statistics' }
+                    { to: '/admin/revenue-statistics', icon: 'ri-bar-chart-2-line', text: 'Revenue Statistics' }
                 ]
             }
         ]
