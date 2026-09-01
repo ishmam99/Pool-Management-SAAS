@@ -230,9 +230,9 @@ const fetchDashboardData = async () => {
         ]);
         
         stats.value = statsRes.data.data;
-        recentSubscriptions.value = subsRes.data.data.data || [];
+        recentSubscriptions.value = subsRes?.data?.data?.data || [];
     } catch (error) {
-        console.error('Failed to load dashboard data:', error);
+        // console.error('Failed to load dashboard data:', error);
     } finally {
         loading.value = false;
     }
