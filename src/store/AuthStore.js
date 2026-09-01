@@ -15,6 +15,7 @@ export const useAuthStore = defineStore('authStore', {
     tenantId: null,
     companyName: null,
     sidebarOpen: true,
+    tenant:{},
     user: {
       id: '',
       name: '',
@@ -38,6 +39,7 @@ export const useAuthStore = defineStore('authStore', {
       if (authType === 'admin') {
         this.currentDashboard = '/admin/dashboard'
       } else if (authType === 'provider') {
+        this.tenant = user.tenant
         this.currentDashboard = '/provider/dashboard'
       } else if (authType === 'customer') {
         this.currentDashboard = '/customer/dashboard'

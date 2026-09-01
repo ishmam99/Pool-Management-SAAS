@@ -21,6 +21,8 @@ export const getApiErrorMessage = (error, fallback = 'Something went wrong') => 
 export const financialApi = {
   getInvoices: (params) =>
     api().get('financial-management/invoices', { params }).then(paginated),
+  getInvoice: (invoiceId) =>
+    api().get(`financial-management/invoices/${invoiceId}`).then(unwrap),
 
   getInvoiceSummary: () =>
     api().get('financial-management/invoices/summary').then(unwrap),
@@ -38,6 +40,7 @@ export const financialApi = {
     api().get(`financial-management/${invoiceId}/download`, { responseType: 'blob' }),
 
   getPayments: (params) =>
+    
     api().get('financial-management/payments', { params }).then(paginated),
 
   getPaymentStats: () =>

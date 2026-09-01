@@ -192,14 +192,19 @@
 import { ref, computed, onMounted } from 'vue'
 import Swal from 'sweetalert2'
 import api from '../../../../services/api.js'
+import { useAuthStore } from '../../../../store/AuthStore.js'
 
 const loading = ref(false)
 const billingData = ref(null)
-
+const authStore = useAuthStore()
 const fetchBillings = async () => {
   loading.value = true
   try {
-    const res = await api().get('/tenant/my-billing')
+    let endpoint = '/tenant/my-billing'
+    if(authStore.authType === 'admin') {
+     endpoint += `?tenant_id=${authStore.tenantId}`
+    }
+    const res = await api().get(endpoint)
     if (res?.data?.data) {
       billingData.value = res.data.data
     } else {
