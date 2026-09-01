@@ -196,7 +196,7 @@
                 class="px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 border-2" :class="selectedAdminLayout === 'tenant'
                   ? 'bg-purple-500 text-white border-purple-500 shadow-md'
                   : 'bg-transparent text-gray-600 border-gray-300 hover:bg-purple-50/50 hover:border-purple-300'">
-                Tenant Layout
+                Service Provider Layout
               </button>
 
               <!-- Select Tenant (visible only when Tenant Layout is active) -->
@@ -232,12 +232,12 @@
                       <div
                         class="inline-block w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin">
                       </div>
-                      <p class="mt-2 text-sm text-gray-500">Loading tenants...</p>
+                      <p class="mt-2 text-sm text-gray-500">Loading service providers...</p>
                     </div>
 
                     <div v-else-if="filteredTenants.length === 0" class="text-center py-8">
                       <UsersIcon class="w-10 h-10 text-gray-300 mx-auto mb-2" />
-                      <p class="text-sm text-gray-500">No tenants found</p>
+                      <p class="text-sm text-gray-500">No Service Providers found</p>
                     </div>
 
                     <button v-for="tenant in filteredTenants" :key="tenant.id" @click="selectTenant(tenant)"
