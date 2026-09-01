@@ -136,34 +136,34 @@
         <div v-if="!error" class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <!-- Desktop/Tablet View -->
             <div class="hidden md:block overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table class="min-w-full divide-y divide-gray-200 table-zebra">
+                    <thead class="bg-green-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Invoice Number
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Company
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Billing Period
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Billing Model
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Total
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Due Date
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Created
                             </th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 border-e border-slate-200 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
                             </th>
                         </tr>
@@ -191,45 +191,45 @@
                         <!-- Data Rows -->
                         <tr v-else v-for="invoice in invoices" :key="invoice.id"
                             class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                 <span class="text-sm font-medium text-gray-900">
                                     {{ invoice.invoice_number }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                 <span class="text-sm text-gray-900">
                                     {{ invoice.tenant?.company_name || 'N/A' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                 <span class="text-sm text-gray-600">
                                     {{ invoice.billing_period || 'N/A' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                                     {{ invoice.billing_model === 'subscription' ? 'Subscription' : 'Per Pool' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                 <span class="text-sm font-medium text-gray-900">
                                     {{ formatCurrency(invoice.total) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 ">
+                            <td class="px-6 py-4 border-e border-slate-200 ">
                                 <StatusBadge :status="invoice.status" />
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                 <span class="text-sm text-gray-600">
                                     {{ formatDate(invoice.due_date) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap">
                                 <span class="text-sm text-gray-600">
                                     {{ formatDate(invoice.created_at) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right">
+                            <td class="px-6 py-4 border-e border-slate-200 whitespace-nowrap text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <!-- View Invoice -->
                                     <button @click="openInvoiceDetail(invoice)"
