@@ -377,11 +377,11 @@ const routes = [
       //   name: 'provider-billing-invoice-create',
       //   component: () => import('../views/provider/pages/billing/InvoiceCreate.vue')
       // },
-      // {
-      //   path: '/provider/billing/payments',
-      //   name: 'provider-billing-payments',
-      //   component: () => import('../views/provider/pages/billing/PaymentsList.vue')
-      // },
+      {
+        path: '/provider/billing/payments',
+        name: 'provider-billing-payments',
+        component: () => import('../views/provider/pages/billing/PaymentsList.vue')
+      },
       // {
       //   path: '/provider/billing/payment-methods',
       //   name: 'provider-billing-payment-methods',

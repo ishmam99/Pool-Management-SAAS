@@ -140,7 +140,8 @@ const handleLogin = async () => {
         phone: data.user.phone || '',
         avatar: '',
         roles: [data.user.role],
-        user_type: 'provider'
+        user_type: 'provider',
+        tenant : data.user.tenant
       };
 
       authStore.login(
