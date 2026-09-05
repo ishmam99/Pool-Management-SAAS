@@ -514,46 +514,46 @@ const menus = [
       { to: '/provider/website/settings', icon: 'ri-settings-3-line', text: 'Website Settings' },
     ]
   },
-  {
-    id: 'communication',
-    title: 'Communication',
-    icon: 'ri-chat-3-line',
-    groups: [],
-    links: [
-      { to: '/provider/communication/inbox', icon: 'ri-mail-line', text: 'Inbox' },
-      { to: '/provider/communication/notifications', icon: 'ri-notification-3-line', text: 'Notifications' },
-    ]
-  },
-  {
-    id: 'reports',
-    title: 'Reports',
-    icon: 'ri-bar-chart-2-line',
-    groups: [],
-    links: [
-      { to: '/provider/reports/revenue', icon: 'ri-money-dollar-box-line', text: 'Revenue' },
-      { to: '/provider/reports/technician-performance', icon: 'ri-user-star-line', text: 'Technician Performance' },
-    ]
-  },
-  {
-    id: 'team',
-    title: 'Team',
-    icon: 'ri-group-line',
-    groups: [],
-    links: [
-      { to: '/provider/team/users', icon: 'ri-user-3-line', text: 'Users' },
-      { to: '/provider/team/roles', icon: 'ri-shield-keyhole-line', text: 'Roles & Permissions' },
-      { to: '/provider/team/activity', icon: 'ri-history-line', text: 'Activity Logs' }
-    ]
-  },
-  {
-    id: 'company',
-    title: 'Company',
-    icon: 'ri-building-line',
-    groups: [],
-    links: [
-      { to: '/provider/company/profile', icon: 'ri-store-line', text: 'Profile' },
-    ]
-  }
+  // {
+  //   id: 'communication',
+  //   title: 'Communication',
+  //   icon: 'ri-chat-3-line',
+  //   groups: [],
+  //   links: [
+  //     { to: '/provider/communication/inbox', icon: 'ri-mail-line', text: 'Inbox' },
+  //     { to: '/provider/communication/notifications', icon: 'ri-notification-3-line', text: 'Notifications' },
+  //   ]
+  // },
+  // {
+  //   id: 'reports',
+  //   title: 'Reports',
+  //   icon: 'ri-bar-chart-2-line',
+  //   groups: [],
+  //   links: [
+  //     { to: '/provider/reports/revenue', icon: 'ri-money-dollar-box-line', text: 'Revenue' },
+  //     { to: '/provider/reports/technician-performance', icon: 'ri-user-star-line', text: 'Technician Performance' },
+  //   ]
+  // },
+  // {
+  //   id: 'team',
+  //   title: 'Team',
+  //   icon: 'ri-group-line',
+  //   groups: [],
+  //   links: [
+  //     { to: '/provider/team/users', icon: 'ri-user-3-line', text: 'Users' },
+  //     { to: '/provider/team/roles', icon: 'ri-shield-keyhole-line', text: 'Roles & Permissions' },
+  //     { to: '/provider/team/activity', icon: 'ri-history-line', text: 'Activity Logs' }
+  //   ]
+  // },
+  // {
+  //   id: 'company',
+  //   title: 'Company',
+  //   icon: 'ri-building-line',
+  //   groups: [],
+  //   links: [
+  //     { to: '/provider/company/profile', icon: 'ri-store-line', text: 'Profile' },
+  //   ]
+  // }
 ]
 
 onMounted(() => {
