@@ -7,12 +7,12 @@
         <p class="mt-1 text-sm text-gray-500">Create a new customer profile for pool service management.</p>
       </div>
       <div class="mt-4 flex space-x-3 md:mt-0">
-        <button 
+        <!-- <button 
           @click="handleCancel" 
           class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
         >
           Cancel
-        </button>
+        </button> -->
         <button 
           @click="handleSubmit" 
           :disabled="isSubmitting"
