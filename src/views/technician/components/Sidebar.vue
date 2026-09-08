@@ -216,16 +216,16 @@ const menus = [
 
         ]
     },
-    {
-        id: 'payment',
-        title: 'Payment',
-        icon: 'ri-bank-card-line',
+    // {
+    //     id: 'payment',
+    //     title: 'Payment',
+    //     icon: 'ri-bank-card-line',
 
-        links: [
-            { to: '/customer/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' }
+    //     links: [
+    //         { to: '/customer/payment-methods', icon: 'ri-bank-card-line', text: 'Payment Methods' }
 
-        ]
-    },
+    //     ]
+    // },
     
 ]
 </script>
