@@ -598,7 +598,11 @@ const routes = [
         name: 'technician-dashboard',
         component: () => import('../views/technician/pages/Dashboard/techDashboard.vue')
       },
-
+      {
+        path: '/technician/profile',
+        name: 'technician-profile',
+        component: () => import('../views/technician/pages/Dashboard/profile.vue')
+      },
       {
         path: '/technician/my-schedules',
         name: 'technician-my-schedules',

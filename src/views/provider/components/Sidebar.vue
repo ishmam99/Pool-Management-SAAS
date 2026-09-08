@@ -350,7 +350,7 @@ const menus = [
         title: 'Maintenace Schedule',
         links: [
           { to: '/provider/maintenance-calendar', icon: 'ri-calendar-2-line', text: 'Maintenace Schedule Calendar View' },
-          { to: '/provider/maintenance-unassigned', icon: 'ri-user-unfollow-line', text: 'Maintenace Schedule List View' },
+          { to: '/provider/maintenance-list', icon: 'ri-user-unfollow-line', text: 'Maintenace Schedule List View' },
         ]
       },
       {
