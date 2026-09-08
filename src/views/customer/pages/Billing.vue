@@ -87,30 +87,24 @@
                 </td>
                 <td class="px-6 py-4 border-b border-e border-slate-300 text-right">
                   <div class="flex items-center justify-end gap-2">
-                    <!-- View button -->
                     <button
-                      @click="openInvoiceDrawer(invoice)"
-                      class="px-2 py-1 bg-cyan-600 hover:bg-cyan-700 text-white hover:text-cyan-50 rounded-lg transition-colors"
-                      title="View Invoice"
+                      @click="openInvoiceModal(invoice)"
+                      class="px-2 py-1 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg transition-colors"
                     >
-                      View Invoice
+                      View
                     </button>
-                    <!-- Download button -->
                     <button
                       @click="downloadInvoicePDF(invoice)"
-                      class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white hover:text-gray-100 rounded-lg transition-colors"
-                      title="Download PDF"
+                      class="px-2 py-1 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
                     >
-                     Download PDF
+                      Download
                     </button>
-                    <!-- Pay Now button (if not paid and balance > 0) -->
                     <button
                       v-if="invoice.status !== 'paid' && parseFloat(invoice.balance_due) > 0"
                       @click="openPayModal(invoice)"
-                      class="py-1 px-2 bg-emerald-600 hover:bg-emerald-700 text-white hover:text-emerald-50 rounded-lg transition-colors"
-                      title="Pay Now"
+                      class="py-1 px-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
                     >
-                       Pay Now
+                      Pay
                     </button>
                   </div>
                 </td>
@@ -121,220 +115,202 @@
       </div>
     </div>
 
-    <!-- Invoice Preview Drawer -->
-    <div v-if="showInvoiceDrawer" class="fixed inset-0 z-50 flex items-start justify-end p-4">
-      <!-- Overlay -->
-      <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" @click="closeInvoiceDrawer"></div>
-
-      <!-- Drawer panel -->
-      <Transition name="slide-drawer" appear>
-        <div class="relative w-full max-w-4xl h-full bg-white shadow-2xl overflow-y-auto">
-          <!-- Sticky header -->
-          <div class="sticky top-0 bg-white border-b border-gray-200 z-10 px-6 py-4 flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-gray-900">Invoice Preview</h2>
-            <div class="flex items-center gap-3">
-              <!-- Pay Now button inside drawer -->
+    <!-- ============================================================ -->
+    <!-- INVOICE VIEW MODAL (exact copy of your component)            -->
+    <!-- ============================================================ -->
+    <Teleport to="body">
+      <div
+        v-if="showInvoiceModal"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        @click.self="closeInvoiceModal"
+      >
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[95vh] flex flex-col shadow-2xl animate-fadeInUp">
+          <!-- Modal Header -->
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-2xl">
+            <h3 class="text-lg font-bold text-gray-900">Invoice</h3>
+            <div class="flex items-center gap-2">
               <button
-                v-if="selectedInvoice && selectedInvoice.status !== 'paid' && parseFloat(selectedInvoice.balance_due) > 0"
+                v-if="selectedInvoice && selectedInvoice.status === 'sent' && parseFloat(selectedInvoice.balance_due) > 0"
                 @click="openPayModal(selectedInvoice)"
-                class="inline-flex items-center px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+                class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-sm font-medium transition"
               >
-                <svg class="w-4 h-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v1m0 6v1m0-1v1m0-6v1" />
-                </svg>
                 Pay Now
               </button>
               <button
                 @click="downloadInvoicePDF(selectedInvoice)"
-                class="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-sm font-medium transition"
               >
-                <svg class="w-4 h-4 mr-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
                 Download PDF
               </button>
-              <button @click="closeInvoiceDrawer" class="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <button @click="closeInvoiceModal" class="p-2 rounded-full hover:bg-gray-200 transition">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
           </div>
 
-          <!-- Invoice content -->
-          <div class="p-6 md:p-10" v-if="selectedInvoice">
+          <!-- Invoice Content -->
+          <div class="p-8 overflow-y-auto flex-1 bg-white" id="invoice-content">
             <div class="max-w-3xl mx-auto">
-              <!-- Header -->
-              <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4 pb-6 border-b border-gray-200">
+              <!-- Invoice Header with Brand Color -->
+              <div class="flex justify-between items-start border-b-2 pb-6" :style="{ borderColor: brandColor }">
                 <div>
-                  <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-cyan-600 flex items-center justify-center text-white font-bold text-sm">PMS</div>
-                    <div>
-                      <h1 class="text-2xl font-bold text-gray-900">Pool Management System</h1>
-                      <p class="text-sm text-gray-500">Customer Billing</p>
-                    </div>
-                  </div>
+                  <h1 class="text-3xl font-bold" :style="{ color: brandColor }">INVOICE</h1>
+                  <p class="text-sm text-gray-500 mt-1">#{{ selectedInvoice?.invoice_number }}</p>
                 </div>
                 <div class="text-right">
-                  <div class="text-2xl font-bold text-cyan-600">INVOICE</div>
-                  <p class="text-sm text-gray-600 font-medium">{{ selectedInvoice.invoice_number }}</p>
-                  <div class="flex items-center justify-end gap-3 mt-2">
-                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold" :class="statusBadgeClass(selectedInvoice.status)">
-                      {{ formatStatus(selectedInvoice.status) }}
-                    </span>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                      {{ selectedInvoice.billing_model === 'subscription' ? 'Subscription' : 'Per Pool' }}
-                    </span>
-                  </div>
+                  <div class="text-sm text-gray-500">Status</div>
+                  <span class="px-2.5 py-1 rounded-full text-xs font-semibold" :class="statusBadgeClass(selectedInvoice?.status)">
+                    {{ formatStatus(selectedInvoice?.status) }}
+                  </span>
                 </div>
               </div>
 
-              <!-- Bill To -->
-              <div class="mt-6 pb-6 border-b border-gray-200">
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Bill To</h3>
-                <div class="text-gray-900">
-                  <p class="text-lg font-semibold">{{ tenantFullMap[selectedInvoice.tenant_id]?.company_name || 'N/A' }}</p>
-                  <p class="text-sm text-gray-600">{{ tenantFullMap[selectedInvoice.tenant_id]?.email || 'N/A' }}</p>
-                  <p class="text-sm text-gray-600">{{ tenantFullMap[selectedInvoice.tenant_id]?.phone || 'N/A' }}</p>
-                  <p class="text-sm text-gray-600">{{ tenantFullMap[selectedInvoice.tenant_id]?.website || 'N/A' }}</p>
+              <!-- Company & Customer Info -->
+              <div class="grid grid-cols-2 gap-8 my-6">
+                  
+                <div>
+                  <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Bill From</h4>
+                  <p class="font-medium text-gray-900 mt-1" :style="{ color: brandColor }">
+                    {{ selectedTenant?.company_name || 'Pool Management Inc.' }}
+                  </p>
+                  <p class="text-sm text-gray-600">{{ selectedTenant?.legal_name || 'Pool Management Inc.' }}</p>
+                  <p class="text-sm text-gray-600" v-if="selectedTenant?.address">{{ selectedTenant.address }}</p>
+                  <p class="text-sm text-gray-600" v-if="selectedTenant?.phone">{{ selectedTenant.phone }}</p>
+                  <p class="text-sm text-gray-600">{{ selectedTenant?.email || 'info@poolmanagement.com' }}</p>
+                  <p class="text-sm text-gray-600" v-if="selectedTenant?.website">{{ selectedTenant.website }}</p>
+                  <div class="mt-1 text-xs text-gray-400">
+                    <span v-if="selectedTenant?.ein">EIN: {{ selectedTenant.ein }}</span>
+                    <span v-if="selectedTenant?.business_license" class="ml-2">License: {{ selectedTenant.business_license }}</span>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Bill To</h4>
+                  <p class="font-medium text-gray-900 mt-1">{{ authStore?.user.name || 'User' }}</p>
+                  <p class="text-sm text-gray-600">Customer ID: #{{ authStore?.user?.id || 'N/A' }}</p>
+                  <p class="text-sm text-gray-600" v-if="authStore?.user?.email">{{ authStore.user.email }}</p>
+                  <p class="text-sm text-gray-600" v-if="authStore?.user?.phone">{{ authStore.user.phone }}</p>
+                  <p class="text-sm text-gray-600" v-if="authStore?.user?.address">{{ authStore.user.address }}</p>
+                </div>
+              
+              </div>
+
+              <!-- Invoice Details -->
+              <div class="grid grid-cols-3 gap-4 bg-gray-50 rounded-lg p-4 mb-6">
+                <div>
+                  <p class="text-xs text-gray-500">Invoice Date</p>
+                  <p class="font-medium">{{ formatDate(selectedInvoice?.invoice_date) }}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Due Date</p>
+                  <p class="font-medium">{{ formatDate(selectedInvoice?.due_date) }}</p>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Billing Period</p>
+                  <p class="font-medium text-sm">{{ formatDate(selectedInvoice?.billing_period_start) }} – {{ formatDate(selectedInvoice?.billing_period_end) }}</p>
                 </div>
               </div>
 
-              <!-- Invoice Info -->
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6 pb-6 border-b border-gray-200">
-                <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wider">Billing Period</p>
-                  <p class="text-sm font-medium text-gray-900">{{ moment(selectedInvoice.billing_period_start).format('MMMM YYYY') }}</p>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wider">Period Start</p>
-                  <p class="text-sm font-medium text-gray-900">{{ formatDate(selectedInvoice.billing_period_start) }}</p>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wider">Period End</p>
-                  <p class="text-sm font-medium text-gray-900">{{ formatDate(selectedInvoice.billing_period_end) }}</p>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wider">Due Date</p>
-                  <p class="text-sm font-medium text-gray-900">{{ formatDate(selectedInvoice.due_date) }}</p>
-                </div>
-                <div>
-                  <p class="text-xs text-gray-500 uppercase tracking-wider">Created Date</p>
-                  <p class="text-sm font-medium text-gray-900">{{ formatDate(selectedInvoice.created_at) }}</p>
-                </div>
+              <!-- Line Items Table -->
+              <div class="mb-6">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">Line Items</h4>
+                <table class="w-full">
+                  <thead>
+                    <tr :style="{ backgroundColor: brandColor }">
+                      <th class="text-left text-xs font-medium text-white uppercase tracking-wider py-2 px-3">#</th>
+                      <th class="text-left text-xs font-medium text-white uppercase tracking-wider py-2 px-3">Description</th>
+                      <th class="text-right text-xs font-medium text-white uppercase tracking-wider py-2 px-3">Qty</th>
+                      <th class="text-right text-xs font-medium text-white uppercase tracking-wider py-2 px-3">Unit Price</th>
+                      <th class="text-right text-xs font-medium text-white uppercase tracking-wider py-2 px-3">Total</th>
+                      <th class="text-center text-xs font-medium text-white uppercase tracking-wider py-2 px-3">Taxable</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, index) in selectedInvoice?.line_items || []" :key="item.id" class="border-b border-gray-100 hover:bg-gray-50">
+                      <td class="py-2 px-3 text-sm text-gray-500">{{ index + 1 }}</td>
+                      <td class="py-2 px-3 text-sm font-medium text-gray-900">{{ item.description || 'Service' }}</td>
+                      <td class="py-2 px-3 text-right text-sm">{{ item.quantity || 1 }}</td>
+                      <td class="py-2 px-3 text-right text-sm">${{ formatAmount(item.unit_price) }}</td>
+                      <td class="py-2 px-3 text-right text-sm font-medium">${{ formatAmount(item.total) }}</td>
+                      <td class="py-2 px-3 text-center text-sm">
+                        <span :class="item.taxable ? 'text-green-600' : 'text-gray-400'">
+                          {{ item.taxable ? '✓' : '—' }}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
-              <!-- Line Items / Details -->
-              <div class="mt-6">
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Invoice Details</h3>
-
-                <!-- Per Pool Section -->
-                <div v-if="selectedInvoice.billing_model === 'per_pool'">
-                  <div class="grid grid-cols-3 gap-4 mb-4">
-                    <div class="p-3 bg-gray-50 rounded-lg text-center">
-                      <p class="text-xs text-gray-500">Active Pools</p>
-                      <p class="text-lg font-bold text-gray-900">{{ selectedInvoice.total_active_pools || 0 }}</p>
-                    </div>
-                    <div class="p-3 bg-gray-50 rounded-lg text-center">
-                      <p class="text-xs text-gray-500">Billable Pools</p>
-                      <p class="text-lg font-bold text-gray-900">{{ selectedInvoice.billable_pools || 0 }}</p>
-                    </div>
-                    <div class="p-3 bg-gray-50 rounded-lg text-center">
-                      <p class="text-xs text-gray-500">Per Pool Price</p>
-                      <p class="text-lg font-bold text-gray-900">{{ formatCurrency(selectedInvoice.per_pool_price) }}</p>
-                    </div>
-                  </div>
-
-                  <!-- Pool breakdown table -->
-                  <div v-if="selectedInvoice.pools_snapshot && selectedInvoice.pools_snapshot.length > 0"
-                       class="overflow-x-auto border border-gray-200 rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200">
-                      <thead class="bg-gray-50">
-                        <tr>
-                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pool ID</th>
-                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                          <th class="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                        </tr>
-                      </thead>
-                      <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="pool in selectedInvoice.pools_snapshot" :key="pool.id || pool.pool_name">
-                          <td class="px-4 py-2 text-sm text-gray-600">{{ 'PL-' + selectedInvoice.tenant_id + pool.pool_id || 'N/A' }}</td>
-                          <td class="px-4 py-2 text-sm text-gray-900">
-                            {{ pool.pool_name || 'Unnamed Pool' }}
-                            <span v-if="pool.is_free" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Free</span>
-                            <span v-else class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Billable</span>
-                          </td>
-                          <td class="px-4 py-2 text-sm text-gray-600">{{ pool.customer_name || 'N/A' }}</td>
-                          <td class="px-4 py-2 text-sm text-gray-900 text-right">{{ formatCurrency(pool.price) }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <!-- Subscription Section -->
-                <div v-if="selectedInvoice.billing_model === 'subscription'" class="p-4 bg-gray-50 rounded-lg">
-                  <p class="text-xs text-gray-500">Plan Name</p>
-                  <p class="text-base font-medium text-gray-900">{{ selectedInvoice.plan_name || 'Subscription Plan' }}</p>
-                </div>
-
-                <!-- Financial Summary -->
-                <div class="mt-6 pt-4 border-t border-gray-200">
-                  <div class="space-y-1.5 max-w-xs ml-auto">
+              <!-- Summary -->
+              <div class="border-t border-gray-200 pt-4">
+                <div class="flex justify-end">
+                  <div class="w-72 space-y-2">
                     <div class="flex justify-between text-sm">
                       <span class="text-gray-600">Subtotal</span>
-                      <span class="text-gray-900 font-medium">{{ formatCurrency(selectedInvoice.subtotal) }}</span>
+                      <span class="font-medium">${{ formatAmount(selectedInvoice?.subtotal) }}</span>
                     </div>
                     <div class="flex justify-between text-sm">
                       <span class="text-gray-600">Tax</span>
-                      <span class="text-gray-900 font-medium">{{ formatCurrency(selectedInvoice.tax) }}</span>
+                      <span class="font-medium">${{ formatAmount(selectedInvoice?.tax) }}</span>
                     </div>
-                    <div class="flex justify-between text-sm">
+                    <div v-if="selectedInvoice?.discount > 0" class="flex justify-between text-sm">
                       <span class="text-gray-600">Discount</span>
-                      <span class="text-gray-900 font-medium">-{{ formatCurrency(selectedInvoice.discount) }}</span>
+                      <span class="font-medium text-red-600">-${{ formatAmount(selectedInvoice.discount) }}</span>
                     </div>
-                    <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-300">
-                      <span class="text-gray-900">TOTAL</span>
-                      <span class="text-cyan-600">{{ formatCurrency(selectedInvoice.total) }}</span>
+                    <div class="flex justify-between text-lg font-bold pt-2 border-t border-gray-200">
+                      <span>Total</span>
+                      <span :style="{ color: brandColor }">${{ formatAmount(selectedInvoice?.total) }}</span>
+                    </div>
+                    <div v-if="selectedInvoice?.balance_due > 0" class="flex justify-between text-sm">
+                      <span class="text-gray-600">Balance Due</span>
+                      <span class="font-bold text-red-600">${{ formatAmount(selectedInvoice.balance_due) }}</span>
+                    </div>
+                    <div v-if="selectedInvoice?.amount_paid > 0" class="flex justify-between text-sm">
+                      <span class="text-gray-600">Amount Paid</span>
+                      <span class="font-medium text-green-600">${{ formatAmount(selectedInvoice.amount_paid) }}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Payment Info (if paid) -->
-              <div v-if="selectedInvoice.status === 'paid'" class="mt-6 pt-6 border-t border-gray-200">
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Payment Information</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-green-50 rounded-lg ring-1 ring-green-200">
-                  <div>
-                    <p class="text-xs text-green-600 uppercase tracking-wider">Paid At</p>
-                    <p class="text-sm font-medium text-gray-900">{{ formatDate(selectedInvoice.paid_at) }}</p>
-                  </div>
-                  <div>
-                    <p class="text-xs text-green-600 uppercase tracking-wider">Payment Method</p>
-                    <p class="text-sm font-medium text-gray-900">{{ selectedInvoice.payment_method || 'N/A' }}</p>
-                  </div>
-                  <div>
-                    <p class="text-xs text-green-600 uppercase tracking-wider">Transaction ID</p>
-                    <p class="text-sm font-medium text-gray-900">{{ selectedInvoice.transaction_id || 'N/A' }}</p>
+              <!-- Payment History -->
+              <div v-if="selectedInvoice?.payments && selectedInvoice.payments.length" class="mt-6">
+                <h4 class="text-sm font-semibold text-gray-700 mb-2">Payment History</h4>
+                <div class="space-y-2">
+                  <div v-for="payment in selectedInvoice.payments" :key="payment.id" class="flex justify-between items-center bg-gray-50 rounded-lg p-3">
+                    <div>
+                      <p class="text-sm font-medium">{{ formatDate(payment.paid_at) }}</p>
+                      <p class="text-xs text-gray-500">Method: {{ payment.method || 'N/A' }}</p>
+                      <p class="text-xs text-gray-500" v-if="payment.transaction_id">Txn: {{ payment.transaction_id }}</p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-sm font-bold text-green-600">${{ formatAmount(payment.amount) }}</p>
+                      <p class="text-xs text-gray-500">Status: {{ payment.status || 'Completed' }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Terms -->
-              <div class="mt-6 pt-6 border-t border-gray-200">
-                <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Terms &amp; Conditions</h3>
-                <ul class="text-sm text-gray-600 space-y-1 list-disc list-inside">
-                  <li v-for="term in INVOICE_TERMS" :key="term">{{ term }}</li>
-                </ul>
+              <!-- Footer -->
+              <div class="mt-8 pt-4 border-t border-gray-200 text-center">
+                <p class="text-xs text-gray-400">Thank you for your business with {{ selectedTenant?.company_name || 'Pool Management Inc.' }}!</p>
+                <p class="text-xs text-gray-400 mt-1">Generated on {{ new Date().toLocaleString() }}</p>
+                <div class="mt-2 text-xs text-gray-400">
+                  <span v-if="selectedTenant?.billing_model">Billing: {{ selectedTenant.billing_model }}</span>
+                  <span v-if="selectedTenant?.domain_mode" class="ml-2">Mode: {{ selectedTenant.domain_mode }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </Transition>
-    </div>
+      </div>
+    </Teleport>
 
-    <!-- ==================== PAYMENT MODAL ==================== -->
+    <!-- ============================================================ -->
+    <!-- PAYMENT MODAL (updated API)                                   -->
+    <!-- ============================================================ -->
     <Teleport to="body">
       <div
         v-if="payModalInvoice"
@@ -351,7 +327,6 @@
             </button>
           </div>
           <div class="p-6">
-            <!-- Invoice summary -->
             <div class="mb-4 text-sm">
               <div class="flex justify-between">
                 <span class="text-gray-500">Invoice</span>
@@ -363,7 +338,6 @@
               </div>
             </div>
 
-            <!-- Payment Form -->
             <form @submit.prevent="handlePayment" class="space-y-4">
               <div>
                 <label class="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-1">Cardholder Name</label>
@@ -437,6 +411,7 @@ import { formatCurrency, formatDate, formatStatus, statusBadgeClass } from '../u
 import { useAuthStore } from '../../../store/AuthStore.js'
 import api from '../../../services/api.js'
 import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'   // <-- new import
 import moment from 'moment'
 
 // ==========================================================
@@ -457,48 +432,38 @@ const authStore = useAuthStore()
 
 const loading = ref(true)
 const invoices = ref([])
-const tenants = ref([])          // full tenant objects
-const showInvoiceDrawer = ref(false)
-const selectedInvoice = ref(null)
+const tenants = ref([])
 
-// Payment modal state
+const showInvoiceModal = ref(false)
+const selectedInvoice = ref(null)
+const selectedTenant = ref(null)
+
 const payModalInvoice = ref(null)
-const paymentForm = ref({
-  name: '',
-  number: '',
-  expiry: '',
-  cvc: ''
-})
+const paymentForm = ref({ name: '', number: '', expiry: '', cvc: '' })
 const payLoading = ref(false)
+
+const brandColor = ref('#1a73e8') // default brand color
 
 // ==========================================================
 // COMPUTED
 // ==========================================================
 const tenantMap = computed(() => {
   const map = {}
-  tenants.value.forEach(t => {
-    map[t.id] = t.company_name || t.legal_name || 'Unnamed Tenant'
-  })
+  tenants.value.forEach(t => { map[t.id] = t.company_name || t.legal_name || 'Unnamed Tenant' })
   return map
 })
 
 const tenantFullMap = computed(() => {
   const map = {}
-  tenants.value.forEach(t => {
-    map[t.id] = t
-  })
+  tenants.value.forEach(t => { map[t.id] = t })
   return map
 })
 
-const summary = computed(() => {
-  const totalPaid = invoices.value.reduce((sum, inv) => sum + Number(inv.amount_paid || 0), 0)
-  const balanceDue = invoices.value.reduce((sum, inv) => sum + Number(inv.balance_due || 0), 0)
-  return {
-    totalPaid,
-    balanceDue,
-    totalInvoices: invoices.value.length,
-  }
-})
+const summary = computed(() => ({
+  totalPaid: invoices.value.reduce((sum, inv) => sum + Number(inv.amount_paid || 0), 0),
+  balanceDue: invoices.value.reduce((sum, inv) => sum + Number(inv.balance_due || 0), 0),
+  totalInvoices: invoices.value.length,
+}))
 
 // ==========================================================
 // DATA FETCHING
@@ -518,48 +483,35 @@ const fetchInvoices = async () => {
 
 const fetchTenantsForInvoices = async () => {
   const tenantIds = [...new Set(invoices.value.map(inv => inv.tenant_id).filter(id => id != null))]
-  if (tenantIds.length === 0) {
-    tenants.value = []
-    return
-  }
-
+  if (tenantIds.length === 0) { tenants.value = []; return }
   try {
-    const responses = await Promise.all(
-      tenantIds.map(id => api().get(`/tenant/tenants/${id}`))
-    )
-    tenants.value = responses.map(res => {
-      const data = res.data?.data || res.data
-      return data
-    })
+    const responses = await Promise.all(tenantIds.map(id => api().get(`/tenant/tenants/${id}`)))
+    tenants.value = responses.map(res => res.data?.data || res.data)
   } catch (error) {
     console.error('Failed to fetch tenant details:', error)
-    // Keep tenants empty – will show 'Unknown Tenant'
   }
 }
 
 // ==========================================================
-// DRAWER CONTROLS
+// MODAL CONTROLS
 // ==========================================================
-const openInvoiceDrawer = (invoice) => {
+const openInvoiceModal = (invoice) => {
   selectedInvoice.value = invoice
-  showInvoiceDrawer.value = true
+  selectedTenant.value = tenantFullMap.value[invoice.tenant_id] || null
+  showInvoiceModal.value = true
+  document.body.style.overflow = 'hidden'
 }
 
-const closeInvoiceDrawer = () => {
-  showInvoiceDrawer.value = false
+const closeInvoiceModal = () => {
+  showInvoiceModal.value = false
   selectedInvoice.value = null
+  selectedTenant.value = null
+  document.body.style.overflow = ''
 }
 
-// ==========================================================
-// PAYMENT MODAL CONTROLS
-// ==========================================================
 const openPayModal = (invoice) => {
-  // Close drawer if open (optional)
-  if (showInvoiceDrawer.value) {
-    closeInvoiceDrawer()
-  }
+  if (showInvoiceModal.value) closeInvoiceModal()
   payModalInvoice.value = invoice
-  // Reset form
   paymentForm.value = { name: '', number: '', expiry: '', cvc: '' }
   document.body.style.overflow = 'hidden'
 }
@@ -570,24 +522,359 @@ const closePayModal = () => {
   payLoading.value = false
 }
 
+// --------------------------------------------------------------
+//  PDF GENERATION – NEW IMPLEMENTATION (copy from composable)
+// --------------------------------------------------------------
 const formatAmount = (value) => {
   if (value == null) return '0.00'
   return parseFloat(value).toFixed(2)
 }
 
+// (we already have formatDate from imported utils, but we'll keep it here for PDF)
+const pdfFormatDate = (dateStr) => {
+  if (!dateStr) return '—'
+  const d = new Date(dateStr)
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+const capitalize = (str) => {
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+const hexToRgb = (hex) => {
+  hex = hex.replace('#', '')
+  let r, g, b
+  if (hex.length === 3) {
+    r = parseInt(hex[0] + hex[0], 16)
+    g = parseInt(hex[1] + hex[1], 16)
+    b = parseInt(hex[2] + hex[2], 16)
+  } else {
+    r = parseInt(hex.substring(0, 2), 16)
+    g = parseInt(hex.substring(2, 4), 16)
+    b = parseInt(hex.substring(4, 6), 16)
+  }
+  return { r, g, b }
+}
+
+const generateInvoicePDF = (invoice, tenant) => {
+  const doc = new jsPDF('p', 'mm', 'a4')
+  const pageWidth = doc.internal.pageSize.getWidth()
+  const pageHeight = doc.internal.pageSize.getHeight()
+  const margin = 20
+  let y = margin
+
+  const brandColor = tenant?.brand_color || '#1a73e8'
+  const brandColorRgb = hexToRgb(brandColor)
+
+  // Header with brand color
+  doc.setFillColor(brandColorRgb.r, brandColorRgb.g, brandColorRgb.b)
+  doc.rect(0, 0, pageWidth, 45, 'F')
+  doc.setTextColor(255, 255, 255)
+  doc.setFontSize(28)
+  doc.setFont('helvetica', 'bold')
+  doc.text('INVOICE', pageWidth / 2, 30, { align: 'center' })
+  y = 55
+
+  // Invoice number & status
+  doc.setTextColor(0, 0, 0)
+  doc.setFontSize(10)
+  doc.setFont('helvetica', 'normal')
+  doc.setFont('helvetica', 'bold')
+  doc.text('Invoice #:', margin, y)
+  doc.setFont('helvetica', 'normal')
+  doc.text(invoice.invoice_number, margin + 30, y)
+
+  const statusColors = {
+    paid: [0, 128, 0],
+    sent: [200, 150, 0],
+    draft: [128, 128, 128],
+    overdue: [200, 0, 0],
+    void: [128, 128, 128]
+  }
+  const color = statusColors[invoice.status] || [128, 128, 128]
+  doc.setTextColor(...color)
+  doc.setFont('helvetica', 'bold')
+  doc.text(capitalize(invoice.status), pageWidth - margin - 30, y)
+  doc.setTextColor(0, 0, 0)
+  y += 12
+
+  doc.setDrawColor(200, 200, 200)
+  doc.line(margin, y, pageWidth - margin, y)
+  y += 10
+
+  // FROM section
+  doc.setFontSize(9)
+  doc.setFont('helvetica', 'bold')
+  doc.text('FROM:', margin, y)
+  doc.setFont('helvetica', 'normal')
+
+  doc.setFont('helvetica', 'bold')
+  doc.setTextColor(brandColorRgb.r, brandColorRgb.g, brandColorRgb.b)
+  doc.text(tenant?.company_name || 'Pool Management Inc.', margin, y + 5)
+  doc.setFont('helvetica', 'normal')
+  doc.setTextColor(0, 0, 0)
+
+  if (tenant?.legal_name) {
+    doc.text(tenant.legal_name, margin, y + 10)
+    y += 5
+  }
+  if (tenant?.address) {
+    doc.text(tenant.address, margin, y + 10)
+    y += 5
+  }
+  if (tenant?.phone) {
+    doc.text(`Phone: ${tenant.phone}`, margin, y + 10)
+    y += 5
+  }
+  doc.text(tenant?.email || 'info@poolmanagement.com', margin, y + 10)
+  y += 5
+  if (tenant?.website) {
+    doc.text(tenant.website, margin, y + 10)
+    y += 5
+  }
+  if (tenant?.ein || tenant?.business_license) {
+    let info = ''
+    if (tenant?.ein) info += `EIN: ${tenant.ein}`
+    if (tenant?.business_license) info += `  License: ${tenant.business_license}`
+    doc.setFontSize(8)
+    doc.setTextColor(100, 100, 100)
+    doc.text(info, margin, y + 10)
+    y += 5
+    doc.setTextColor(0, 0, 0)
+    doc.setFontSize(9)
+  }
+
+  // BILL TO section
+  doc.setFont('helvetica', 'bold')
+  doc.setTextColor(0, 0, 0)
+  doc.text('BILL TO:', pageWidth / 2, y - 20)
+  doc.setFont('helvetica', 'normal')
+
+  doc.setFont('helvetica', 'bold')
+  doc.text(authStore?.user?.name || 'N/A', pageWidth / 2, y - 15)
+  doc.setFont('helvetica', 'normal')
+
+  let customerY = y - 10
+  if (authStore.user.email) {
+    doc.text(`Email: ${authStore.user.email}`, pageWidth / 2, customerY)
+    customerY += 5
+  }
+  if (authStore.user.phone) {
+    doc.text(`Phone: ${authStore?.user.phone}`, pageWidth / 2, customerY)
+    customerY += 5
+  }
+  if (authStore.user.address) {
+    doc.text(authStore?.user?.address, pageWidth / 2, customerY)
+    customerY += 5
+  }
+  doc.text(`Customer ID: #${authStore.user?.id || 'N/A'}`, pageWidth / 2, customerY + 5)
+
+  y += 30
+
+  // Invoice details box
+  const boxY = y
+  const boxHeight = 30
+  doc.setFillColor(245, 245, 245)
+  doc.roundedRect(margin, boxY, pageWidth - (margin * 2), boxHeight, 4, 4, 'F')
+
+  const colWidth = (pageWidth - (margin * 2)) / 3
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
+  doc.setTextColor(100, 100, 100)
+
+  doc.text('Invoice Date', margin + 5, boxY + 8)
+  doc.setTextColor(0, 0, 0)
+  doc.text(pdfFormatDate(invoice.invoice_date), margin + 5, boxY + 18)
+
+  doc.setTextColor(100, 100, 100)
+  doc.text('Due Date', margin + colWidth + 5, boxY + 8)
+  doc.setTextColor(0, 0, 0)
+  doc.text(pdfFormatDate(invoice.due_date), margin + colWidth + 5, boxY + 18)
+
+  doc.setTextColor(100, 100, 100)
+  doc.text('Billing Period', margin + (colWidth * 2) + 5, boxY + 8)
+  doc.setTextColor(0, 0, 0)
+  doc.text(pdfFormatDate(invoice.billing_period_start), margin + (colWidth * 2) + 5, boxY + 14)
+  doc.text(pdfFormatDate(invoice.billing_period_end), margin + (colWidth * 2) + 5, boxY + 22)
+
+  y = boxY + boxHeight + 15
+
+  // Line items table
+  if (invoice.line_items && invoice.line_items.length) {
+    const tableData = invoice.line_items.map(item => [
+      item.description || 'Service',
+      item.quantity || 1,
+      `$${formatAmount(item.unit_price)}`,
+      `$${formatAmount(item.total)}`,
+      item.taxable ? 'Yes' : 'No'
+    ])
+    autoTable(doc, {
+      startY: y,
+      head: [['Description', 'Qty', 'Unit Price', 'Total', 'Taxable']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: {
+        fillColor: [brandColorRgb.r, brandColorRgb.g, brandColorRgb.b],
+        textColor: [255, 255, 255],
+        fontStyle: 'bold',
+        halign: 'center',
+        fontSize: 9
+      },
+      bodyStyles: {
+        fontSize: 9
+      },
+      margin: { left: margin, right: margin },
+      columnStyles: {
+        0: { cellWidth: 80 },
+        1: { cellWidth: 20, halign: 'center' },
+        2: { cellWidth: 30, halign: 'right' },
+        3: { cellWidth: 30, halign: 'right' },
+        4: { cellWidth: 25, halign: 'center' }
+      }
+    })
+    y = doc.lastAutoTable.finalY + 10
+  } else {
+    doc.setFontSize(10)
+    doc.text(`Line Items: ${invoice.line_items_count || 0}`, margin, y)
+    y += 10
+  }
+
+  // Summary
+  const summaryX = pageWidth - margin - 70
+  doc.setFontSize(9)
+  doc.setFont('helvetica', 'normal')
+
+  doc.setTextColor(100, 100, 100)
+  doc.text('Subtotal', summaryX, y)
+  doc.setTextColor(0, 0, 0)
+  doc.text(`$${formatAmount(invoice.subtotal)}`, pageWidth - margin, y, { align: 'right' })
+
+  doc.setTextColor(100, 100, 100)
+  doc.text('Tax', summaryX, y + 7)
+  doc.setTextColor(0, 0, 0)
+  doc.text(`$${formatAmount(invoice.tax)}`, pageWidth - margin, y + 7, { align: 'right' })
+
+  if (invoice.discount > 0) {
+    doc.setTextColor(100, 100, 100)
+    doc.text('Discount', summaryX, y + 14)
+    doc.setTextColor(200, 0, 0)
+    doc.text(`-$${formatAmount(invoice.discount)}`, pageWidth - margin, y + 14, { align: 'right' })
+    y += 7
+  }
+
+  y += 10
+  doc.setDrawColor(200, 200, 200)
+  doc.line(summaryX, y, pageWidth - margin, y)
+  y += 5
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(14)
+  doc.setTextColor(brandColorRgb.r, brandColorRgb.g, brandColorRgb.b)
+  doc.text('TOTAL', summaryX, y + 5)
+  doc.text(`$${formatAmount(invoice.total)}`, pageWidth - margin, y + 5, { align: 'right' })
+
+  if (invoice.balance_due > 0) {
+    y += 12
+    doc.setFontSize(10)
+    doc.setTextColor(200, 0, 0)
+    doc.text('Balance Due:', summaryX, y + 3)
+    doc.text(`$${formatAmount(invoice.balance_due)}`, pageWidth - margin, y + 3, { align: 'right' })
+  }
+  if (invoice.amount_paid > 0) {
+    y += 8
+    doc.setFontSize(9)
+    doc.setTextColor(0, 128, 0)
+    doc.text('Amount Paid:', summaryX, y + 3)
+    doc.text(`$${formatAmount(invoice.amount_paid)}`, pageWidth - margin, y + 3, { align: 'right' })
+  }
+
+  y += 15
+
+  // Payment History
+  if (invoice.payments && invoice.payments.length) {
+    y += 5
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(0, 0, 0)
+    doc.text('Payment History', margin, y)
+    y += 5
+
+    const paymentData = invoice.payments.map(p => [
+      pdfFormatDate(p.paid_at),
+      p.method || 'N/A',
+      p.status || 'Completed',
+      `$${formatAmount(p.amount)}`
+    ])
+    autoTable(doc, {
+      startY: y,
+      head: [['Date', 'Method', 'Status', 'Amount']],
+      body: paymentData,
+      theme: 'plain',
+      headStyles: {
+        fillColor: [245, 245, 245],
+        textColor: [0, 0, 0],
+        fontStyle: 'bold',
+        fontSize: 9
+      },
+      bodyStyles: {
+        fontSize: 8
+      },
+      margin: { left: margin, right: margin },
+      columnStyles: {
+        0: { cellWidth: 40 },
+        1: { cellWidth: 35 },
+        2: { cellWidth: 35 },
+        3: { cellWidth: 30, halign: 'right' }
+      }
+    })
+    y = doc.lastAutoTable.finalY + 10
+  }
+
+  // Footer
+  const footerY = pageHeight - 25
+  doc.setFontSize(8)
+  doc.setTextColor(150, 150, 150)
+  doc.setFont('helvetica', 'italic')
+  doc.text(`Thank you for your business with ${tenant?.company_name || 'Pool Management Inc.'}!`, pageWidth / 2, footerY, { align: 'center' })
+
+  const footerInfo = []
+  if (tenant?.phone) footerInfo.push(`Phone: ${tenant.phone}`)
+  if (tenant?.email) footerInfo.push(`Email: ${tenant.email}`)
+  if (tenant?.website) footerInfo.push(`Web: ${tenant.website}`)
+  if (footerInfo.length) {
+    doc.setFont('helvetica', 'normal')
+    doc.text(footerInfo.join('  |  '), pageWidth / 2, footerY + 5, { align: 'center' })
+  }
+  doc.setFont('helvetica', 'italic')
+  doc.text(`Generated on ${new Date().toLocaleString()}`, pageWidth / 2, footerY + 10, { align: 'center' })
+  if (tenant?.billing_model) {
+    doc.setFontSize(7)
+    doc.setTextColor(180, 180, 180)
+    doc.text(`Billing: ${tenant.billing_model}  |  Status: ${tenant?.status || 'active'}`, pageWidth / 2, footerY + 15, { align: 'center' })
+  }
+
+  doc.save(`invoice-${invoice.invoice_number}.pdf`)
+}
+
+const downloadInvoicePDF = (invoice) => {
+  if (!invoice) return
+  const tenant = tenantFullMap.value[invoice.tenant_id] || null
+  generateInvoicePDF(invoice, tenant)
+}
+
 // ==========================================================
-// HANDLE PAYMENT
+// HANDLE PAYMENT (unchanged)
 // ==========================================================
 const handlePayment = async () => {
   if (!payModalInvoice.value) return
   payLoading.value = true
+  const transactionId = 'txn_' + Date.now() + Math.random().toString(36).substr(2, 6)
 
   try {
-    // Using the same endpoint as the provided code
-    await api().post(`/tenant/my-invoices/${payModalInvoice.value.id}/pay`, {
-      payment_method: 'stripe'
-      // In a real implementation, you would send card details to a payment gateway.
-      // For demo, we just call the API to mark as paid.
+    await api().post(`/financial-management/${payModalInvoice.value.id}/payments`, {
+      amount: parseFloat(payModalInvoice.value.balance_due || payModalInvoice.value.total),
+      method: 'card',
+      transaction_id: transactionId
     })
 
     await Swal.fire({
@@ -599,11 +886,7 @@ const handlePayment = async () => {
     })
 
     closePayModal()
-    // Refresh invoices and close drawer if open
     await fetchInvoices()
-    if (showInvoiceDrawer.value) {
-      closeInvoiceDrawer()
-    }
   } catch (error) {
     console.error('Payment failed:', error)
     Swal.fire('Payment Failed', getApiErrorMessage(error), 'error')
@@ -612,532 +895,14 @@ const handlePayment = async () => {
   }
 }
 
-
 // ==========================================================
-// PDF GENERATION (fully inline)
+// LIFECYCLE
 // ==========================================================
-const PDF_MARGIN = 20
-const PDF_PAGE_WIDTH = 210
-const PDF_PAGE_HEIGHT = 297
-const PDF_CONTENT_WIDTH = PDF_PAGE_WIDTH - PDF_MARGIN * 2
-
-const pdfColors = {
-  brand: [6, 182, 212],        // cyan-500
-  brandDark: [8, 145, 178],    // cyan-600
-  brandLight: [236, 254, 255], // cyan-50
-  dark: [30, 41, 59],
-  text: [71, 85, 105],
-  muted: [148, 163, 184],
-  border: [226, 232, 240],
-  zebra: [248, 250, 252],
-  white: [255, 255, 255],
-  paid: [21, 128, 61],
-  paidBg: [220, 252, 231],
-  pending: [180, 83, 9],
-  pendingBg: [254, 243, 199],
-  overdue: [185, 28, 28],
-  overdueBg: [254, 226, 226],
-  cancelled: [100, 116, 139],
-  cancelledBg: [241, 245, 249],
-  subscription: [37, 99, 235],
-  subscriptionBg: [219, 234, 254],
-  perPool: [124, 58, 237],
-  perPoolBg: [245, 243, 255],
-  free: [21, 128, 61],
-  freeBg: [220, 252, 231],
-  billable: [37, 99, 235],
-  billableBg: [219, 234, 254]
-}
-
-const pdfFormatCurrency = (amount) => {
-  if (amount == null || amount === '') return '$0.00'
-  const num = typeof amount === 'string' ? parseFloat(amount) : amount
-  if (isNaN(num)) return '$0.00'
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2
-  }).format(num)
-}
-
-const pdfFormatDate = (date) => {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
-}
-
-const pdfFormatDateTime = (date) => {
-  if (!date) return 'N/A'
-  return new Date(date).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
-
-const pdfCheckPageBreak = (doc, cursorY, neededHeight) => {
-  if (cursorY + neededHeight > PDF_PAGE_HEIGHT - PDF_MARGIN - 14) {
-    doc.addPage()
-    return PDF_MARGIN
-  }
-  return cursorY
-}
-
-const pdfTruncateText = (doc, text, maxWidth) => {
-  let str = String(text)
-  if (doc.getTextWidth(str) <= maxWidth) return str
-  while (str.length > 1 && doc.getTextWidth(str + '…') > maxWidth) {
-    str = str.slice(0, -1)
-  }
-  return str + '…'
-}
-
-const pdfStatusColors = (status) => {
-  const s = (status || '').toLowerCase()
-  if (s === 'paid') return { fg: pdfColors.paid, bg: pdfColors.paidBg }
-  if (s === 'pending') return { fg: pdfColors.pending, bg: pdfColors.pendingBg }
-  if (s === 'overdue') return { fg: pdfColors.overdue, bg: pdfColors.overdueBg }
-  return { fg: pdfColors.cancelled, bg: pdfColors.cancelledBg }
-}
-
-const pdfDrawBadge = (doc, text, x, y, fg, bg, align = 'left') => {
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(7.5)
-  const textWidth = doc.getTextWidth(text.toUpperCase())
-  const paddingX = 3
-  const badgeWidth = textWidth + paddingX * 2
-  const badgeHeight = 5.5
-  const drawX = align === 'right' ? x - badgeWidth : x
-
-  doc.setFillColor(...bg)
-  doc.roundedRect(drawX, y, badgeWidth, badgeHeight, 2.5, 2.5, 'F')
-  doc.setTextColor(...fg)
-  doc.text(text.toUpperCase(), drawX + paddingX, y + 3.9)
-  return badgeWidth
-}
-
-const pdfDrawDivider = (doc, y, color = pdfColors.border) => {
-  doc.setDrawColor(...color)
-  doc.setLineWidth(0.3)
-  doc.line(PDF_MARGIN, y, PDF_MARGIN + PDF_CONTENT_WIDTH, y)
-  return y + 4
-}
-
-const pdfDrawSectionHeader = (doc, title, y, accentColor = pdfColors.brand) => {
-  doc.setFillColor(...accentColor)
-  doc.roundedRect(PDF_MARGIN, y, 2.5, 6.5, 1, 1, 'F')
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(9.5)
-  doc.setTextColor(...pdfColors.dark)
-  doc.text(title.toUpperCase(), PDF_MARGIN + 6, y + 5)
-  y += 6.5 + 3
-  return pdfDrawDivider(doc, y, pdfColors.border) + 2
-}
-
-const pdfDrawHeader = (doc, invoice, tenant) => {
-  const bandHeight = 30
-  doc.setFillColor(250, 250, 252)
-  doc.rect(0, 0, PDF_PAGE_WIDTH, bandHeight, 'F')
-  doc.setFillColor(...pdfColors.brand)
-  doc.rect(0, bandHeight - 0.8, PDF_PAGE_WIDTH, 0.8, 'F')
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(19)
-  doc.setTextColor(...pdfColors.dark)
-  doc.text(COMPANY_NAME, PDF_MARGIN, 14)
-
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(9)
-  doc.setTextColor(...pdfColors.muted)
-  doc.text('Customer Billing', PDF_MARGIN, 20)
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(17)
-  doc.setTextColor(...pdfColors.brandDark)
-  doc.text('INVOICE', PDF_PAGE_WIDTH - PDF_MARGIN, 14, { align: 'right' })
-
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(9)
-  doc.setTextColor(...pdfColors.muted)
-  doc.text(invoice.invoice_number || 'N/A', PDF_PAGE_WIDTH - PDF_MARGIN, 20, { align: 'right' })
-
-  let y = bandHeight + 10
-
-  const statusColors = pdfStatusColors(invoice.status)
-  const modelLabel = invoice.billing_model === 'subscription' ? 'Subscription' : 'Per Pool'
-
-  doc.setFontSize(8)
-  doc.setTextColor(...pdfColors.muted)
-  doc.setFont('helvetica', 'normal')
-  doc.text('Status', PDF_MARGIN, y)
-  pdfDrawBadge(doc, invoice.status || 'N/A', PDF_MARGIN, y + 2, statusColors.fg, statusColors.bg)
-
-  doc.text('Billing Model', PDF_MARGIN + 45, y)
-  pdfDrawBadge(doc, modelLabel, PDF_MARGIN + 45, y + 2, pdfColors.perPool, pdfColors.perPoolBg)
-
-  y += 14
-  y = pdfDrawDivider(doc, y, pdfColors.border)
-  return y + 2
-}
-
-const pdfDrawTenantInfo = (doc, invoice, tenant, y) => {
-  y = pdfCheckPageBreak(doc, y, 30)
-  y = pdfDrawSectionHeader(doc, 'Bill To', y)
-
-  const lines = [
-    ['Company', tenant?.company_name || 'N/A'],
-    ['Email', tenant?.email || 'N/A'],
-    ['Phone', tenant?.phone || 'N/A'],
-    ['Website', tenant?.website || 'N/A']
-  ]
-
-  doc.setFontSize(9)
-  lines.forEach(([label, value]) => {
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(...pdfColors.muted)
-    doc.text(`${label}:`, PDF_MARGIN, y)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(...pdfColors.dark)
-    doc.text(String(value), PDF_MARGIN + 30, y)
-    y += 5.5
-  })
-
-  return y + 4
-}
-
-const pdfDrawBillingInfo = (doc, invoice, y) => {
-  y = pdfCheckPageBreak(doc, y, 35)
-  y = pdfDrawSectionHeader(doc, 'Invoice Information', y, pdfColors.brand)
-
-  const lines = [
-    ['Billing Period', moment(invoice.billing_period_start).format('MMMM YYYY')],
-    ['Period Start', pdfFormatDate(invoice.billing_period_start)],
-    ['Period End', pdfFormatDate(invoice.billing_period_end)],
-    ['Due Date', pdfFormatDate(invoice.due_date)],
-    ['Created Date', pdfFormatDate(invoice.created_at)]
-  ]
-
-  doc.setFontSize(9)
-  lines.forEach(([label, value]) => {
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(...pdfColors.muted)
-    doc.text(`${label}:`, PDF_MARGIN, y)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(...pdfColors.dark)
-    doc.text(String(value), PDF_MARGIN + 35, y)
-    y += 5.5
-  })
-
-  return y + 4
-}
-
-const pdfDrawInvoiceDetails = (doc, invoice, y) => {
-  y = pdfCheckPageBreak(doc, y, 55)
-  y = pdfDrawSectionHeader(doc, 'Invoice Details', y, pdfColors.perPool)
-
-  doc.setFontSize(9)
-
-  if (invoice.billing_model === 'subscription') {
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(...pdfColors.muted)
-    doc.text('Plan Name:', PDF_MARGIN, y)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(...pdfColors.dark)
-    doc.text(invoice.plan_name || 'Subscription Plan', PDF_MARGIN + 35, y)
-    y += 7
-  } else {
-    const poolLines = [
-      ['Active Pools', String(invoice.total_active_pools ?? 0)],
-      ['Billable Pools', String(invoice.billable_pools ?? 0)],
-      ['Per Pool Price', pdfFormatCurrency(invoice.per_pool_price)]
-    ]
-    poolLines.forEach(([label, value]) => {
-      doc.setFont('helvetica', 'normal')
-      doc.setTextColor(...pdfColors.muted)
-      doc.text(`${label}:`, PDF_MARGIN, y)
-      doc.setFont('helvetica', 'bold')
-      doc.setTextColor(...pdfColors.dark)
-      doc.text(value, PDF_MARGIN + 35, y)
-      y += 5.5
-    })
-    y += 2
-  }
-
-  const financialRows = [
-    ['Subtotal', pdfFormatCurrency(invoice.subtotal), pdfColors.text],
-    ['Tax', pdfFormatCurrency(invoice.tax), pdfColors.pending],
-    ['Discount', `- ${pdfFormatCurrency(invoice.discount)}`, pdfColors.paid]
-  ]
-
-  financialRows.forEach(([label, value, color]) => {
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(...pdfColors.text)
-    doc.text(label, PDF_MARGIN, y)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(...color)
-    doc.text(value, PDF_PAGE_WIDTH - PDF_MARGIN, y, { align: 'right' })
-    y += 6
-  })
-
-  y += 2
-
-  const totalBoxHeight = 14
-  doc.setFillColor(...pdfColors.brandLight)
-  doc.roundedRect(PDF_MARGIN, y, PDF_CONTENT_WIDTH, totalBoxHeight, 2, 2, 'F')
-  doc.setDrawColor(...pdfColors.brand)
-  doc.setLineWidth(0.4)
-  doc.roundedRect(PDF_MARGIN, y, PDF_CONTENT_WIDTH, totalBoxHeight, 2, 2, 'S')
-
-  doc.setFillColor(...pdfColors.brand)
-  doc.roundedRect(PDF_MARGIN, y, 3, totalBoxHeight, 2, 2, 'F')
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(12)
-  doc.setTextColor(...pdfColors.brandDark)
-  doc.text('TOTAL DUE', PDF_MARGIN + 8, y + 9)
-  doc.setFontSize(14)
-  doc.text(pdfFormatCurrency(invoice.total), PDF_PAGE_WIDTH - PDF_MARGIN - 4, y + 9.5, { align: 'right' })
-
-  y += totalBoxHeight + 8
-  return y
-}
-
-const pdfDrawPoolBreakdownTable = (doc, invoice, y) => {
-  const pools = invoice.pools_snapshot
-  if (invoice.billing_model !== 'per_pool' || !Array.isArray(pools) || pools.length === 0) {
-    return y
-  }
-
-  y = pdfCheckPageBreak(doc, y, 20)
-  y = pdfDrawSectionHeader(doc, 'Pool Breakdown', y, pdfColors.perPool)
-
-  const colX = {
-    pool: PDF_MARGIN + 2,
-    desc: PDF_MARGIN + 24,
-    customer: PDF_MARGIN + 82,
-    price: PDF_MARGIN + 122,
-    status: PDF_MARGIN + 144
-  }
-  const colWidth = {
-    pool: 20,
-    desc: 55,
-    customer: 38,
-    price: 20
-  }
-
-  const drawTableHeaderRow = (yPos) => {
-    doc.setFillColor(...pdfColors.brandLight)
-    doc.roundedRect(PDF_MARGIN, yPos - 4.5, PDF_CONTENT_WIDTH, 7, 1.5, 1.5, 'F')
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(8)
-    doc.setTextColor(...pdfColors.brandDark)
-    doc.text('POOL ID', colX.pool, yPos)
-    doc.text('DESCRIPTION', colX.desc, yPos)
-    doc.text('CUSTOMER', colX.customer, yPos)
-    doc.text('PRICE', colX.price, yPos)
-    doc.text('STATUS', colX.status, yPos)
-    return yPos + 5
-  }
-
-  y = drawTableHeaderRow(y)
-
-  doc.setFontSize(8.5)
-
-  pools.forEach((pool, idx) => {
-    const prevY = y
-    y = pdfCheckPageBreak(doc, y, 7)
-    if (y !== prevY) {
-      y = drawTableHeaderRow(y)
-    }
-
-    if (idx % 2 === 0) {
-      doc.setFillColor(...pdfColors.zebra)
-      doc.rect(PDF_MARGIN, y - 3.5, PDF_CONTENT_WIDTH, 6, 'F')
-    }
-
-    const poolId = pool.pool_id == null ? 'N/A' : 'PL-' + invoice.tenant_id + pool.pool_id
-    const poolName = pool.pool_name == null ? 'Unnamed Pool' : pool.pool_name
-    const customerName = pool.customer_name === 'N/A' || !pool.customer_name ? 'N/A' : pool.customer_name
-    const price = pdfFormatCurrency(pool.price)
-    const statusLabel = pool.is_free ? 'Free' : 'Billable'
-    const badgeColors = pool.is_free
-      ? { fg: pdfColors.free, bg: pdfColors.freeBg }
-      : { fg: pdfColors.billable, bg: pdfColors.billableBg }
-
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(...pdfColors.dark)
-    doc.text(pdfTruncateText(doc, poolId, colWidth.pool), colX.pool, y)
-    doc.text(pdfTruncateText(doc, poolName, colWidth.desc), colX.desc, y)
-    doc.text(pdfTruncateText(doc, customerName, colWidth.customer), colX.customer, y)
-
-    doc.setFont('helvetica', 'bold')
-    doc.text(price, colX.price, y)
-
-    pdfDrawBadge(doc, statusLabel, colX.status, y - 4, badgeColors.fg, badgeColors.bg)
-
-    y += 6.5
-  })
-
-  return y + 4
-}
-
-const pdfDrawPaymentInfo = (doc, invoice, y) => {
-  if (invoice.status !== 'paid') return y
-
-  y = pdfCheckPageBreak(doc, y, 28)
-  y = pdfDrawSectionHeader(doc, 'Payment Information', y, pdfColors.paid)
-
-  doc.setFillColor(...pdfColors.paidBg)
-  doc.roundedRect(PDF_MARGIN, y - 4, PDF_CONTENT_WIDTH, 20, 2, 2, 'F')
-
-  const lines = [
-    ['Paid At', pdfFormatDate(invoice.paid_at)],
-    ['Payment Method', invoice.payment_method || 'N/A'],
-    ['Transaction ID', invoice.transaction_id || 'N/A']
-  ]
-
-  let lineY = y + 1
-  doc.setFontSize(9)
-  lines.forEach(([label, value]) => {
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(...pdfColors.text)
-    doc.text(`${label}:`, PDF_MARGIN + 4, lineY)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(...pdfColors.paid)
-    doc.text(String(value), PDF_MARGIN + 42, lineY)
-    lineY += 5.5
-  })
-
-  return y + 20 + 4
-}
-
-const pdfDrawTermsAndConditions = (doc, y) => {
-  y = pdfCheckPageBreak(doc, y, 35)
-  y = pdfDrawSectionHeader(doc, 'Terms & Conditions', y, pdfColors.muted)
-
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(8.5)
-  doc.setTextColor(...pdfColors.text)
-
-  INVOICE_TERMS.forEach((term) => {
-    doc.text(`• ${term}`, PDF_MARGIN + 4, y)
-    y += 5.5
-  })
-
-  return y + 4
-}
-
-const pdfDrawFooter = (doc) => {
-  const pageCount = doc.internal.getNumberOfPages()
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i)
-    const footerY = PDF_PAGE_HEIGHT - 14
-
-    doc.setDrawColor(...pdfColors.border)
-    doc.setLineWidth(0.4)
-    doc.line(PDF_MARGIN, footerY - 6, PDF_PAGE_WIDTH - PDF_MARGIN, footerY - 6)
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(8)
-    doc.setTextColor(...pdfColors.brandDark)
-    doc.text(`Generated by ${COMPANY_NAME}`, PDF_MARGIN, footerY)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(7.5)
-    doc.setTextColor(...pdfColors.muted)
-    doc.text('Customer Billing System', PDF_MARGIN, footerY + 4)
-
-    doc.text(
-      `Generated on: ${pdfFormatDateTime(new Date())}`,
-      PDF_PAGE_WIDTH - PDF_MARGIN,
-      footerY,
-      { align: 'right' }
-    )
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(...pdfColors.brandDark)
-    doc.text(
-      `Page ${i} of ${pageCount}`,
-      PDF_PAGE_WIDTH - PDF_MARGIN,
-      footerY + 4,
-      { align: 'right' }
-    )
-  }
-}
-
-// Main PDF generation function
-const generateInvoicePDF = (invoice) => {
-  if (!invoice) return
-
-  const tenant = tenantFullMap.value[invoice.tenant_id] || null
-
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'a4'
-  })
-
-  let y = pdfDrawHeader(doc, invoice, tenant)
-  y = pdfDrawTenantInfo(doc, invoice, tenant, y)
-  y = pdfDrawBillingInfo(doc, invoice, y)
-  y = pdfDrawInvoiceDetails(doc, invoice, y)
-  y = pdfDrawPoolBreakdownTable(doc, invoice, y)
-  y = pdfDrawPaymentInfo(doc, invoice, y)
-  y = pdfDrawTermsAndConditions(doc, y)
-  pdfDrawFooter(doc)
-
-  const fileName = `Invoice-${invoice.invoice_number || 'invoice'}.pdf`
-  doc.save(fileName)
-}
-
-// Direct download function (called from buttons)
-const downloadInvoicePDF = (invoice) => {
-  generateInvoicePDF(invoice)
-}
-
-// ==========================================================
-// WATCH & LIFECYCLE
-// ==========================================================
-watch(
-  () => authStore.customerId,
-  (newId, oldId) => {
-    if (newId === oldId) return
-    fetchInvoices()
-  }
-)
-watch(
-  () => authStore.customerId,
-  (newId, oldId) => {
-    if (newId === oldId) return
-    fetchInvoices()
-  }
-)
-
-onMounted(() => {
-  fetchInvoices()
-})
+watch(() => authStore.customerId, () => fetchInvoices())
+onMounted(fetchInvoices)
 </script>
 
 <style scoped>
-/* Slide drawer animation */
-.slide-drawer-enter-active,
-.slide-drawer-leave-active {
-  transition: all 0.3s ease;
-}
-.slide-drawer-enter-from {
-  transform: translateX(100%);
-  opacity: 0;
-}
-.slide-drawer-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-/* Payment modal fade-in */
 @keyframes fadeInUp {
   from {
     opacity: 0;
