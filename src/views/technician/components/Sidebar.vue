@@ -212,7 +212,7 @@ const menus = [
         icon: 'ri-user-3-line',
 
         links: [
-            { to: '/customer/profile', icon: 'ri-user-3-fill', text: 'Profile' }
+            { to: '/technician/profile', icon: 'ri-user-3-fill', text: 'Profile' }
 
         ]
     },
