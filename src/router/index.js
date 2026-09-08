@@ -608,11 +608,15 @@ const routes = [
         name: 'technician-my-schedules',
         component: () => import('../views/technician/pages/MySchedule/MySchedule.vue')
       },
-
       {
         path: '/technician/perform-service/:id',
         name: 'technician-perform-service',
         component: () => import('../views/technician/pages/MySchedule/PerformService.vue')
+      },
+            {
+        path: '/technician/payment-methods',
+        name: 'technician-payment-methods',
+        component: () => import('../views/technician/pages/PaymentMethods.vue')
       },
 
     ]
